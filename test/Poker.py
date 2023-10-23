@@ -25,7 +25,8 @@ class Deck:
 
     def __init__(self,num=1):
         self.cards=[]
-        for x in range(num):
+        self.shuffle()
+        for _ in range(num):
             for b in range(4):
                 for a in range(1,14):
                     self.cards.append(Card(a,b))
@@ -52,7 +53,7 @@ class Deck:
         self.cards.sort()
 
     def move_card(self,hand,num):
-        for i in range(num):
+        for _ in range(num):
             hand.add_card(self.deal_cards())
 
     def deal_hands(self,numhand,numcard):
@@ -60,11 +61,9 @@ class Deck:
         if numcard*numhand>len(self.cards):
             print('Go get some math, noobs')
             return 0
-        for x in range(numhand):
+        for _ in range(numhand):
             a=Hand()
             self.move_card(a,numcard)
-            print(a)
-            print()
             listbruh.append(a)
         return listbruh
 
@@ -156,15 +155,4 @@ class Poker(Hand):
     def check(self):
         a=max(self.straight(),self.straight_flush(),self.flush(),self.all_multiple())
         return self.dicthaha[a] 
-
-def game():
-    deck=Deck()
-    deck.shuffle()
-    hand=deck.deal_hands(1,2)[0]
-    board=deck.deal_hands(1,5)[0]
-    poker=hand.create_poker(board)
-    point=poker.check()
-    print(point)
-        
-game()
 
