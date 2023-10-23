@@ -103,7 +103,7 @@ class Poker(Hand):
         for x in dictbruh:
             bruhbruhbruh[dictbruh[x]]=bruhbruhbruh.get(dictbruh[x],0)+1
         for x in range(5):
-            bruhbruhbruh[x]=bruhbruhbruh.get(x,0)
+            bruhbruhbruh[x] = bruhbruhbruh.get(x,0)
         if bruhbruhbruh[4]>0:
             return 8
         elif bruhbruhbruh[3]>0 and bruhbruhbruh[2]>0:
@@ -122,7 +122,7 @@ class Poker(Hand):
             dictbruh[x]=dictbruh.get(x,0)
             if dictbruh[x]>=5:
                 return 6
-        return 1
+        return (0,0)
     
     def straight(self):
         dictbruh=self.createdict()
@@ -135,7 +135,7 @@ class Poker(Hand):
                 k=0
             if k==5:
                 return 5
-        return 1
+        return (0,0)
 
     def straight_flush(self):
         if self.flush()==6:
@@ -149,12 +149,16 @@ class Poker(Hand):
                     self.remove_card(a)
             if self.straight()==5:
                 return 9
-        return 1
+        return (0,0)
 
 
     def check(self):
-        a=max(self.straight(),self.straight_flush(),self.flush(),self.all_multiple())
-        return a
+        a,b,c,d=self.straight(),self.straight_flush(),self.flush(),self.all_multiple()
+        hehe=[a,b,c,d]
+        x=max(a[0],b[0],c[0],d[0])
+        for k in hehe:
+            if k[0]==x:
+                return k
 
     def take_str_check(self,a):
         return self.dicthaha[a] 
