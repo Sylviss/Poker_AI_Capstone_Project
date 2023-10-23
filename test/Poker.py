@@ -85,13 +85,13 @@ class Poker(Hand):
         self.cards=[]
         self.dicthaha={1:'High card',2:'One pair',3:'Two pairs',4:'Three of a kind',5:"Straight",6:'Flush',7:'Full house',8:'Four of a kind',9:'Straight flush'}
 
-    def createdict(self):
+    def createdict(self): #return a rank -> number of cards have that rank dict
         dictbruh={}
         for x in self.cards:
             dictbruh[x.rank]=dictbruh.get(x.rank,0)+1
         return dictbruh
 
-    def createdictbruh(self):
+    def createdictbruh(self): #same as before but with suit
         dictbruh={}
         for x in self.cards:
             dictbruh[x.suit]=dictbruh.get(x.suit,0)+1
@@ -100,33 +100,98 @@ class Poker(Hand):
     def all_multiple(self):
         dictbruh=self.createdict()
         bruhbruhbruh={}
+        check_final=1
         for x in dictbruh:
             bruhbruhbruh[dictbruh[x]]=bruhbruhbruh.get(dictbruh[x],0)+1
         for x in range(5):
             bruhbruhbruh[x] = bruhbruhbruh.get(x,0)
         if bruhbruhbruh[4]>0:
-            return 8
+            check_final=8
         elif bruhbruhbruh[3]>0 and bruhbruhbruh[2]>0:
-            return 7
+            check_final=7
         elif bruhbruhbruh[3]>0:
-            return 4
+            check_final=4
         elif bruhbruhbruh[2]>1:
-            return 3
+            check_final=3
         elif bruhbruhbruh[2]>0:
-            return 2
-        return 1
-
+            check_final=2
+        if check_final==8:
+            for x in dictbruh:
+                if dictbruh[x]==4:
+                    return (check_final,x)
+        elif check_final==7:
+            card_3=0
+            card_2=0
+            for x in range(1,14):
+                if x in dictbruh:
+                    if dictbruh[x]==3:
+                        card_3=x
+                    elif dictbruh[x]==2:
+                        card_2=x
+            return (7,card_3,card_2)
+        elif check_final==4:
+            card_3=0
+            arr=[]
+            for x in range(13,0,-1):
+                if x in dictbruh:
+                    if dictbruh[x]==3:
+                        card_3=x
+                    else:
+                        arr+=[x]*dictbruh[x]
+            return (4,card_3,arr[0],arr[1])
+        elif check_final==3:
+            card_2=[]
+            card_high=[]
+            for x in range(13,0,-1):
+                if x in dictbruh:
+                    if dictbruh[x]==2:
+                        card_2+=[x]
+                    else:
+                        card_high+=[x]
+            if len(card_2)==3 and card_2[2]>card_high[0]:
+                return (3,card_2[0],card_2[1],card_2[2])
+            else:
+                return (3,card_2[0],card_2[1],card_high[0])
+        elif check_final==2:
+            card_2=0
+            card_high=[]
+            for x in range(13,0,-1):
+                if x in dictbruh:
+                    if dictbruh[x]==2:
+                        card_2=x
+                    else:
+                        card_high+=[x]
+            return (2,card_2,card_high[0],card_high[1],card_high[3])
+        else:
+            card_high=[]
+            for x in range(13,0,-1):
+                if x in dictbruh:
+                    card_high+=[x]
+            return (1,card_high[0],card_high[1],card_high[2],card_high[3],card_high[4])
+        
     def flush(self):
         dictbruh=self.createdictbruh()
+        ans_flush=0
+        temp=0
         for x in range(4):
             dictbruh[x]=dictbruh.get(x,0)
             if dictbruh[x]>=5:
-                return 6
+                ans_flush=6
+                temp=x
+        cache=[]
+        for card in self.cards:
+            if card.suit==temp:
+                cache.append(card.rank)
+        cache.sort()
+        if ans_flush==6:
+            return (6,cache[0],cache[1],cache[2],cache[3],cache[4])
         return (0,0)
     
     def straight(self):
         dictbruh=self.createdict()
         dictbruh[14]=dictbruh.get(1,0)
+        highest=0
+        check_flush=0
         k=0
         for x in range(1,15):
             if x in dictbruh and dictbruh[x]!=0:
@@ -134,11 +199,14 @@ class Poker(Hand):
             else:
                 k=0
             if k==5:
-                return 5
+                check_flush=1
+                highest=x
+        if check_flush==1:
+            return (5,highest)
         return (0,0)
 
     def straight_flush(self):
-        if self.flush()==6:
+        if self.flush()[0]==6:
             dictbruh=self.createdictbruh()
             for x in range(4):
                 dictbruh[x]=dictbruh.get(x,0)
@@ -147,8 +215,9 @@ class Poker(Hand):
             for a in self.cards:
                 if a.suit!=x:
                     self.remove_card(a)
-            if self.straight()==5:
-                return 9
+            check_straight=self.straight()
+            if check_straight[0]==5:
+                return (9,check_straight[1])
         return (0,0)
 
 
