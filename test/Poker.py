@@ -25,12 +25,12 @@ class Deck:
 
     def __init__(self,num=1):
         self.cards=[]
-        self.shuffle()
         for _ in range(num):
             for b in range(4):
                 for a in range(1,14):
                     self.cards.append(Card(a,b))
-
+        self.shuffle()
+        
     def __str__(self):
         res=[]
         for card in self.cards:
@@ -154,5 +154,7 @@ class Poker(Hand):
 
     def check(self):
         a=max(self.straight(),self.straight_flush(),self.flush(),self.all_multiple())
-        return self.dicthaha[a] 
+        return a
 
+    def take_str_check(self,a):
+        return self.dicthaha[a] 
