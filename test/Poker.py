@@ -76,27 +76,15 @@ class Hand(Deck):
     def join_hands(self,hand):
         self.cards+=hand.cards
 
+    def create_poker(self,board):
+        a=Poker()
+        a.cards+=self.cards+board.cards
+        return a
 class Poker(Hand):
 
     def __init__(self):
         self.cards=[]
         self.dicthaha={1:'High card',2:'One pair',3:'Two pairs',4:'Three of a kind',5:"Straight",6:'Flush',7:'Full house',8:'Four of a kind',9:'Straight flush'}
-    
-        def __lt__(self,other):
-            return self.rank<other.rank
-
-    def deal_hands(self,deck,numhand,numcard):
-        listbruh=[]
-        if numcard*numhand>len(deck.cards):
-            print('Go get some math, noobs')
-            return 0
-        for x in range(numhand):
-            a=Poker()
-            deck.move_card(a,numcard)
-            # print(a)
-            # print()
-            listbruh.append(a)
-        return listbruh
 
     def createdict(self):
         dictbruh={}
@@ -167,30 +155,16 @@ class Poker(Hand):
 
     def check(self):
         a=max(self.straight(),self.straight_flush(),self.flush(),self.all_multiple())
-        probdict[a]+=1
         return self.dicthaha[a] 
 
-    def game(self):
-        deck=Deck()
-        for x in range(10):
-            deck.shuffle()
-        hand=self.deal_hands(deck,1,2)[0]
-        board=self.deal_hands(deck,1,5)[0]
-        hand.join_hands(board)
-        point=hand.check()
-        # print(point)
-
-probdict={1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
-for x in range(100000):
-    game=Poker()
-    game.game()
-    print(x)
-for y in probdict:
-    probdict[y]=probdict[y]/100000
-print(probdict)
-
-
-
-
-
+def game():
+    deck=Deck()
+    deck.shuffle()
+    hand=deck.deal_hands(1,2)[0]
+    board=deck.deal_hands(1,5)[0]
+    poker=hand.create_poker(board)
+    point=poker.check()
+    print(point)
+        
+game()
 
