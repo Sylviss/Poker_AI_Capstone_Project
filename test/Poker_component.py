@@ -67,6 +67,16 @@ class Deck:
             listbruh.append(a)
         return listbruh
 
+class Player:
+    
+    def __init__(self,hand,name,money):
+        self.name=name
+        self.hand=hand
+        self.money=money
+        
+    def __str__(self):
+        return self.name + "\n" + str(self.hand) + "\n"
+    
 class Hand(Deck):
     
     def __init__(self):

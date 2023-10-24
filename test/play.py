@@ -19,10 +19,16 @@ def game(num_players):
             winner.append(0)
     hehe=", ".join([f"Player {x}" for x in range(1,len(winner)+1) if winner[x-1]])
     print(hehe+" win the game!")
-def game_human_vs_autobot(num_players):
+
+
+
+
+def game_human_vs_autobot(num_players,init_money):
     a=Poker_component.Deck()
-    players=a.deal_hands(num_players,2)
-    for player in players:
-        print(player)
-        print()
+    hands=a.deal_hands(num_players,2)
+    players=[]
+    for x in range(len(hands)):
+        players.append(Poker_component.Player(hands[x],f"Player {x+1}",init_money))
+        print(players[-1])
+game_human_vs_autobot(2,1000)
     
