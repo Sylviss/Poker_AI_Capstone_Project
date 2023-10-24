@@ -1,6 +1,6 @@
-import Poker
+import Poker_component
 def game(num_players):
-    a=Poker.Deck()
+    a=Poker_component.Deck()
     players=a.deal_hands(num_players,2)
     hands=[]
     board=a.deal_hands(1,5)[0]
@@ -19,4 +19,10 @@ def game(num_players):
             winner.append(0)
     hehe=", ".join([f"Player {x}" for x in range(1,len(winner)+1) if winner[x-1]])
     print(hehe+" win the game!")
-game(3)
+def game_human_vs_autobot(num_players):
+    a=Poker_component.Deck()
+    players=a.deal_hands(num_players,2)
+    for player in players:
+        print(player)
+        print()
+    
