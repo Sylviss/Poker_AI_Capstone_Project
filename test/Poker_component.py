@@ -85,6 +85,8 @@ class Player:
         2: Raised
         3: Broke as fuck
         4: Fold
+        5: Out of game
+        6: Out of table
         + Money flow:
         - In-turn: money->self.pot
         - After bet turn: self.pot->boardpot
@@ -118,7 +120,7 @@ class Player:
         if cur_call==self.pot:
             stack.append("check")
             checkout.append(2)
-        else:
+        elif cur_call>self.pot and self.money>cur_call-self.pot:
             stack.append("call")
             checkout.append(3)
         if self.money>cur_call-self.pot+cur_raise:
@@ -183,7 +185,9 @@ class Player:
     def raise_money(self,money_raised,cur_call,last_raised,board_pot,cur_raise):
         self.state=2
         bet_money=cur_call-self.pot+money_raised
+        print(f"bet money {bet_money}")
         cur_raise=money_raised
+        cur_call+=cur_raise
         print(f"{self.name} raise for {cur_raise}$")
         self.money-=bet_money
         self.pot+=bet_money
