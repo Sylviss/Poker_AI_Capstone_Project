@@ -69,14 +69,125 @@ class Deck:
 
 class Player:
     
-    def __init__(self,hand,name,money):
+    def __init__(self,hand,name,money,state=-1):
         self.name=name
         self.hand=hand
         self.money=money
-        
+        self.state=state
+        self.pot=0
+        """
+        + State explain:
+        -1: Initial state
+        0: All-in
+        1: Called/Checked 
+        2: Raised
+        3: Broke as fuck
+        4: Fold
+        + Money flow:
+        - In-turn: money->self.pot
+        - After bet turn: self.pot->boardpot
+        """    
     def __str__(self):
-        return self.name + "\n" + str(self.hand) + "\n"
+        return f"{self.name}: {self.money}$\n" + str(self.hand) + "\n"
     
+    def action(self,indicator,cur_call,last_raised,board_pot,cur_raise):
+        if indicator==0:
+            return self.action_human(cur_call,last_raised,board_pot,cur_raise)
+        else:
+            if self.name=="Player 1":
+                return self.action_human(cur_call,last_raised,board_pot,cur_raise)
+            return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
+    
+    def action_randombot(self,cur_call,last_raised,board_pot,cur_raise):
+        pass
+    
+    def action_human(self,cur_call,last_raised,board_pot,cur_raise):
+        """_summary_
+            types of number:
+            1.1: All-in 1: Avalable if self.money<=cur_call-self.pot
+            1.2. All-in 2: Avalable if self.money>cur_call-self.pot
+            2. Check: Avalable if cur_call==self.pot
+            3. Call: Avalable if cur_call>self.pot
+            4. Raise: Avalable if self.money>cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
+            5. Fold: whenever you want it
+        """
+        
+        stack=["fold","all in"]
+        if cur_call==self.pot:
+            stack.append("check")
+        else:
+            stack.append("call")
+        if self.money>cur_call-self.pot+cur_raise:
+            stack.append("raise")
+        hehe=", ".join(stack)
+        print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+        print(f"Choose between {hehe}")
+        print("1: all in, 2: check, 3: call, 4: raise, 5: fold")
+        a=int(input())
+        if a==1:
+            if self.money<=cur_call-self.pot:
+                ans=self.all_in_1(cur_call,last_raised,board_pot,cur_raise)
+            else:
+                ans=self.all_in_2(cur_call,last_raised,board_pot,cur_raise)
+        elif a==2:
+            ans=self.check(cur_call,last_raised,board_pot,cur_raise)
+        elif a==3:
+            ans=self.call(cur_call,last_raised,board_pot,cur_raise)
+        elif a==4:
+            print(f"Please choose between {cur_raise}$ and {self.money-1}$")
+            b=int(input())
+            ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
+        elif a==5:
+            ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
+        return ans
+    def all_in_1(self,cur_call,last_raised,board_pot,cur_raise):
+        self.pot+=self.money
+        board_pot+=self.money
+        print(f"{self.name} all in for {self.money}$")
+        self.money=0
+        self.state=0
+        return (cur_call,last_raised,board_pot,cur_raise)
+
+    def all_in_2(self,cur_call,last_raised,board_pot,cur_raise):
+        cur_raise=self.money+self.pot-cur_call
+        cur_call=cur_call+cur_raise
+        self.pot+=self.money
+        board_pot+=self.money
+        print(f"{self.name} all in for {self.money}$")
+        self.money=0
+        self.state=0
+        last_raised=self.name
+        return (cur_call,last_raised,board_pot,cur_raise)
+    
+    def check(self,cur_call,last_raised,board_pot,cur_raise):
+        self.state=1
+        print(f"{self.name} check")
+        return (cur_call,last_raised,board_pot,cur_raise)
+    
+    def call(self,cur_call,last_raised,board_pot,cur_raise):
+        self.state=1
+        bet_money=cur_call-self.pot
+        self.money-=bet_money
+        self.pot=cur_call
+        board_pot+=bet_money
+        print(f"{self.name} call")
+        return (cur_call,last_raised,board_pot,cur_raise)
+    
+    def raise_money(self,money_raised,cur_call,last_raised,board_pot,cur_raise):
+        self.state=2
+        bet_money=cur_call-self.pot+money_raised
+        cur_raise=money_raised
+        print(f"{self.name} raise for {cur_raise}$")
+        self.money-=bet_money
+        self.pot+=bet_money
+        board_pot+=bet_money
+        last_raised=self.name
+        return (cur_call,last_raised,board_pot,cur_raise)
+    
+    def fold(self,cur_call,last_raised,board_pot,cur_raise):
+        self.state=4
+        print(f"{self.name} fold")
+        return (cur_call,last_raised,board_pot,cur_raise)
 class Hand(Deck):
     
     def __init__(self):
