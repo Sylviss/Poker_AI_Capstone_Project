@@ -170,6 +170,5 @@ def game(num_players,init_money):
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
             
-            
 game(PLAYER,INIT_MONEY)
 
