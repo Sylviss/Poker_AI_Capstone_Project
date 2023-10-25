@@ -267,7 +267,7 @@ class Poker(Hand):
             bruhbruhbruh[x] = bruhbruhbruh.get(x,0)
         if bruhbruhbruh[4]>0:
             check_final=8
-        elif bruhbruhbruh[3]>0 and bruhbruhbruh[2]>0:
+        elif (bruhbruhbruh[3]>0 and bruhbruhbruh[2]>0) or (bruhbruhbruh[3]>1):
             check_final=7
         elif bruhbruhbruh[3]>0:
             check_final=4
@@ -277,16 +277,25 @@ class Poker(Hand):
             check_final=2
         if check_final==8:
             for x in dictbruh:
-                if dictbruh[x]==4:
-                    return (check_final,x)
+                card_4=0
+                card_high=[]
+                for x in range(13,0,-1):
+                    if x in dictbruh:
+                        if dictbruh[x]==4:
+                            card_4=x
+                        else:
+                            card_high.append(x)
+                return (8,card_4,card_high)
         elif check_final==7:
             card_3=0
             card_2=0
-            for x in range(1,14):
+            taken_card_3=0
+            for x in range(13,0,-1):
                 if x in dictbruh:
-                    if dictbruh[x]==3:
+                    if dictbruh[x]==3 and not taken_card_3:
                         card_3=x
-                    elif dictbruh[x]==2:
+                        taken_card_3=1
+                    elif dictbruh[x]>=2 and card_2==0:
                         card_2=x
             return (7,card_3,card_2)
         elif check_final==4:

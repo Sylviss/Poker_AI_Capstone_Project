@@ -1,4 +1,5 @@
 import Poker_component  
+
 def print_board(players,board):
     print("--------------")
     for player in players:
@@ -99,8 +100,8 @@ def game(num_players,init_money):
             if playing==1:
                 table_condition=False
                 break
-            print("Press any key for the next game")
-            input()
+            # print("Press any key for the next game")
+            # input()
             continue
         checker=[]
         for player in players:
@@ -135,14 +136,16 @@ def game(num_players,init_money):
         if playing==1:
             table_condition=False
             break
-        print("Press any key for the next game")
-        input()
+        # print("Press any key for the next game")
+        # input()
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
 
 
 PREFLOP_BIG_BLIND=10
-INDICATOR=1 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
-game(3,100)
+INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
+PLAYER=10
+INIT_MONEY=100
+game(PLAYER,INIT_MONEY)
 
