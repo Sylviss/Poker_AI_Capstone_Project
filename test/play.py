@@ -1,5 +1,5 @@
 import Poker_component
-
+import time
 def print_board(players,board):
     print("--------------")
     for player in players:
@@ -8,8 +8,8 @@ def print_board(players,board):
     print(board)
     print("--------------")
     
-def game_human_vs_human(num_players,init_money):
-    indicator=0
+def game(num_players,init_money):
+    indicator=INDICATOR
     count=1
     playing=num_players
     table_condition=True
@@ -60,13 +60,14 @@ Game {count}
             while conditioner:
                 if players[index].state in [-1,1,2]:
                     cur_call,last_raised,board.money,cur_raise=players[index].action(indicator,cur_call,last_raised,board.money,cur_raise)
+                    time.sleep(2)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1
                     if folded==playing-1:
                         conditioner=False
                         break
-                if temp==cur_call:
+                elif temp==cur_call:
                     match+=1
                     if match==num_players-folded:
                         conditioner=False
@@ -75,6 +76,30 @@ Game {count}
                     match=1
                     temp=cur_call
                 index=(index+1)%num_players
+            if folded==playing-1:
+                break
+        if folded==playing-1:
+            for player in players:
+                if player.state not in [3,4,5,6]:
+                    print(f"{player.name} win the game!")
+                    player.money+=board.money
+                    break
+            for player in players:
+                if player.money==0:
+                    player.state=3
+                if player.state==3:
+                    print(f"{player.name} broke as hell!")
+                    player.state=6
+                    playing-=1
+            if playing==1:
+                break
+            count+=1
+            big_blind=(big_blind+1)%num_players
+            while players[big_blind].state==6:
+                big_blind=(big_blind+1)%num_players
+            print("Press any key for the next game")
+            input()
+            continue
         checker=[]
         for player in players:
             if player.state in [0,1]:
@@ -113,6 +138,6 @@ Game {count}
 
 
 PREFLOP_BIG_BLIND=10
-
-game_human_vs_human(3,100)
+INDICATOR=1 #0 is for testing against all human-controlled, 1 is for bot: Player 1 will be human, all others will be bot
+game(3,100)
     

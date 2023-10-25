@@ -103,7 +103,34 @@ class Player:
             return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
     
     def action_randombot(self,cur_call,last_raised,board_pot,cur_raise):
-        pass
+        checkout=[1,5,5]
+        if cur_call==self.pot:
+            for _ in range(4):
+                checkout.append(2)
+        elif cur_call>self.pot and self.money>cur_call-self.pot:
+            for _ in range(4):
+                checkout.append(3)
+        if self.money>cur_call-self.pot+cur_raise:
+            for _ in range(2):
+                checkout.append(4)
+        print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+        a=random.choice(checkout)
+        print(f"Bot choose {a}")
+        if a==1:
+            if self.money<=cur_call-self.pot:
+                ans=self.all_in_1(cur_call,last_raised,board_pot,cur_raise)
+            else:
+                ans=self.all_in_2(cur_call,last_raised,board_pot,cur_raise)
+        elif a==2:
+            ans=self.check(cur_call,last_raised,board_pot,cur_raise)
+        elif a==3:
+            ans=self.call(cur_call,last_raised,board_pot,cur_raise)
+        elif a==4:
+            b=random.randint(cur_raise,self.money-1)
+            ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
+        elif a==5:
+            ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
+        return ans
     
     def action_human(self,cur_call,last_raised,board_pot,cur_raise):
         """_summary_
@@ -185,7 +212,6 @@ class Player:
     def raise_money(self,money_raised,cur_call,last_raised,board_pot,cur_raise):
         self.state=2
         bet_money=cur_call-self.pot+money_raised
-        print(f"bet money {bet_money}")
         cur_raise=money_raised
         cur_call+=cur_raise
         print(f"{self.name} raise for {cur_raise}$")
