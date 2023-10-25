@@ -4,10 +4,10 @@ This is the readme file for the Poker AI project. First on the project, I want y
 The simple roadmap:
 - [ ] Simple warmup and learn to use Github
 - [ ] Find some material
-- [ ] Implement the basic UI and game structure
+- [x] Implement the basic UI and game structure
 - [ ] Implement the AI
-- [ ] Drink some water
-- [ ] Touch the grass
+- [x] Drink some water
+- [x] Touch the grass
 
 Try ur best.
 
