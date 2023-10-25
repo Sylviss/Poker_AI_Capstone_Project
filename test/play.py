@@ -5,6 +5,10 @@ def print_board(players,board):
     for player in players:
         if player.state not in [4,5,6]:
             print(player)
+        elif player.state!=6:
+            print(f"{player.name}: {player.money}$")
+            print('Folded')
+            print()
     print(board)
     print("--------------")
     
@@ -15,13 +19,14 @@ def game(num_players,init_money):
     table_condition=True
     players=[]
     big_blind=num_players-1
+    temp_board_money=0
     for x in range(num_players):
         players.append(Poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
         print(f"""--------------\nGame {count}\n--------------""")
         a=Poker_component.Deck()
         hands=a.deal_hands(playing,2)
-        board=Poker_component.Player(Poker_component.Hand(),"Board", 0)
+        board=Poker_component.Player(Poker_component.Hand(),"Board", temp_board_money)
         for x in range(num_players):
             if players[x].state!=6:
                 players[x].hand=hands.pop()
@@ -45,12 +50,14 @@ def game(num_players,init_money):
                     players[big_blind].money=0
                     players[big_blind].state=0
                     print(f"{players[big_blind].name} is big blind and put in {players[big_blind].pot}$")
-                    cur_call,last_raised,cur_raise,board.money=players[big_blind].pot,None,players[big_blind].pot,players[big_blind].pot
+                    cur_call,last_raised,cur_raise=players[big_blind].pot,None,players[big_blind].pot
+                    board.money+=players[big_blind].pot
                 else:
                     players[big_blind].money-=PREFLOP_BIG_BLIND
                     players[big_blind].pot=PREFLOP_BIG_BLIND
                     print(f"{players[big_blind].name} is big blind and put in {PREFLOP_BIG_BLIND}$")
-                    cur_call,last_raised,cur_raise,board.money=PREFLOP_BIG_BLIND,None,PREFLOP_BIG_BLIND,PREFLOP_BIG_BLIND
+                    cur_call,last_raised,cur_raise=PREFLOP_BIG_BLIND,None,PREFLOP_BIG_BLIND
+                    board.money+=PREFLOP_BIG_BLIND
             if k>=2:
                 board.hand.add_card(a.deal_cards())
                 print_board(players,board)
@@ -73,7 +80,8 @@ def game(num_players,init_money):
                     if folded>=playing-1:
                         conditioner=False
                         break
-                match+=1
+                if players[index].state!=6:
+                    match+=1
                 if (match==playing and last_raised is None):
                     conditioner=False
                     break
@@ -85,6 +93,7 @@ def game(num_players,init_money):
                 if player.state not in [3,4,5,6]:
                     print(f"{player.name} win the game!")
                     player.money+=board.money
+                    board.money=0
                     break
             for player in players:
                 if player.money==0 and player.state!=6:
@@ -118,6 +127,7 @@ def game(num_players,init_money):
                 winner.append(0)
         hehe=", ".join([f"Player {x}" for x in range(1,len(winner)+1) if winner[x-1]])
         money_win=board.money//sum(winner)
+        temp_board_money=board.money-money_win*sum(winner)
         for x in range(len(winner)):
             if winner[x]:
                 players[x].money+=money_win
@@ -138,9 +148,11 @@ def game(num_players,init_money):
             break
         # print("Press any key for the next game")
         # input()
+        
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
+            print(f"{player.money}")
 
 
 PREFLOP_BIG_BLIND=10
