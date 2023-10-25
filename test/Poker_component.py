@@ -4,7 +4,7 @@ class UAreStupidIfThisShowsUp(Exception):
     pass
 class Card:
     
-    rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King']
+    rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King', "Ace"]
     suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
 
     def __init__(self, rank=2, suit=0):
@@ -285,7 +285,7 @@ class Poker(Hand):
                             card_4=x
                         else:
                             card_high.append(x)
-                return (8,card_4,card_high)
+                return (8,card_4,card_high[0])
         elif check_final==7:
             card_3=0
             card_2=0
@@ -351,18 +351,18 @@ class Poker(Hand):
         for card in self.cards:
             if card.suit==temp:
                 cache.append(card.rank)
-        cache.sort()
+        cache.sort(reverse=True)
         if ans_flush==6:
             return (6,cache[0],cache[1],cache[2],cache[3],cache[4])
         return (0,0)
     
     def straight(self):
         dictbruh=self.createdict()
-        dictbruh[14]=dictbruh.get(1,0)
+        dictbruh[0]=dictbruh.get(13,0)
         highest=0
         check_flush=0
         k=0
-        for x in range(1,15):
+        for x in range(0,14):
             if x in dictbruh and dictbruh[x]!=0:
                 k+=1
             else:
@@ -373,7 +373,12 @@ class Poker(Hand):
         if check_flush==1:
             return (5,highest)
         return (0,0)
-
+    
+    def clone(self):
+        temp_clone=Poker()
+        temp_clone.cards=self.cards[:]
+        return temp_clone
+    
     def straight_flush(self):
         if self.flush()[0]==6:
             dictbruh=self.createdictbruh()
@@ -381,10 +386,11 @@ class Poker(Hand):
                 dictbruh[x]=dictbruh.get(x,0)
                 if dictbruh[x]>=5:
                     break
-            for a in self.cards:
+            temp=self.clone()
+            for a in temp.cards:
                 if a.suit!=x:
-                    self.remove_card(a)
-            check_straight=self.straight()
+                    temp.remove_card(a)
+            check_straight=temp.straight()
             if check_straight[0]==5:
                 return (9,check_straight[1])
         return (0,0)

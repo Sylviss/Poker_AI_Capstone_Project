@@ -39,6 +39,7 @@ def game(num_players,init_money):
         a=poker_component.Deck()
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
+        print(board.money)
         for x in range(num_players):
             if players[x].state!=6:
                 players[x].hand=hands.pop()
@@ -121,6 +122,7 @@ def game(num_players,init_money):
             if playing==1:
                 table_condition=False
                 break
+            temp_board_money=0
             # print("Press any key for the next game")
             # input()
             continue
@@ -137,7 +139,7 @@ def game(num_players,init_money):
                 winner.append(1)
             else:
                 winner.append(0)
-        hehe=", ".join([f"Player {x}" for x in range(1,len(winner)+1) if winner[x-1]])
+        hehe=", ".join([players[x].name for x in range(len(winner)) if winner[x]])
         money_win=board.money//sum(winner)
         temp_board_money=board.money-money_win*sum(winner)
         for x in range(len(winner)):
@@ -165,6 +167,10 @@ def game(num_players,init_money):
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
             print(f"{player.money}")
-
+            if player.money!=1000:
+                print(player.money)
+                raise poker_component.UAreStupidIfThisShowsUp
+            
+            
 game(PLAYER,INIT_MONEY)
 
