@@ -7,7 +7,7 @@ PREFLOP_BIG_BLIND=10
 INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
 PLAYER=10
 INIT_MONEY=100
-
+TURN_TO_RAISE_POT=5
 
 
 ################################################
@@ -31,11 +31,14 @@ def game(num_players,init_money):
     table_condition=True
     players=[]
     big_blind=num_players-1
+    preflop_big_blind_value=PREFLOP_BIG_BLIND
     temp_board_money=0
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
         print(f"""--------------\nGame {count}\n--------------""")
+        if count%TURN_TO_RAISE_POT==0:
+            preflop_big_blind_value*=2
         a=poker_component.Deck()
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
@@ -58,7 +61,7 @@ def game(num_players,init_money):
             match=0
             print(turn[k])
             if k==0:
-                if players[big_blind].money<=PREFLOP_BIG_BLIND:
+                if players[big_blind].money<=preflop_big_blind_value:
                     players[big_blind].pot=players[big_blind].money
                     players[big_blind].money=0
                     players[big_blind].state=0
@@ -66,11 +69,11 @@ def game(num_players,init_money):
                     cur_call,last_raised,cur_raise=players[big_blind].pot,None,players[big_blind].pot
                     board.money+=players[big_blind].pot
                 else:
-                    players[big_blind].money-=PREFLOP_BIG_BLIND
-                    players[big_blind].pot=PREFLOP_BIG_BLIND
-                    print(f"{players[big_blind].name} is big blind and put in {PREFLOP_BIG_BLIND}$")
-                    cur_call,last_raised,cur_raise=PREFLOP_BIG_BLIND,None,PREFLOP_BIG_BLIND
-                    board.money+=PREFLOP_BIG_BLIND
+                    players[big_blind].money-=preflop_big_blind_value
+                    players[big_blind].pot=preflop_big_blind_value
+                    print(f"{players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                    cur_call,last_raised,cur_raise=preflop_big_blind_value,None,preflop_big_blind_value
+                    board.money+=preflop_big_blind_value
             if k>=2:
                 board.hand.add_card(a.deal_cards())
                 print_board(players,board)
@@ -166,10 +169,6 @@ def game(num_players,init_money):
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            print(f"{player.money}")
-            if player.money!=1000:
-                print(player.money)
-                raise poker_component.UAreStupidIfThisShowsUp
             
             
 game(PLAYER,INIT_MONEY)
