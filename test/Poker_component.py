@@ -1,5 +1,7 @@
 import random
 
+class UAreStupidIfThisShowsUp(Exception):
+    pass
 class Card:
     
     rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King']
@@ -111,19 +113,24 @@ class Player:
             4. Raise: Avalable if self.money>cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
             5. Fold: whenever you want it
         """
-        
+        checkout=[1,5]
         stack=["fold","all in"]
         if cur_call==self.pot:
             stack.append("check")
+            checkout.append(2)
         else:
             stack.append("call")
+            checkout.append(3)
         if self.money>cur_call-self.pot+cur_raise:
             stack.append("raise")
+            checkout.append(4)
         hehe=", ".join(stack)
         print(f"{self.name} need to put in at least {cur_call-self.pot}$")
         print(f"Choose between {hehe}")
         print("1: all in, 2: check, 3: call, 4: raise, 5: fold")
         a=int(input())
+        if a not in checkout:
+            raise UAreStupidIfThisShowsUp
         if a==1:
             if self.money<=cur_call-self.pot:
                 ans=self.all_in_1(cur_call,last_raised,board_pot,cur_raise)
