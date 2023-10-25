@@ -1,4 +1,4 @@
-from poker_ai.poker import poker_component
+from . import poker_component
 
 ###############################################
 #Constant:
