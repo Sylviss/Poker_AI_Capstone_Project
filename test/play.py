@@ -1,4 +1,16 @@
-import Poker_component  
+import poker_component  
+
+###############################################
+#Constant:
+
+PREFLOP_BIG_BLIND=10
+INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
+PLAYER=10
+INIT_MONEY=100
+
+
+
+################################################
 
 def print_board(players,board):
     print("--------------")
@@ -21,12 +33,12 @@ def game(num_players,init_money):
     big_blind=num_players-1
     temp_board_money=0
     for x in range(num_players):
-        players.append(Poker_component.Player(None,f"Player {x+1}",init_money))
+        players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
         print(f"""--------------\nGame {count}\n--------------""")
-        a=Poker_component.Deck()
+        a=poker_component.Deck()
         hands=a.deal_hands(playing,2)
-        board=Poker_component.Player(Poker_component.Hand(),"Board", temp_board_money)
+        board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
         for x in range(num_players):
             if players[x].state!=6:
                 players[x].hand=hands.pop()
@@ -154,10 +166,5 @@ def game(num_players,init_money):
             print(f"{player.name} wins the table! All others are just some random bots")
             print(f"{player.money}")
 
-
-PREFLOP_BIG_BLIND=10
-INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
-PLAYER=10
-INIT_MONEY=100
 game(PLAYER,INIT_MONEY)
 

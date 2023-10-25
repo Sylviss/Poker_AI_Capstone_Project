@@ -398,5 +398,5 @@ class Poker(Hand):
             if k[0]==x:
                 return k
 
-    def take_str_check(self,a):
-        return self.dicthaha[a] 
+    def take_str_check(self):
+        return self.dicthaha[self.check()[0]] 
