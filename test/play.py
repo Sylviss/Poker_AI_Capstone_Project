@@ -46,7 +46,7 @@ Game {count}
             match=0
             print(turn[k])
             if k==0:
-                print(f"{players[-1].name} is big blind and put in 10$")
+                print(f"{players[big_blind].name} is big blind and put in 10$")
             if k>=2:
                 board.hand.add_card(a.deal_cards())
                 print_board(players,board)
@@ -105,13 +105,14 @@ Game {count}
         big_blind=(big_blind+1)%num_players
         while players[big_blind].state==6:
             big_blind=(big_blind+1)%num_players
+        print("Press any key for the next game")
+        input()
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
-    print("Press any key for the next game")
-    input()
+
+
 PREFLOP_BIG_BLIND=10
 
-                
 game_human_vs_human(3,100)
     
