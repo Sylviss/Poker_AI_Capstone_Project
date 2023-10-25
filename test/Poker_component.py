@@ -97,9 +97,11 @@ class Player:
     def action(self,indicator,cur_call,last_raised,board_pot,cur_raise):
         if indicator==0:
             return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        else:
+        elif indicator==1:
             if self.name=="Player 1":
                 return self.action_human(cur_call,last_raised,board_pot,cur_raise)
+            return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
+        else:
             return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
     
     def action_randombot(self,cur_call,last_raised,board_pot,cur_raise):
@@ -126,7 +128,7 @@ class Player:
         elif a==3:
             ans=self.call(cur_call,last_raised,board_pot,cur_raise)
         elif a==4:
-            b=random.randint(cur_raise,self.money-1)
+            b=random.randint(cur_raise,self.money-1-(cur_call-self.pot))
             ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
         elif a==5:
             ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
@@ -170,7 +172,7 @@ class Player:
         elif a==3:
             ans=self.call(cur_call,last_raised,board_pot,cur_raise)
         elif a==4:
-            print(f"Please choose between {cur_raise}$ and {self.money-1}$")
+            print(f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
             b=int(input())
             ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
         elif a==5:
