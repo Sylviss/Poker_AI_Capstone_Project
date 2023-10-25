@@ -108,6 +108,8 @@ Game {count}
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
+    print("Press any key for the next game")
+    input()
 PREFLOP_BIG_BLIND=10
 
                 
