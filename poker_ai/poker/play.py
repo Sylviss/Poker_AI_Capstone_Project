@@ -5,7 +5,10 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 #Constant:
 
 PREFLOP_BIG_BLIND=10
-INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
+INDICATOR=2 
+#0 is for testing against all human-controlled 
+# 1 is for bot: Player 1 will be human, all others will be bot 
+# 2 is all bot for testing purpose
 TURN_TO_RAISE_POT=5
 
 
