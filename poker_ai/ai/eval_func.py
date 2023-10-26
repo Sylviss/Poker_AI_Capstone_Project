@@ -1,14 +1,15 @@
 import math
-from poker_ai.poker.poker_component import Poker,Player,Hand,Deck
+from poker_ai.poker.poker_component import Player,Hand,Deck,Card
 ###################################
 #Constant
 
 DEEPNESS=10000
-
-CALL_CONFIDENT=0.3
+E_NUMBER=2.71828
+CONFIDENT_RATE=0.8
 
 ###################################
-def eval_func(player: Poker(), num_players: int, board) -> float:
+def eval_func(player, num_players: int, board) -> float:
+    CALL_CONFIDENT=CONFIDENT_RATE**math.log(num_players-1,1.5)
     win,draw=0,0
     a=len(board.hand.cards)
     if a==0:

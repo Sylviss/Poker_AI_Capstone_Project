@@ -32,6 +32,8 @@ def simple_ai_agent(player, num_players: int, board, actions,cur_call,cur_raise)
         elif 3 in actions:
             if cur_call-player.pot<=CONFIDENT_RANGE*player.money:
                 return [3]
+            else:
+                return [5]
         else:
             return [5]
     elif decide>=win*CONFIDENT_RANGE:
