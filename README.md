@@ -20,9 +20,13 @@ This repository assumes Python 3.11 or newer is used.
 
 ## The simple roadmap:
 - [ ] Simple warmup and learn to use Github
-- [ ] Find some material
+- [x] Find some material
 - [x] Implement the basic UI and game structure
-- [ ] Implement the AI
+- [ ] Implement the AI:
+    - [x] Implement the evaluate function using Monte-Carlo simulations
+    - [x] Implement the simple AI
+    - [ ] Implement the Monte-Carlo tree search
+    - [ ] Implement the AI agent using the MTCS
 - [x] Drink some water
 - [x] Touch the grass
 
