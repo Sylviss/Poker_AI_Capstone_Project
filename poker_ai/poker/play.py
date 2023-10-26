@@ -1,16 +1,45 @@
-from . import poker_component
+from poker_ai.poker import poker_component
+from poker_ai.ai.ai_algorithm import action_ai_model
 
 ###############################################
 #Constant:
 
 PREFLOP_BIG_BLIND=10
 INDICATOR=2 #0 is for testing against all human-controlled; 1 is for bot: Player 1 will be human, all others will be bot; 2 is all bot for testing purpose
-PLAYER=10
-INIT_MONEY=100
 TURN_TO_RAISE_POT=5
 
 
 ################################################
+
+def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board):
+    if indicator==0:
+        return self.action_human(cur_call,last_raised,board_pot,cur_raise)
+    elif indicator==1:
+        if self.name=="Player 1":
+            return self.action_human(cur_call,last_raised,board_pot,cur_raise)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+    else:
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+
+def print_blind_board(players,board):
+    if INDICATOR==1:
+        print("--------------")
+        for player in players:
+            if player.state not in [4,5,6] and player.name=="Player 1":
+                print(player)
+            elif player.state not in [4,5,6] and player.name!="Player 1":
+                print(f"{player.name}: {player.money}$")
+                print('***************')
+                print('***************')
+                print()
+            elif player.state!=6:
+                print(f"{player.name}: {player.money}$")
+                print('Folded')
+                print()
+        print(board)
+        print("--------------")
+    else:
+        print_board(players,board)
 
 def print_board(players,board):
     print("--------------")
@@ -23,7 +52,7 @@ def print_board(players,board):
             print()
     print(board)
     print("--------------")
-    
+
 def game(num_players,init_money):
     indicator=INDICATOR
     count=1
@@ -48,7 +77,7 @@ def game(num_players,init_money):
                 players[x].hand=hands.pop()
                 players[x].state=-1
                 players[x].pot=0
-                print(players[x])
+        print_blind_board(players,board)
         turn=["Preflop","Flop","Turn","River"]
         folded=0
         for k in range(4):
@@ -76,12 +105,12 @@ def game(num_players,init_money):
                     board.money+=preflop_big_blind_value
             if k>=2:
                 board.hand.add_card(a.deal_cards())
-                print_board(players,board)
+                print_blind_board(players,board)
             elif k==1:
                 board.hand.add_card(a.deal_cards())
                 board.hand.add_card(a.deal_cards())
                 board.hand.add_card(a.deal_cards())
-                print_board(players,board)
+                print_blind_board(players,board)
             conditioner=True
             index=(big_blind+1)%num_players
             while conditioner:
@@ -89,7 +118,7 @@ def game(num_players,init_money):
                     conditioner=False
                     break
                 if players[index].state in [-1,1,2]:
-                    cur_call,last_raised,board.money,cur_raise=players[index].action(indicator,cur_call,last_raised,board.money,cur_raise)
+                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing,board)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1
@@ -129,6 +158,7 @@ def game(num_players,init_money):
             # print("Press any key for the next game")
             # input()
             continue
+        print_board(players,board)
         checker=[]
         for player in players:
             if player.state in [0,1,2]:

@@ -1,5 +1,4 @@
 import random
-
 class UAreStupidIfThisShowsUp(Exception):
     pass
 class Card:
@@ -21,6 +20,9 @@ class Card:
         t1 = self.suit, self.rank
         t2 = other.suit, other.rank
         return t1 < t2
+    
+    def __eq__(self,other):
+        return self.suit==other.suit and self.rank==other.rank
 
 
 class Deck:
@@ -93,46 +95,6 @@ class Player:
         """    
     def __str__(self):
         return f"{self.name}: {self.money}$\n" + str(self.hand) + "\n"
-    
-    def action(self,indicator,cur_call,last_raised,board_pot,cur_raise):
-        if indicator==0:
-            return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        elif indicator==1:
-            if self.name=="Player 1":
-                return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-            return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
-        else:
-            return self.action_randombot(cur_call,last_raised,board_pot,cur_raise)
-    
-    def action_randombot(self,cur_call,last_raised,board_pot,cur_raise):
-        checkout=[1,5,5]
-        if cur_call==self.pot:
-            for _ in range(4):
-                checkout.append(2)
-        elif cur_call>self.pot and self.money>cur_call-self.pot:
-            for _ in range(4):
-                checkout.append(3)
-        if self.money>cur_call-self.pot+cur_raise:
-            for _ in range(2):
-                checkout.append(4)
-        print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-        a=random.choice(checkout)
-        print(f"Bot choose {a}")
-        if a==1:
-            if self.money<=cur_call-self.pot:
-                ans=self.all_in_1(cur_call,last_raised,board_pot,cur_raise)
-            else:
-                ans=self.all_in_2(cur_call,last_raised,board_pot,cur_raise)
-        elif a==2:
-            ans=self.check(cur_call,last_raised,board_pot,cur_raise)
-        elif a==3:
-            ans=self.call(cur_call,last_raised,board_pot,cur_raise)
-        elif a==4:
-            b=random.randint(cur_raise,self.money-1-(cur_call-self.pot))
-            ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
-        elif a==5:
-            ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
-        return ans
     
     def action_human(self,cur_call,last_raised,board_pot,cur_raise):
         """_summary_
