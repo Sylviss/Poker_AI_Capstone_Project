@@ -5,16 +5,26 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 #Constant:
 
 PREFLOP_BIG_BLIND=10
+# Value of the big blind pre-bet.
 INDICATOR=2 
-#0 is for testing against all human-controlled 
+# 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
 TURN_TO_RAISE_POT=5
-
+# Number of turns to increase the big blind pre-bet
 
 ################################################
 
 def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board):
+    """Choose who will do the actions base on the indicator.
+
+    Args:
+        indicator (int): Decide if who shoud do the action, human or AI.
+        all the others args are just there to pass to the functions
+
+    Returns:
+        action_function: return the function of the one who should do the actions
+    """
     if indicator==0:
         return self.action_human(cur_call,last_raised,board_pot,cur_raise)
     elif indicator==1:
@@ -25,6 +35,12 @@ def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,b
         return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
 
 def print_blind_board(players,board):
+    """Print the board without showing the other player's cards
+
+    Args:
+        board (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
+        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
+    """
     if INDICATOR==1:
         print("--------------")
         for player in players:
@@ -45,6 +61,12 @@ def print_blind_board(players,board):
         print_board(players,board)
 
 def print_board(players,board):
+    """Print the board without showing the other player's cards
+
+    Args:
+        board (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
+        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
+    """
     print("--------------")
     for player in players:
         if player.state not in [4,5,6]:
@@ -57,6 +79,12 @@ def print_board(players,board):
     print("--------------")
 
 def game(num_players,init_money):
+    """Play a game with {num_players} player with {init_money} base money
+
+    Args:
+        num_players (int): the number of players
+        init_money (int): the number of base money
+    """    """"""
     indicator=INDICATOR
     count=1
     playing=num_players
@@ -74,7 +102,6 @@ def game(num_players,init_money):
         a=poker_component.Deck()
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
-        print(board.money)
         for x in range(num_players):
             if players[x].state!=6:
                 players[x].hand=hands.pop()
@@ -85,7 +112,7 @@ def game(num_players,init_money):
         folded=0
         for k in range(4):
             if k!=0:
-                cur_call,last_raised,cur_raise=0,None,0
+                cur_call,last_raised,cur_raise=0,None,preflop_big_blind_value
                 for player in players:
                     if player.state not in [0,3,4,5,6]:
                         player.pot=0
@@ -161,6 +188,7 @@ def game(num_players,init_money):
             # print("Press any key for the next game")
             # input()
             continue
+        print("Post-game")
         print_board(players,board)
         checker=[]
         for player in players:

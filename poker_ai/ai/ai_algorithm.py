@@ -13,7 +13,20 @@ CONFIDENT_RANGE=0.3
 
 
 
-def simple_ai_agent(player, num_players: int, board, actions,cur_call,cur_raise):
+def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise):
+    """Return the actions that the AI do base on the list of actions that it can do.
+
+    Args:
+        player (poker_ai.poker.poker_component.Player()): the Player object of the AI , which contains the hand cards.
+        num_players (int): the number of active player in the game. Required as the chance of winning decrese when the table has more player.
+        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
+        actions (list(int)): the list of actions that the AI can do, represent by integers.
+        cur_call (int): current call value of the phase.
+        cur_raise (int): current raise value of the phase.
+
+    Returns:
+        int: the actions that the AI do.
+    """
     win,draw=eval_func(player, num_players, board)
     draw+=win
     decides=[]
@@ -24,6 +37,8 @@ def simple_ai_agent(player, num_players: int, board, actions,cur_call,cur_raise)
     if decide>draw:
         if 2 in actions:
             return [2]
+        elif 3 in actions and cur_call-player.pot<=(1-decide)/(1-draw)*CONFIDENT_RANGE*player.money:
+            return [3]
         else:
             return [5]
     elif decide<=draw and decide>=win:
@@ -55,6 +70,19 @@ def simple_ai_agent(player, num_players: int, board, actions,cur_call,cur_raise)
                 return [1]
             
 def action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board):
+    """Make the AI act ingame. Use the basic AI model.
+
+    Args:
+        cur_call (int): current call value of the phase.
+        last_raised (string): the player.name of the last player that raise the pot.
+        board_pot (int): current pot of the board.
+        cur_raise (int): current raise value of the phase.
+        num_players (int): the number of active player in the game.
+        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
+
+    Returns:
+        tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
+    """
     checkout=[1,5]
     ans=0
     if cur_call==self.pot:

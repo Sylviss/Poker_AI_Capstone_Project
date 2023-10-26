@@ -1,6 +1,7 @@
 import random
 class UAreStupidIfThisShowsUp(Exception):
-    pass
+    """A Exception class to make anyone who see this embarrasing of themself
+    """
 class Card:
     
     rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King', "Ace"]
@@ -61,6 +62,15 @@ class Deck:
             hand.add_card(self.deal_cards())
 
     def deal_hands(self,numhand,numcard):
+        """Deal {numcard} cards to {numhand} hands
+
+        Args:
+            numhand (int): number of hand
+            numcard (int): number of card
+
+        Returns:
+            list(Hand()): return a list of hands
+        """
         listbruh=[]
         if numcard*numhand>len(self.cards):
             print('Go get some math, noobs')
@@ -97,7 +107,7 @@ class Player:
         return f"{self.name}: {self.money}$\n" + str(self.hand) + "\n"
     
     def action_human(self,cur_call,last_raised,board_pot,cur_raise):
-        """_summary_
+        """
             types of number:
             1.1: All-in 1: Avalable if self.money<=cur_call-self.pot
             1.2. All-in 2: Avalable if self.money>cur_call-self.pot
@@ -105,6 +115,17 @@ class Player:
             3. Call: Avalable if cur_call>self.pot
             4. Raise: Avalable if self.money>cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
             5. Fold: whenever you want it
+        
+        Allow a human to act ingame
+
+        Args:
+            cur_call (int): current call value of the phase.
+            last_raised (string): the player.name of the last player that raise the pot.
+            board_pot (int): current pot of the board.
+            cur_raise (int): current raise value of the phase.
+
+        Returns:
+            tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
         """
         checkout=[1,5]
         stack=["fold","all in"]
@@ -140,6 +161,7 @@ class Player:
         elif a==5:
             ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
         return ans
+    
     def all_in_1(self,cur_call,last_raised,board_pot,cur_raise):
         self.pot+=self.money
         board_pot+=self.money
@@ -219,7 +241,7 @@ class Poker(Hand):
             dictbruh[x.suit]=dictbruh.get(x.suit,0)+1
         return dictbruh
 
-    def all_multiple(self):
+    def all_multiple(self): #check for multiple in hand
         dictbruh=self.createdict()
         bruhbruhbruh={}
         check_final=1
@@ -300,7 +322,7 @@ class Poker(Hand):
                     card_high+=[x]
             return (1,card_high[0],card_high[1],card_high[2],card_high[3],card_high[4])
         
-    def flush(self):
+    def flush(self): #check for flush in hand
         dictbruh=self.createdictbruh()
         ans_flush=0
         temp=0
@@ -318,7 +340,7 @@ class Poker(Hand):
             return (6,cache[0],cache[1],cache[2],cache[3],cache[4])
         return (0,0)
     
-    def straight(self):
+    def straight(self): #check for straight in hand
         dictbruh=self.createdict()
         dictbruh[0]=dictbruh.get(13,0)
         highest=0
@@ -336,12 +358,12 @@ class Poker(Hand):
             return (5,highest)
         return (0,0)
     
-    def clone(self):
+    def clone(self): #create a clone of self
         temp_clone=Poker()
         temp_clone.cards=self.cards[:]
         return temp_clone
     
-    def straight_flush(self):
+    def straight_flush(self): #check for straight flush in hand
         if self.flush()[0]==6:
             dictbruh=self.createdictbruh()
             for x in range(4):
@@ -358,7 +380,7 @@ class Poker(Hand):
         return (0,0)
 
 
-    def check(self):
+    def check(self): #return the best value of the hand
         a,b,c,d=self.straight(),self.straight_flush(),self.flush(),self.all_multiple()
         hehe=[a,b,c,d]
         x=max(a[0],b[0],c[0],d[0])
@@ -366,5 +388,5 @@ class Poker(Hand):
             if k[0]==x:
                 return k
 
-    def take_str_check(self):
+    def take_str_check(self): #take the name of the hand's value
         return self.dicthaha[self.check()[0]] 
