@@ -8,7 +8,7 @@ This repository assumes Python 3.11 or newer is used.
 ## Installation guide:
 - Install the code from the repo
 - Run the code:
-<p align="center">
+<p align="left">
   <img src="https://github.com/Sylviss/Poker_AI_Capstone_Project/blob/main/doc/run_the_code.PNG">
 </p>
 
