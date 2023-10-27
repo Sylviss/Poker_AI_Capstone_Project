@@ -5,7 +5,7 @@ from poker_ai.ai.eval_func import eval_func
 #Constant
 
 DECIDER=10
-CONFIDENT_RANGE=0.3
+CONFIDENT_RANGE=0.3 # should be < 0.5
 
 
 
@@ -33,7 +33,6 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise):
     for _ in range(DECIDER):
         decides.append(random.random())
     decide=sum(decides)/DECIDER
-    print(win,draw,decide)
     if decide>draw:
         if 2 in actions:
             return [2]
@@ -51,23 +50,24 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise):
                 return [5]
         else:
             return [5]
-    elif decide>=win*CONFIDENT_RANGE:
-        if 4 in actions:
-            if cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-                raise_value=cur_raise+(player.money+player.pot-cur_call)*random.random()*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
-                return [4,int(raise_value)]
-            elif 3 in actions:
-                return [3]
-            elif 2 in actions:
-                return [2]
-            else:
-                return [5]
+    elif decide>=win*(1-CONFIDENT_RANGE):
+        if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
+            raise_value=cur_raise+(player.money+player.pot-cur_call)*random.random()*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
+            return [4,int(raise_value)]
+        elif 3 in actions:
+            return [3]
+        elif 2 in actions:
+            return [2]
         else:
-            if cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-                raise_value=cur_raise+(player.money+player.pot-cur_call)*random.random()*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
-                return [4,int(raise_value)]
-            else:
-                return [1]
+            return [5]
+    elif decide>=win*CONFIDENT_RANGE:
+        if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
+            raise_value=cur_raise+(player.money+player.pot-cur_call)*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
+            return [4,int(raise_value)]
+        else:
+            return [1]
+    else:
+        return [1]
             
 def action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board):
     """Make the AI act ingame. Use the basic AI model.

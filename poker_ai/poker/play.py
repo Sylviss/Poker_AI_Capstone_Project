@@ -6,7 +6,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=2 
+INDICATOR=1
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
@@ -91,13 +91,13 @@ def game(num_players,init_money):
     table_condition=True
     players=[]
     big_blind=num_players-1
-    preflop_big_blind_value=PREFLOP_BIG_BLIND
+    preflop_big_blind_value=PREFLOP_BIG_BLIND//2
     temp_board_money=0
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
         print(f"""--------------\nGame {count}\n--------------""")
-        if count%TURN_TO_RAISE_POT==0:
+        if count%TURN_TO_RAISE_POT==1:
             preflop_big_blind_value*=2
         a=poker_component.Deck()
         hands=a.deal_hands(playing,2)

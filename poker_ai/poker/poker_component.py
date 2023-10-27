@@ -129,19 +129,23 @@ class Player:
         """
         checkout=[1,5]
         stack=["fold","all in"]
+        word=["1: all in","5: fold"]
         if cur_call==self.pot:
             stack.append("check")
             checkout.append(2)
+            word.append("2: check")
         elif cur_call>self.pot and self.money>cur_call-self.pot:
             stack.append("call")
             checkout.append(3)
+            word.append("3: call")
         if self.money>cur_call-self.pot+cur_raise:
             stack.append("raise")
             checkout.append(4)
+            word.append("4: raise")
         hehe=", ".join(stack)
         print(f"{self.name} need to put in at least {cur_call-self.pot}$")
         print(f"Choose between {hehe}")
-        print("1: all in, 2: check, 3: call, 4: raise, 5: fold")
+        print(", ".join(word))
         a=int(input())
         if a not in checkout:
             raise UAreStupidIfThisShowsUp
