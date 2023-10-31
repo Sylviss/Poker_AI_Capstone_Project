@@ -6,7 +6,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=2
+INDICATOR=1
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
