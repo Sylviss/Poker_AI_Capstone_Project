@@ -63,7 +63,7 @@ def print_board(players,board):
     """Print the board without showing the other player's cards
 
     Args:
-        board (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
+        players (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
         board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
     """
     print("-"*30)

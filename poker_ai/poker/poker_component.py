@@ -5,28 +5,25 @@ class UAreStupidIfThisShowsUp(Exception):
 class Card:
     
     rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King', "Ace"]
-    suit_names = ['Clubs','Diamonds','Hearts','Spades']
+    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
 
-    def __init__(self, rank=2, suit=0, status=1):
+    def __init__(self, rank=2, suit=0):
         self.rank=rank
         self.suit=suit
-        self.status = status
 
     def printcard(self):
         rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'J', 'Q', 'K', "A"]
-        suit_names = [chr(9827),chr(9830),chr(9829),chr(9824)]
+        suit_names = [chr(9827), chr(9830), chr(9829), chr(9824)]
         ceiling = ' ___ '
-        if self.status == 1:
-            row2 = f'| {suit_names[self.suit]} |'
-            if self.rank == 9:
-                row1 = '|10 |'
-                row3 = '|_10|'
-            else:
-                row1 = f'|{rank_names[self.rank]}  |'
-                row3 = f'|__{rank_names[self.rank]}|'
+        row2 = f'| {suit_names[self.suit]} |'
+        if self.rank == 9:
+            row1 = '|10 |'
+            row3 = '|_10|'
         else:
-            row1, row2, row3 = '|## |', '|###|', '|_##|'
+            row1 = f'|{rank_names[self.rank]}  |'
+            row3 = f'|__{rank_names[self.rank]}|'
         return [ceiling,row1,row2,row3]
+
     def card_to_number(self):
         return (self.rank-1)+self.suit*13
     
