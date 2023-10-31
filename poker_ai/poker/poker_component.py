@@ -1,4 +1,4 @@
-import random, functools
+import random
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone who see this embarrasing of themself
     """
