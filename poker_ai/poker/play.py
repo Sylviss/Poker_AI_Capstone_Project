@@ -38,25 +38,24 @@ def print_blind_board(players,board):
     """Print the board without showing the other player's cards
 
     Args:
-        board (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
+        players (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
         board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
     """
     if INDICATOR==1:
-        print("--------------")
+        print("-"*30)
         for player in players:
             if player.state not in [4,5,6] and player.name=="Player 1":
                 print(player)
             elif player.state not in [4,5,6] and player.name!="Player 1":
                 print(f"{player.name}: {player.money}$")
-                print('***************')
-                print('***************')
+                print('\n'.join([' ___   ___ ','|## | |## |','|###| |###|','|_##| |_##|']))
                 print()
             elif player.state!=6:
                 print(f"{player.name}: {player.money}$")
                 print('Folded')
                 print()
         print(board)
-        print("--------------")
+        print("-"*30)
     else:
         print_board(players,board)
 
@@ -67,7 +66,7 @@ def print_board(players,board):
         board (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
         board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
     """
-    print("--------------")
+    print("-"*30)
     for player in players:
         if player.state not in [4,5,6]:
             print(player)
@@ -76,7 +75,7 @@ def print_board(players,board):
             print('Folded')
             print()
     print(board)
-    print("--------------")
+    print("-"*30)
 
 def game(num_players,init_money):
     """Play a game with {num_players} player with {init_money} base money
@@ -96,7 +95,7 @@ def game(num_players,init_money):
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
-        print(f"""--------------\nGame {count}\n--------------""")
+        print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         if count%TURN_TO_RAISE_POT==1:
             preflop_big_blind_value*=2
         a=poker_component.Deck()

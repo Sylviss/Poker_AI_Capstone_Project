@@ -1,19 +1,32 @@
-import random
+import random, functools
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone who see this embarrasing of themself
     """
 class Card:
     
     rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King', "Ace"]
-    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+    suit_names = ['Clubs','Diamonds','Hearts','Spades']
 
-    def __init__(self, rank=2, suit=0):
+    def __init__(self, rank=2, suit=0, status=1):
         self.rank=rank
         self.suit=suit
+        self.status = status
 
-    def __str__(self):
-        return '%s of %s' % (Card.rank_names[self.rank],Card.suit_names[self.suit])
-
+    def printcard(self):
+        rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'J', 'Q', 'K', "A"]
+        suit_names = [chr(9827),chr(9830),chr(9829),chr(9824)]
+        ceiling = ' ___ '
+        if self.status == 1:
+            row2 = f'| {suit_names[self.suit]} |'
+            if self.rank == 9:
+                row1 = '|10 |'
+                row3 = '|_10|'
+            else:
+                row1 = f'|{rank_names[self.rank]}  |'
+                row3 = f'|__{rank_names[self.rank]}|'
+        else:
+            row1, row2, row3 = '|## |', '|###|', '|_##|'
+        return [ceiling,row1,row2,row3]
     def card_to_number(self):
         return (self.rank-1)+self.suit*13
     
@@ -104,7 +117,8 @@ class Player:
         - After bet turn: self.pot->boardpot
         """    
     def __str__(self):
-        return f"{self.name}: {self.money}$\n" + str(self.hand) + "\n"
+        hand = self.hand.printhand()
+        return f"{self.name}: {self.money}$\n" + hand + "\n"
     
     def action_human(self,cur_call,last_raised,board_pot,cur_raise):
         """
@@ -227,6 +241,15 @@ class Hand(Deck):
         a=Poker()
         a.cards+=self.cards+board.cards
         return a
+
+    def printhand(self):
+        res = ['','','','']
+        for card in self.cards:
+            tmp = card.printcard()
+            for i in range(4):
+                res[i] += tmp[i] + ' '
+        return '\n'.join(res)
+        
 class Poker(Hand):
 
     def __init__(self):
