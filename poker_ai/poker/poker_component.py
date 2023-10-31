@@ -162,6 +162,8 @@ class Player:
         elif a==4:
             print(f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
             b=int(input())
+            if b<cur_raise or b>self.money-1-(cur_call-self.pot):
+                raise UAreStupidIfThisShowsUp
             ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
         elif a==5:
             ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
