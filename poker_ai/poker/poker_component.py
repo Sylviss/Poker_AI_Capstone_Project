@@ -23,6 +23,12 @@ class Card:
             row1 = f'|{rank_names[self.rank]}  |'
             row3 = f'|__{rank_names[self.rank]}|'
         return [ceiling,row1,row2,row3]
+    
+    def __str__(self):
+        return "\n".join(self.printcard())
+    
+    def __eq__(self,other):
+        return self.rank==other.rank and self.suit==other.suit
 class Deck:
 
     def __init__(self,num=1):
