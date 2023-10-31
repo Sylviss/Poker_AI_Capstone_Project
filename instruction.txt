@@ -1,0 +1,11 @@
+File management:
+- books & materials: consist of books and materials that provide informations required to use in the project 
+- doc: contains images and documents that is used in the .txt and .md File
+- poker_ai: contains the main file of the project
+    - ai: contains the algorithm and methods used by the AI.
+    - poker: contains the simple structure to run a Poker game.
+- .gitignore: used to not commit useless/personal informations to the repo. 
+- instruction.txt: this file of course
+- main.py: used to run the project.
+- readme.md: main page of the repo.
+
