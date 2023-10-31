@@ -338,7 +338,7 @@ class Poker(Hand):
                         card_2=x
                     else:
                         card_high+=[x]
-            return (2,card_2,card_high[0],card_high[1],card_high[3])
+            return (2,card_2,card_high[0],card_high[1],card_high[2])
         else:
             card_high=[]
             for x in range(13,0,-1):
