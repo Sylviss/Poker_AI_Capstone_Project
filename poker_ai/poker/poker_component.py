@@ -23,19 +23,6 @@ class Card:
             row1 = f'|{rank_names[self.rank]}  |'
             row3 = f'|__{rank_names[self.rank]}|'
         return [ceiling,row1,row2,row3]
-
-    def card_to_number(self):
-        return (self.rank-1)+self.suit*13
-    
-    def __lt__(self,other):
-        t1 = self.suit, self.rank
-        t2 = other.suit, other.rank
-        return t1 < t2
-    
-    def __eq__(self,other):
-        return self.suit==other.suit and self.rank==other.rank
-
-
 class Deck:
 
     def __init__(self,num=1):
@@ -109,9 +96,6 @@ class Player:
         4: Fold
         5: Out of game
         6: Out of table
-        + Money flow:
-        - In-turn: money->self.pot
-        - After bet turn: self.pot->boardpot
         """    
     def __str__(self):
         hand = self.hand.printhand()
