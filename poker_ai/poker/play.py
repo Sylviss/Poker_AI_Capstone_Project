@@ -94,8 +94,6 @@ def game(num_players,init_money):
     players=[]
     big_blind=num_players-1
     small_blind=num_players-2
-    preflop_big_blind_value=PREFLOP_BIG_BLIND
-    preflop_small_blind_value=preflop_big_blind_value
     temp_board_money=0
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
