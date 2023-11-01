@@ -197,6 +197,9 @@ def game(num_players,init_money):
             big_blind=(big_blind+1)%num_players
             while players[big_blind].state==6:
                 big_blind=(big_blind+1)%num_players
+            small_blind=(small_blind+1)%num_players
+            while players[small_blind].state==6 or big_blind==small_blind:
+                small_blind=(small_blind+1)%num_players
             if playing==1:
                 table_condition=False
                 break
