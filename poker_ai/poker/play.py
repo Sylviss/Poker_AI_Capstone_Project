@@ -1,3 +1,4 @@
+import bext
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 
@@ -6,7 +7,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=1
+INDICATOR=2
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
@@ -84,20 +85,23 @@ def game(num_players,init_money):
         num_players (int): the number of players
         init_money (int): the number of base money
     """    """"""
+    bext.clear()
+    bext.title("Bruh poker game")
     indicator=INDICATOR
     count=1
     playing=num_players
     table_condition=True
     players=[]
     big_blind=num_players-1
-    preflop_big_blind_value=PREFLOP_BIG_BLIND//2
+    small_blind=num_players-2
     temp_board_money=0
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         if count%TURN_TO_RAISE_POT==1:
-            preflop_big_blind_value*=2
+            preflop_big_blind_value=PREFLOP_BIG_BLIND*int((2**(count//TURN_TO_RAISE_POT)))
+            preflop_small_blind_value=preflop_big_blind_value//2
         a=poker_component.Deck()
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
@@ -132,6 +136,19 @@ def game(num_players,init_money):
                     print(f"{players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
                     cur_call,last_raised,cur_raise=preflop_big_blind_value,None,preflop_big_blind_value
                     board.money+=preflop_big_blind_value
+                if players[small_blind].money<=preflop_small_blind_value:
+                    players[small_blind].pot=players[small_blind].money
+                    players[small_blind].money=0
+                    players[small_blind].state=0
+                    print(f"{players[small_blind].name} is small and put in {players[small_blind].pot}$")
+                    board.money+=players[small_blind].pot
+                else:
+                    players[small_blind].money-=preflop_small_blind_value
+                    players[small_blind].pot=preflop_small_blind_value
+                    print(f"{players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                    board.money+=preflop_small_blind_value
+                if players[big_blind].pot<players[small_blind].pot:
+                    cur_call,last_raised,cur_raise=preflop_small_blind_value,None,preflop_small_blind_value
             if k>=2:
                 board.hand.add_card(a.deal_cards())
                 print_blind_board(players,board)
@@ -147,7 +164,7 @@ def game(num_players,init_money):
                     conditioner=False
                     break
                 if players[index].state in [-1,1,2]:
-                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing,board)
+                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1
@@ -184,8 +201,9 @@ def game(num_players,init_money):
                 table_condition=False
                 break
             temp_board_money=0
-            # print("Press any key for the next game")
-            # input()
+            print("Press any key for the next game")
+            input()
+            bext.clear()
             continue
         print("Post-game")
         print_board(players,board)
@@ -216,13 +234,16 @@ def game(num_players,init_money):
                 print(f"{player.name} broke as hell!")
                 player.state=6
                 playing-=1
+        if playing==1:
+            table_condition=False
+            break
         count+=1
         big_blind=(big_blind+1)%num_players
         while players[big_blind].state==6:
             big_blind=(big_blind+1)%num_players
-        if playing==1:
-            table_condition=False
-            break
+        small_blind=(small_blind+1)%num_players
+        while players[small_blind].state==6 or big_blind==small_blind:
+            small_blind=(small_blind+1)%num_players
         # print("Press any key for the next game")
         # input()
         
