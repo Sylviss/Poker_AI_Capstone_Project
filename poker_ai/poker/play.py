@@ -1,3 +1,4 @@
+import bext
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 
@@ -97,6 +98,7 @@ def game(num_players,init_money):
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
+        bext.clear()
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         if count%TURN_TO_RAISE_POT==1:
             preflop_big_blind_value=PREFLOP_BIG_BLIND*int((2**(count//TURN_TO_RAISE_POT)))
@@ -178,6 +180,7 @@ def game(num_players,init_money):
                 index=(index+1)%num_players
             if folded==playing-1:
                 break
+            bext.clear()
         if folded==playing-1:
             for player in players:
                 if player.state not in [3,4,5,6]:
