@@ -85,6 +85,8 @@ def game(num_players,init_money):
         num_players (int): the number of players
         init_money (int): the number of base money
     """    """"""
+    bext.clear()
+    bext.title("Bruh poker game")
     indicator=INDICATOR
     count=1
     playing=num_players
