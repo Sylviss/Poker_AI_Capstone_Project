@@ -7,7 +7,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=2
+INDICATOR=1
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
@@ -16,7 +16,7 @@ TURN_TO_RAISE_POT=5
 
 ################################################
 
-def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board):
+def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -31,9 +31,9 @@ def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,b
     elif indicator==1:
         if self.name=="Player 1":
             return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
     else:
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
 
 def print_blind_board(players,board):
     """Print the board without showing the other player's cards
@@ -106,19 +106,18 @@ def game(num_players,init_money):
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
         for x in range(num_players):
+            players[x].pot=0
             if players[x].state!=6:
                 players[x].hand=hands.pop()
                 players[x].state=-1
-                players[x].pot=0
         print_blind_board(players,board)
         turn=["Preflop","Flop","Turn","River"]
         folded=0
         for k in range(4):
             if k!=0:
-                cur_call,last_raised,cur_raise=0,None,preflop_big_blind_value
+                last_raised,cur_raise=None,preflop_big_blind_value
                 for player in players:
                     if player.state not in [0,3,4,5,6]:
-                        player.pot=0
                         player.state=-1
             match=0
             print(turn[k])
@@ -160,11 +159,12 @@ def game(num_players,init_money):
             conditioner=True
             index=(big_blind+1)%num_players
             while conditioner:
+                min_pot=min([players[x].money+players[x].pot-cur_call for x in range(num_players) if players[x].state!=6 and players[x].money+players[x].pot-cur_call>0])
                 if last_raised==players[index].name and (players[index].state==2 or players[index].state==0):
                     conditioner=False
                     break
                 if players[index].state in [-1,1,2]:
-                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board)
+                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board,min_pot)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1
