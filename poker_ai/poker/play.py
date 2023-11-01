@@ -16,7 +16,7 @@ TURN_TO_RAISE_POT=5
 
 ################################################
 
-def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot):
+def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -31,9 +31,9 @@ def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,b
     elif indicator==1:
         if self.name=="Player 1":
             return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
     else:
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
 
 def print_blind_board(players,board):
     """Print the board without showing the other player's cards
@@ -159,12 +159,11 @@ def game(num_players,init_money):
             conditioner=True
             index=(big_blind+1)%num_players
             while conditioner:
-                min_pot=min([players[x].money+players[x].pot-cur_call for x in range(num_players) if players[x].state!=6 and players[x].money+players[x].pot-cur_call>0])
                 if last_raised==players[index].name and (players[index].state==2 or players[index].state==0):
                     conditioner=False
                     break
                 if players[index].state in [-1,1,2]:
-                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board,min_pot)
+                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1

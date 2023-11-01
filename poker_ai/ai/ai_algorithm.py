@@ -13,7 +13,7 @@ CONFIDENT_RANGE=0.3 # should be < 0.5
 
 
 
-def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise,min_pot):
+def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise):
     """Return the actions that the AI do base on the list of actions that it can do.
 
     Args:
@@ -52,7 +52,7 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise,min_p
             return [5]
     elif decide>=win*(1-CONFIDENT_RANGE):
         if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-            raise_value=cur_raise+(min_pot-cur_raise)*random.random()*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
+            raise_value=cur_raise+(player.pot+player.money-cur_raise)*random.random()*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
             return [4,int(raise_value)]
         elif 3 in actions:
             return [3]
@@ -62,14 +62,14 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise,min_p
             return [5]
     elif decide>=win*CONFIDENT_RANGE:
         if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-            raise_value=cur_raise+(min_pot-cur_raise)*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
+            raise_value=cur_raise+(player.pot+player.money-cur_raise)*(decide-win*CONFIDENT_RANGE)/(win*(1-CONFIDENT_RANGE))
             return [4,int(raise_value)]
         else:
             return [1]
     else:
         return [1]
             
-def action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot):
+def action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board):
     """Make the AI act ingame. Use the basic AI model.
 
     Args:
@@ -92,7 +92,7 @@ def action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,bo
     if self.money>cur_call-self.pot+cur_raise:
         checkout.append(4)
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    agent=simple_ai_agent(self, num_players, board, checkout,cur_call,cur_raise,min_pot)
+    agent=simple_ai_agent(self, num_players, board, checkout,cur_call,cur_raise)
     a=agent[0]
     print(f"Bot choose {a}")
     if a==1:
