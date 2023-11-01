@@ -4,6 +4,8 @@ This is the readme file for the Poker AI project. First on the project, I want y
 Installation & running guide:
 ## Prerequisites:
 This repository assumes Python 3.11 or newer is used.
+Used package:
+- bext
 
 ## Installation guide:
 - Install the code from the repo
@@ -19,7 +21,7 @@ This repository assumes Python 3.11 or newer is used.
 </p>
 
 ## The simple roadmap:
-- [ ] Simple warmup and learn to use Github
+- [x] Simple warmup and learn to use Github
 - [x] Find some material
 - [x] Implement the basic UI and game structure
 - [ ] Implement the AI:

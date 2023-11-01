@@ -5,7 +5,7 @@ import sys
 ###############################################
 #Constant:
 
-PLAYER=2
+PLAYER=3
 INIT_MONEY=10*PREFLOP_BIG_BLIND
 
 

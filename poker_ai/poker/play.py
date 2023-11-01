@@ -16,7 +16,7 @@ TURN_TO_RAISE_POT=5
 
 ################################################
 
-def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board):
+def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -31,9 +31,9 @@ def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,b
     elif indicator==1:
         if self.name=="Player 1":
             return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
     else:
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,min_pot)
 
 def print_blind_board(players,board):
     """Print the board without showing the other player's cards
@@ -85,6 +85,8 @@ def game(num_players,init_money):
         num_players (int): the number of players
         init_money (int): the number of base money
     """    """"""
+    bext.clear()
+    bext.title("Bruh poker game")
     indicator=INDICATOR
     count=1
     playing=num_players
@@ -92,13 +94,10 @@ def game(num_players,init_money):
     players=[]
     big_blind=num_players-1
     small_blind=num_players-2
-    preflop_big_blind_value=PREFLOP_BIG_BLIND
-    preflop_small_blind_value=preflop_big_blind_value
     temp_board_money=0
     for x in range(num_players):
         players.append(poker_component.Player(None,f"Player {x+1}",init_money))
     while table_condition:
-        bext.clear()
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         if count%TURN_TO_RAISE_POT==1:
             preflop_big_blind_value=PREFLOP_BIG_BLIND*int((2**(count//TURN_TO_RAISE_POT)))
@@ -107,19 +106,18 @@ def game(num_players,init_money):
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
         for x in range(num_players):
+            players[x].pot=0
             if players[x].state!=6:
                 players[x].hand=hands.pop()
                 players[x].state=-1
-                players[x].pot=0
         print_blind_board(players,board)
         turn=["Preflop","Flop","Turn","River"]
         folded=0
         for k in range(4):
             if k!=0:
-                cur_call,last_raised,cur_raise=0,None,preflop_big_blind_value
+                last_raised,cur_raise=None,preflop_big_blind_value
                 for player in players:
                     if player.state not in [0,3,4,5,6]:
-                        player.pot=0
                         player.state=-1
             match=0
             print(turn[k])
@@ -161,11 +159,12 @@ def game(num_players,init_money):
             conditioner=True
             index=(big_blind+1)%num_players
             while conditioner:
+                min_pot=min([players[x].money+players[x].pot-cur_call for x in range(num_players) if players[x].state!=6 and players[x].money+players[x].pot-cur_call>0])
                 if last_raised==players[index].name and (players[index].state==2 or players[index].state==0):
                     conditioner=False
                     break
                 if players[index].state in [-1,1,2]:
-                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board)
+                    cur_call,last_raised,board.money,cur_raise=action(players[index],indicator,cur_call,last_raised,board.money,cur_raise,playing-folded,board,min_pot)
                 if players[index].state==4:
                     players[index].state=5
                     folded+=1
@@ -180,7 +179,6 @@ def game(num_players,init_money):
                 index=(index+1)%num_players
             if folded==playing-1:
                 break
-            bext.clear()
         if folded==playing-1:
             for player in players:
                 if player.state not in [3,4,5,6]:
@@ -203,8 +201,9 @@ def game(num_players,init_money):
                 table_condition=False
                 break
             temp_board_money=0
-            # print("Press any key for the next game")
-            # input()
+            print("Press any key for the next game")
+            input()
+            bext.clear()
             continue
         print("Post-game")
         print_board(players,board)
