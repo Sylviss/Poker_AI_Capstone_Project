@@ -246,9 +246,9 @@ def game(num_players,init_money):
         small_blind=(small_blind+1)%num_players
         while players[small_blind].state==6 or big_blind==small_blind:
             small_blind=(small_blind+1)%num_players
-        # print("Press any key for the next game")
-        # input()
-        
+        print("Press any key for the next game")
+        input()
+        bext.clear()
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
