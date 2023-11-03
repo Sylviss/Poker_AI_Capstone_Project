@@ -1,4 +1,5 @@
 from poker_ai.poker.play import game,PREFLOP_BIG_BLIND
+import sys
 
 
 ###############################################
@@ -10,5 +11,7 @@ INIT_MONEY=10*PREFLOP_BIG_BLIND
 
 ################################################
 
-
-game(PLAYER,INIT_MONEY)
+try:
+    game(PLAYER,INIT_MONEY)
+except KeyboardInterrupt:
+    sys.exit()

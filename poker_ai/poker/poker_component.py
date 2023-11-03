@@ -29,6 +29,7 @@ class Card:
     
     def __eq__(self,other):
         return self.rank==other.rank and self.suit==other.suit
+
 class Deck:
 
     def __init__(self,num=1):
@@ -145,11 +146,14 @@ class Player:
             word.append("4: raise")
         hehe=", ".join(stack)
         print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-        print(f"Choose between {hehe}")
-        print(", ".join(word))
-        a=int(input())
-        if a not in checkout:
-            raise UAreStupidIfThisShowsUp
+        #print(f"Choose between {hehe}")
+        while True:
+            print(f"Choose between:")
+            print(", ".join(word))
+            a=int(input())
+            if a not in checkout:
+                continue
+            break
         if a==1:
             if self.money<=cur_call-self.pot:
                 ans=self.all_in_1(cur_call,last_raised,board_pot,cur_raise)
@@ -160,11 +164,13 @@ class Player:
         elif a==3:
             ans=self.call(cur_call,last_raised,board_pot,cur_raise)
         elif a==4:
-            print(f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
-            b=int(input())
-            if b<cur_raise or b>self.money-1-(cur_call-self.pot):
-                raise UAreStupidIfThisShowsUp
-            ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
+            while True:
+                print(f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
+                b=int(input())
+                if b<cur_raise or b>self.money-1-(cur_call-self.pot):
+                    continue
+                ans=self.raise_money(b,cur_call,last_raised,board_pot,cur_raise)
+                break
         elif a==5:
             ans=self.fold(cur_call,last_raised,board_pot,cur_raise)
         return ans

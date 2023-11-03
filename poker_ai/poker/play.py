@@ -7,7 +7,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=2
+INDICATOR=1
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
@@ -106,19 +106,18 @@ def game(num_players,init_money):
         hands=a.deal_hands(playing,2)
         board=poker_component.Player(poker_component.Hand(),"Board", temp_board_money)
         for x in range(num_players):
+            players[x].pot=0
             if players[x].state!=6:
                 players[x].hand=hands.pop()
                 players[x].state=-1
-                players[x].pot=0
         print_blind_board(players,board)
         turn=["Preflop","Flop","Turn","River"]
         folded=0
         for k in range(4):
             if k!=0:
-                cur_call,last_raised,cur_raise=0,None,preflop_big_blind_value
+                last_raised,cur_raise=None,preflop_big_blind_value
                 for player in players:
                     if player.state not in [0,3,4,5,6]:
-                        player.pot=0
                         player.state=-1
             match=0
             print(turn[k])
@@ -197,6 +196,9 @@ def game(num_players,init_money):
             big_blind=(big_blind+1)%num_players
             while players[big_blind].state==6:
                 big_blind=(big_blind+1)%num_players
+            small_blind=(small_blind+1)%num_players
+            while players[small_blind].state==6 or big_blind==small_blind:
+                small_blind=(small_blind+1)%num_players
             if playing==1:
                 table_condition=False
                 break
@@ -244,9 +246,9 @@ def game(num_players,init_money):
         small_blind=(small_blind+1)%num_players
         while players[small_blind].state==6 or big_blind==small_blind:
             small_blind=(small_blind+1)%num_players
-        # print("Press any key for the next game")
-        # input()
-        
+        print("Press any key for the next game")
+        input()
+        bext.clear()
     for player in players:
         if player.state!=6:
             print(f"{player.name} wins the table! All others are just some random bots")
