@@ -7,10 +7,13 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
-INDICATOR=1
+INDICATOR=2
 # 0 is for testing against all human-controlled 
 # 1 is for bot: Player 1 will be human, all others will be bot 
 # 2 is all bot for testing purpose
+MULTIPROCESS=1
+# 0 is for single-processing, slower
+# 1 is for multi-processing, faster and recommended
 TURN_TO_RAISE_POT=5
 # Number of turns to increase the big blind pre-bet
 
@@ -31,9 +34,9 @@ def action(self,indicator,cur_call,last_raised,board_pot,cur_raise,num_players,b
     elif indicator==1:
         if self.name=="Player 1":
             return self.action_human(cur_call,last_raised,board_pot,cur_raise)
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,MULTIPROCESS)
     else:
-        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board)
+        return action_ai_model(self,cur_call,last_raised,board_pot,cur_raise,num_players,board,MULTIPROCESS)
 
 def print_blind_board(players,board):
     """Print the board without showing the other player's cards
