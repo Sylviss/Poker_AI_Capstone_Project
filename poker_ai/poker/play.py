@@ -5,7 +5,7 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 ###############################################
 #Constant:
 
-STOP=1
+STOP=0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.

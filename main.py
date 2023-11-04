@@ -11,11 +11,10 @@ INIT_MONEY=10*PREFLOP_BIG_BLIND
 
 ################################################
 def main():
-    for _ in range(10):
-        try:
-            game(PLAYER,INIT_MONEY)
-        except KeyboardInterrupt:
-            sys.exit()
+    try:
+        game(PLAYER,INIT_MONEY)
+    except KeyboardInterrupt:
+        sys.exit()
         
 if __name__=="__main__":
     main()
