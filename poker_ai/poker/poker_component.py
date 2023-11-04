@@ -2,6 +2,10 @@ import random
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone who see this embarrasing of themself
     """
+    
+class WTF(Exception):
+    """To catch negative money glitch.
+    """
 class Card:
     
     rank_names = [None, '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King', "Ace"]

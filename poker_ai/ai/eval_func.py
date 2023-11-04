@@ -5,9 +5,9 @@ from poker_ai.poker.poker_component import Player,Hand,Deck
 ###################################
 #Constant
 
-DEEPNESS=40000
+DEEPNESS=10000
 # The number of iterations of the Monte-Carlo simulation. Higher is better but requires more time and memory
-# Recommended deepness: 10000 for single, 40000 for multi
+# Recommended deepness: 10000 for single or test, 40000 for multi and playing
 CONFIDENT_RATE=0.8
 # The base confident_rate of a player, represent the chance that the player will check/call in a 2 player games
 # Don't ask where I get this number, it's taken by testing a lot

@@ -54,8 +54,8 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise,mul_i
         else:
             return [5]
     elif decide>=win*(1-CONFIDENT_RANGE):
-        if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-            raise_value=cur_raise+(player.pot+player.money-cur_raise)*random.random()/(decide-win*(1-CONFIDENT_RANGE))*(win*(2-CONFIDENT_RANGE))
+        if 4 in actions and cur_call-player.pot<=(1-CONFIDENT_RANGE)*player.money:
+            raise_value=cur_raise+(player.money-(cur_call-player.pot)-cur_raise)*random.random()*(1-(decide-win*(1-CONFIDENT_RANGE))/win*CONFIDENT_RANGE)
             return [4,int(raise_value)]
         elif 3 in actions:
             return [3]
@@ -64,8 +64,8 @@ def simple_ai_agent(player, num_players, board, actions,cur_call,cur_raise,mul_i
         else:
             return [5]
     elif decide>=win*CONFIDENT_RANGE:
-        if 4 in actions and cur_call-player.pot<=CONFIDENT_RANGE*player.money:
-            raise_value=cur_raise+(player.pot+player.money-cur_raise)/(decide-win*CONFIDENT_RANGE)*(win*(1-CONFIDENT_RANGE))
+        if 4 in actions and cur_call-player.pot<=player.money:
+            raise_value=cur_raise+(player.money-(cur_call-player.pot)-cur_raise)*(1-(decide-win*CONFIDENT_RANGE)/(win*(1-2*CONFIDENT_RANGE)))
             return [4,int(raise_value)]
         else:
             return [1]

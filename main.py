@@ -5,16 +5,17 @@ import sys
 ###############################################
 #Constant:
 
-PLAYER=6
+PLAYER=4
 INIT_MONEY=10*PREFLOP_BIG_BLIND
 
 
 ################################################
 def main():
-    try:
-        game(PLAYER,INIT_MONEY)
-    except KeyboardInterrupt:
-        sys.exit()
+    for _ in range(1000):
+        try:
+            game(PLAYER,INIT_MONEY)
+        except KeyboardInterrupt:
+            sys.exit()
         
 if __name__=="__main__":
     main()

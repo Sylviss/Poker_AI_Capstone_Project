@@ -5,6 +5,8 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 ###############################################
 #Constant:
 
+STOP=1
+# 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND=10
 # Value of the big blind pre-bet.
 INDICATOR=2
@@ -189,6 +191,8 @@ def game(num_players,init_money):
                     board.money=0
                     break
             for player in players:
+                if player.money<0:
+                    raise poker_component.WTF
                 if player.money==0 and player.state!=6:
                     player.state=3
                 if player.state==3:
@@ -206,8 +210,9 @@ def game(num_players,init_money):
                 table_condition=False
                 break
             temp_board_money=0
-            print("Press any key for the next game")
-            input()
+            if STOP==0:
+                print("Press any key for the next game")
+                input()
             bext.clear()
             continue
         print("Post-game")
@@ -233,6 +238,8 @@ def game(num_players,init_money):
                 players[x].money+=money_win
         print(hehe+" win the game!")
         for player in players:
+            if player.money<0:
+                raise poker_component.WTF
             if player.money==0 and player.state!=6:
                 player.state=3
             if player.state==3:
@@ -249,8 +256,9 @@ def game(num_players,init_money):
         small_blind=(small_blind+1)%num_players
         while players[small_blind].state==6 or big_blind==small_blind:
             small_blind=(small_blind+1)%num_players
-        print("Press any key for the next game")
-        input()
+        if STOP==0:
+            print("Press any key for the next game")
+            input()
         bext.clear()
     for player in players:
         if player.state!=6:
