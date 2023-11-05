@@ -166,7 +166,7 @@ class Player:
 
         # print(f"Choose between {hehe}")
         while True:
-            print(f"Choose between:")
+            print("Choose between:")
             print(", ".join(word))
             try:
                 action = int(input('>>> '))
