@@ -166,7 +166,7 @@ class Player:
 
         # print(f"Choose between {hehe}")
         while True:
-            print(f"Choose between:")
+            print("Choose between:")
             print(", ".join(word))
             try:
                 action = int(input('>>> '))
@@ -424,13 +424,6 @@ class Poker(Hand):
                 consecutive_count += 1
             else:
                 consecutive_count = 0
-
-            # I change the == into >=
-            # example: hand = (2, 3, 4, 5, 6, 7, 8), {highest} should be 8
-            # but the code dont register when {consecutive_count} > 5
-            # so {highest} stuck at 6
-            # pls check my logic lol
-
             if consecutive_count >= 5:
                 check_flush = 1
                 highest = x

@@ -80,8 +80,10 @@ def eval_func(player, num_players, board):
         state=2
     else:
         state=3
-    for _ in range(DEEPNESS):
-        for k in range(0,num_players):
+    for k in range(0,num_players):
+        tempwin=0
+        tempdraw=0
+        for _ in range(DEEPNESS):
             temp_board=Player(Hand(),"Board",0)
             temp_board.hand.cards=board.hand.cards[:]
             deck=Deck()
@@ -89,10 +91,22 @@ def eval_func(player, num_players, board):
                 deck.remove_card(card)
             for card in temp_board.hand.cards:
                 deck.remove_card(card)
-            temp=auto_predefined_game(num_players-k,player,temp_board,state,deck)
-            #Just some simple Bayes-Naive theorem, Mr Do Van Cuong will disappoint at you if you don't know what this is
-            win+=temp[0]*(CALL_CONFIDENT**(num_players-1-k))*((1-CALL_CONFIDENT)**k)*math.comb(num_players-1,k)
-            draw+=temp[1]*(CALL_CONFIDENT**(num_players-1-k))*((1-CALL_CONFIDENT)**k)*math.comb(num_players-1,k)
+            temp=auto_predefined_game(num_players-k,player,temp_board,state,deck) 
+            tempwin+=temp[0]
+            tempdraw+=temp[1]
+        #Just some simple Bayes's theorem, Mr Do Van Cuong will disappoint at you if you don't know what this is       
+        #Ok, let A: player 1 win. B(k): there are num_player-1-k player other than you are playing, means that k player are out/folded
+        #C: player x not fold. P(C) is the CALL_CONFIDENT
+        #Bayes's theorem: P(B(k))=comb(num_players-1,k)*(P(C)^(num_players-1-k))*((1-P(C))^k)
+        #If we let P(C)=1, then it's simply all in game. In a 2-player game, the chances are pretty balanced, and we always should use that case.
+        #But in a multiplayer game, for ex: 5-6 players, the chances get super low. For example, the winning chances of a pair As hand is lower than 50%.
+        #But of course, in reality, player with pair As will just raise high so that others player will fold.
+        #The choice 0.8 is gotten by testing a lot. Don't ask why i get that number 
+        #Bayes's theorem: P(A)=sum of all P(A|B(K))*P(B(k))
+        #P(A|B(k))=tempwin
+        win+=tempwin*(CALL_CONFIDENT**(num_players-1-k))*((1-CALL_CONFIDENT)**k)*math.comb(num_players-1,k)
+        draw+=tempdraw*(CALL_CONFIDENT**(num_players-1-k))*((1-CALL_CONFIDENT)**k)*math.comb(num_players-1,k)
+        
     return (win/DEEPNESS,draw/DEEPNESS)
 
 
