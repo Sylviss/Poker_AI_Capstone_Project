@@ -194,7 +194,10 @@ class Player:
             while True:
                 print(
                     f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
-                b = int(input('>>> '))
+                try:
+                    b = int(input('>>> '))
+                except ValueError:
+                    continue
                 if b < cur_raise or b > self.money-1-(cur_call-self.pot):
                     continue
                 ans = self.raise_money(
@@ -419,21 +422,16 @@ class Poker(Hand):
         highest = 0
         check_flush = 0
         consecutive_count = 0
+        
         for x in range(14):
             if x in rank_dict and rank_dict[x] != 0:
                 consecutive_count += 1
             else:
                 consecutive_count = 0
-
-            # I change the == into >=
-            # example: hand = (2, 3, 4, 5, 6, 7, 8), {highest} should be 8
-            # but the code dont register when {consecutive_count} > 5
-            # so {highest} stuck at 6
-            # pls check my logic lol
-
             if consecutive_count >= 5:
                 check_flush = 1
                 highest = x
+
         if check_flush == 1:
             return (5, highest)
         return (0, 0)
