@@ -22,7 +22,7 @@ TURN_TO_RAISE_POT = 5
 ################################################
 
 
-def action(self, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board):
+def action(self, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, model = 0):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -37,9 +37,9 @@ def action(self, indicator, cur_call, last_raised, board_pot, cur_raise, num_pla
     elif indicator == 1:
         if self.name == "Player 1":
             return self.action_human(cur_call, last_raised, board_pot, cur_raise)
-        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS)
+        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, 0)
     else:
-        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS)
+        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model)
 
 
 def print_blind_board(players, board):
@@ -88,7 +88,7 @@ def print_board(players, board):
     print("-"*30)
 
 
-def game(num_players, init_money):
+def game(num_players, init_money, STOP = STOP, INDICATOR = INDICATOR):
     """Play a game with {num_players} player with {init_money} base money
 
     Args:
@@ -123,6 +123,7 @@ def game(num_players, init_money):
             if players[x].state != 6:
                 players[x].hand = hands.pop()
                 players[x].state = -1
+                players[x].model = x
         print_blind_board(players, board)
         turn = ["Preflop", "Flop", "Turn", "River"]
         folded = 0
@@ -278,3 +279,4 @@ def game(num_players, init_money):
         if player.state != 6:
             print(
                 f"{player.name} wins the table! All others are just some random bots")
+            return player.name
