@@ -1,15 +1,7 @@
 import random
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func
 from poker_ai.poker.poker_component import WTF
-
-##################################
-# Constant
-
-DECIDER = 10
-CONFIDENT_RANGE = 0.3  # should be < 0.5
-
-
-##################################
+from poker_ai.constant import DECIDER,CONFIDENT_RANGE
 
 
 def simple_ai_agent(player, num_players, board, actions, cur_call, cur_raise, mul_indicator):
@@ -108,7 +100,6 @@ def action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_playe
     else:
         raise WTF
     a = agent[0]
-    print(f"Bot choose {a}")
     if a == 1:
         if self.money <= cur_call-self.pot:
             ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)

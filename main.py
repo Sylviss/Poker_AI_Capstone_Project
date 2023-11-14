@@ -1,15 +1,8 @@
-from poker_ai.poker.play import game,PREFLOP_BIG_BLIND
+from poker_ai.poker.play import game
 import sys
+from poker_ai.constant import PLAYER,INIT_MONEY
 
 
-###############################################
-#Constant:
-
-PLAYER = 2
-INIT_MONEY = 10 * PREFLOP_BIG_BLIND
-
-
-################################################
 def main():
     try:
         game(PLAYER,INIT_MONEY)
