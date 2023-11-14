@@ -167,7 +167,6 @@ def rule_based_with_simulation_ai(player, num_players, board, actions, cur_call,
                 return [5]
         elif pot_odd <= win*CONFIDENT_RANGE: # Should always strongly profit, bet strongly
             if 4 in actions and cur_call-player.pot <= player.money:
-                raise_value = cur_raise+(player.money-())
                 raise_value = cur_raise+(player.money-(cur_call-player.pot)-cur_raise)*(
                     1-(decide-win*CONFIDENT_RANGE)/(win*(1-2*CONFIDENT_RANGE)))
                 return [4, int(raise_value)]

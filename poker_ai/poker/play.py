@@ -5,11 +5,11 @@ from poker_ai.ai.ai_algorithm import action_ai_model
 ###############################################
 # Constant:
 
-STOP = 0
+STOP = 1
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
 # Value of the big blind pre-bet.
-INDICATOR = 1
+INDICATOR = 2
 # 0 is for testing against all human-controlled
 # 1 is for bot: Player 1 will be human, all others will be bot
 # 2 is all bot for testing purpose
@@ -88,7 +88,7 @@ def print_board(players, board):
     print("-"*30)
 
 
-def game(num_players, init_money, STOP = STOP, INDICATOR = INDICATOR):
+def game(num_players, init_money):
     """Play a game with {num_players} player with {init_money} base money
 
     Args:
