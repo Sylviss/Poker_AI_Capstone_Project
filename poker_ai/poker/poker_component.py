@@ -1,5 +1,5 @@
 import random
-
+from poker_ai.constant import MODEL
 
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone who see this embarrasing of themself
@@ -98,12 +98,13 @@ class Deck:
 
 class Player:
 
-    def __init__(self, hand, name, money, state=-1):
+    def __init__(self, hand, name, money, state=-1, model=MODEL):
         self.name = name
         self.hand = hand
         self.money = money
         self.state = state
         self.pot = 0
+        self.model = model
         """
         + State explain:
         -1: Initial state
@@ -114,6 +115,7 @@ class Player:
         4: Fold
         5: Out of game
         6: Out of table
+        + model: AI model, default is -1 (human)
         """
 
     def __str__(self):
