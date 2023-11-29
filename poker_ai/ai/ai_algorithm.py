@@ -137,7 +137,7 @@ def rule_based_with_simulation_ai(player, num_players, board, actions, cur_call,
     else:
         win, draw = multi_process_eval_func(player, num_players, board)
     draw += win
-    pot_odd = cur_call/(cur_call+board.money)
+    pot_odd = (cur_call-player.pot)/(cur_call+board.money)
     decides = []
     for _ in range(DECIDER):
         decides.append(random.random())
@@ -156,14 +156,7 @@ def rule_based_with_simulation_ai(player, num_players, board, actions, cur_call,
                 return [5]
             else:
                 return [5]
-        elif pot_odd <= win*CONFIDENT_RANGE: # Should always strongly profit, bet strongly
-            if 4 in actions and cur_call-player.pot <= player.money:
-                raise_value = cur_raise+(player.money-(cur_call-player.pot)-cur_raise)*(
-                    1-(decide-win*CONFIDENT_RANGE)/(win*(1-2*CONFIDENT_RANGE)))
-                return [4, int(raise_value)]
-            else:
-                return [1]
-        elif pot_odd <= win*(1-CONFIDENT_RANGE): # Should always profit, call and bet reasonably
+        elif pot_odd >= win*(1-CONFIDENT_RANGE): # Should always profit, call and bet reasonably
             if 4 in actions and cur_call-player.pot <= (1-CONFIDENT_RANGE)*player.money:
                 raise_value = cur_raise+(player.money-(cur_call-player.pot)-cur_raise) * \
                     random.random()*(1-(decide-win*(1-CONFIDENT_RANGE))/win*CONFIDENT_RANGE)
@@ -174,6 +167,13 @@ def rule_based_with_simulation_ai(player, num_players, board, actions, cur_call,
                 return [2]
             else:
                 return [5]
+        elif pot_odd >= win*CONFIDENT_RANGE: # Should always strongly profit, bet strongly
+            if 4 in actions and cur_call-player.pot <= player.money:
+                raise_value = cur_raise+(player.money-(cur_call-player.pot)-cur_raise)*(
+                    1-(decide-win*CONFIDENT_RANGE)/(win*(1-2*CONFIDENT_RANGE)))
+                return [4, int(raise_value)]
+            else:
+                return [1]
         else:
             if 3 in actions:
                 return [3]
