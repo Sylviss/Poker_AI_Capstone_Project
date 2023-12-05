@@ -1,7 +1,7 @@
 
 ###############################################
 # Constant:
-MODEL=1
+MODEL=0
 # Choose AI module for all bot in a normal game for main.py:
 # 0: simple rule-based AI using random and probabilty
 # 1: simple rule-based AI using pot-odd
