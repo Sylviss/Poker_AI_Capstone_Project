@@ -1,19 +1,19 @@
 from collections import defaultdict
-from poker_ai.poker.play import fast_testing
+from poker_ai.poker.play import fast_testing,game_but_cheaty
 import sys,os
 
-# Disable
+# Disable print
 def blockPrint():
     sys.stdout = open(os.devnull, 'w', encoding="utf-8")
 
-# Restore
+# Restore print
 def enablePrint():
     sys.stdout = sys.__stdout__
 
-def main():
+def test_win_rate(n):
     try:
         d = defaultdict(lambda: 0)
-        for t in range(10):
+        for t in range(n):
             blockPrint()
             d[fast_testing(2,100,[0,1])] += 1
             enablePrint()
@@ -23,5 +23,15 @@ def main():
     except KeyboardInterrupt:
         sys.exit()
         
+def test_hacker():
+    try:
+        game_but_cheaty(2,500,["10s","Js","Ad","Ah","As","Ac","Qs","Ks","Kh"])
+    except KeyboardInterrupt:
+        sys.exit()
+        
+def test_single_game():
+    print(fast_testing(5,500,[0,1,1,1,1]))
+    
+
 if __name__=="__main__":
-    main()
+    test_single_game()

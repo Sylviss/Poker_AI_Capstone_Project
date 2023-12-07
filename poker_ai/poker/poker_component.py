@@ -282,6 +282,9 @@ class Hand(Deck):
             for i in range(4):
                 res[i] += tmp[i] + ' '
         return '\n'.join(res)
+    
+    def hand_to_str(self):
+        return " ".join([card_to_str(card) for card in self.cards])
 
 
 class Poker(Hand):
@@ -477,3 +480,34 @@ class Poker(Hand):
 
     def take_str_check(self):  # take the name of the hand's value
         return self.handvalue_dict[self.check()[0]]
+    
+rank_dicts={"A":13,"2":1,"3":2,"4":3,"5":4,"6":5,"7":6,"8":7,"9":8,"10":9,"J":10,"Q":11,"K":12}
+suit_dicts={'c':0, 'd':1, 'h':2, 's':3}
+reverse_rank_dicts = {v: k for k, v in rank_dicts.items()}
+reverse_suit_dicts = {v: k for k, v in suit_dicts.items()}
+
+def str_to_card(s):
+    """Return a Card object base on a string
+
+    Args:
+        s (str): string representation of the card
+
+    Returns:
+        Card: card object of the card
+    """
+    suit=s[::-1][0]
+    rank=s[:-1]
+    return Card(rank_dicts[rank],suit_dicts[suit])
+
+def card_to_str(card):
+    """Return a Card object base on a string
+
+    Args:
+        card(Card): card object of the card
+
+    Returns:
+        String: string representation of the card
+    """
+    rank = reverse_rank_dicts[card.rank]
+    suit = reverse_suit_dicts[card.suit]
+    return rank + suit

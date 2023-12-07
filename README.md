@@ -32,5 +32,8 @@ Used package:
 - [x] Drink some water
 - [x] Touch the grass
 
+## To-do:
+- [ ] Change WIN/DRAW to scale with number of players
+- [ ] Implement the starting hand evaluator
 Try ur best.
 
