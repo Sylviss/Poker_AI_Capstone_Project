@@ -27,7 +27,7 @@ def super_random_ai_agent(player, actions, cur_call, cur_raise):
         return [a,int(b)]
     return [a]
 
-def mtcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     """Return the actions that the AI do base on the list of actions that it can do.
 
     Args:
@@ -200,7 +200,8 @@ def mtcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, 
             else:
                 return [5]
                 
-
+def mcts_ai_model(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+    return 0
 
 def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind):
     """
@@ -238,12 +239,15 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
-        agent = mtcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
+        agent = mcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised)
     elif model == 1:
         agent = super_random_ai_agent(self, checkout, cur_call, cur_raise)
     elif model == 2:
         agent = all_in_ai_agent(checkout)
+    elif model == 3:
+        agent = mcts_ai_model(index, players, min_money, num_players, board, 
+                              checkout, cur_call, cur_raise, mul_indicator, big_blind, last_raised)
     else:
         raise ValueError("Invalid AI model specified.")
     a = agent[0]
