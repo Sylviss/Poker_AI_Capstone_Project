@@ -24,11 +24,12 @@ Used package:
 - [x] Simple warmup and learn to use Github
 - [x] Find some material
 - [x] Implement the basic UI and game structure
-- [ ] Implement the AI:
+- [o] Implement the AI:
     - [x] Implement the evaluate function using Monte-Carlo simulations
-    - [x] Implement the simple AI
-    - [ ] Implement the Monte-Carlo tree search
-    - [ ] Implement the AI agent using the MTCS
+    - [x] Implement the Monte-Carlo simulation and probability-based AI
+    - [ ] Implement the Monte-Carlo tree search-based AI
+    - [ ] Implement a supervised learning to improve the two mentioned above AI
+    - [ ] Implement a reinforcement learning for opponent modelling in the Monte-Carlo simulations
 - [x] Drink some water
 - [x] Touch the grass
 
