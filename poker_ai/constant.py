@@ -14,7 +14,7 @@ STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
 # Value of the big blind pre-bet.
-INDICATOR = 1
+INDICATOR = 2
 # 0 is for testing against all human-controlled
 # 1 is for bot: Player 1 will be human, all others will be bot
 # 2 is all bot for testing purpose
@@ -31,10 +31,11 @@ RISK_RANGE=0.95
 # The range so that the AI should just all in because it's card is high enough and they don't have much money left
 DRAW=0.7
 WIN=0.6
-CALL_RANGE=0.2
+CALL_RANGE=0.05
+BLUFF_RANGE=(0.05,0.1)
+BLUFF_INCREASE=0.7
 
-
-PLAYER = 2
+PLAYER = 5
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
 
 

@@ -1,6 +1,6 @@
 import random
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func
-from poker_ai.constant import DECIDER,CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE
+from poker_ai.constant import DECIDER,CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE
 
 def all_in_ai_agent(actions):
     """We do this for the meme
@@ -27,7 +27,7 @@ def super_random_ai_agent(player, actions, cur_call, cur_raise):
         return [a,int(b)]
     return [a]
 
-def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+def mtcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     """Return the actions that the AI do base on the list of actions that it can do.
 
     Args:
@@ -44,10 +44,18 @@ def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_
     """ 
     player=players[index]
     rule_dict={0:0.85,3:0.9,4:0.95,5:1}
+    betted_dict={0:1,1:0.95}
+    if last_raised is None:
+        betted=betted_dict[0]
+    else:
+        betted=betted_dict[1]
     turn = len(board.hand.cards)
-    draw_rate = 1-(1-DRAW)*rule_dict[turn]
-    win_rate = 1-(1-WIN)*rule_dict[turn]
-    raise_multipler={0:1,3:1.5,4:2,5:2.5}
+    draw_rate = (1-(1-DRAW)*rule_dict[turn])*betted
+    win_rate = (1-(1-WIN)*rule_dict[turn])*betted
+    if betted==1:
+        raise_multipler={0:1,3:1.5,4:2,5:2.5}
+    else:
+        raise_multipler={0:1,3:1,4:1,5:1}
     if mul_indicator == 0:
         win, draw = eval_func(player, num_players, board)
     else:
@@ -58,7 +66,18 @@ def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_
         decides.append(random.random())
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + sum(decides) / (DECIDER) * 0.15)
-    print(decide)
+    print(pot_odd,decide)
+    
+    if decide >= win_rate:
+        randomized_value=random.random()
+        if last_raised is None:
+            bluff_range=BLUFF_RANGE[1]
+        else:
+            bluff_range=BLUFF_RANGE[0]
+        if randomized_value<bluff_range:
+            print("HE BLUFFED BRUH")
+            decide = 0.29
+    
     if decide > draw_rate:
         if 2 in actions:
             return [2]
@@ -92,6 +111,7 @@ def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_
                             cur_raise*=raise_multipler[turn]
                             raise_value = cur_raise + cur_raise * (
                                         (1 + random.random()) ** (1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE))))
+                        
                         else:
                             raise_value = cur_raise + (random.random() ** 2) * (
                                         player.money - cur_call + player.pot - cur_raise) * (
@@ -103,15 +123,13 @@ def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_
                         return [3]
                     elif 2 in actions:
                         return [2]
-                    elif 6 in actions:
-                        return [6]
                     else:
                         return [5]
                 elif decide >= win_rate * CONFIDENT_RANGE:
                     if 4 in actions:
-                        if player.money - (cur_call - player.pot) > 4 * cur_raise * raise_multipler[turn]:
+                        if player.money - (cur_call - player.pot) > 6 * cur_raise * raise_multipler[turn]:
                             cur_raise*=raise_multipler[turn]
-                            raise_value = cur_raise + cur_raise * (
+                            raise_value = 3*cur_raise + cur_raise * (
                                         (2 + random.random()) ** (1 - (decide - win_rate * (CONFIDENT_RANGE)) / win_rate * (
                                             0.5 - CONFIDENT_RANGE)))
                         else:
@@ -179,7 +197,7 @@ def simple_ai_agent(index, players, min_money, num_players, board, actions, cur_
                 return [2]
             elif 3 in actions:
                 return [3]
-            elif decide < win_rate * CONFIDENT_RANGE:
+            elif decide < win_rate * 0.5:
                 return [1]
             else:
                 return [5]
@@ -222,7 +240,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
-        agent = simple_ai_agent(index,players,min_money, num_players, board,
+        agent = mtcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised)
     elif model == 1:
         agent = super_random_ai_agent(self, checkout, cur_call, cur_raise)

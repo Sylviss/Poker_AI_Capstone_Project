@@ -71,19 +71,6 @@ def print_board(players, board):
     print(board)
     print("-"*30)
 
-def print_board_all_players(players, board):
-    """Print the board of all player, include the one who folded. This is for checking.
-
-    Args:
-        players (list(poker_ai.poker.poker_component.Player())): a list contains all the players.
-        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
-    """
-    print("-"*30)
-    for player in players:
-        print(player)
-    print(board)
-    print("-"*30)
-
 def game_but_cheaty(num_players, init_money, cards):
     """Play a game with {num_players} player with {init_money} base money. It's just that we choose the card ourself.
 
@@ -199,7 +186,7 @@ def game_but_cheaty(num_players, init_money, cards):
         if folded == playing-1:
             if DEBUG_MODE==1:
                 print("Post-game")
-                print_board_all_players(players, board)
+                print_board(players, board)
             for player in players:
                 if player.state not in [3, 4, 5, 6]:
                     print(f"{player.name} win the game!")
@@ -392,7 +379,7 @@ def game(num_players, init_money):
         if folded == playing-1:
             if DEBUG_MODE==1:
                 print("Post-game")
-                print_board_all_players(players, board)
+                print_board(players, board)
             for player in players:
                 if player.state not in [3, 4, 5, 6]:
                     print(f"{player.name} win the game!")
