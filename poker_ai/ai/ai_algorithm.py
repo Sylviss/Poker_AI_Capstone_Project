@@ -66,7 +66,6 @@ def mtcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, 
         decides.append(random.random())
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + sum(decides) / (DECIDER) * 0.15)
-    print(pot_odd,decide)
     
     if decide >= win_rate:
         randomized_value=random.random()
@@ -75,7 +74,6 @@ def mtcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, 
         else:
             bluff_range=BLUFF_RANGE[0]
         if randomized_value<bluff_range:
-            print("HE BLUFFED BRUH")
             decide = 0.29
     
     if decide > draw_rate:

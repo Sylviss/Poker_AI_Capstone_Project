@@ -197,8 +197,6 @@ def game_but_cheaty(num_players, init_money, cards):
                 if player.money < 0:
                     raise poker_component.WTF
                 if player.money == 0 and player.state != 6:
-                    player.state = 3
-                if player.state == 3:
                     print(f"{player.name} broke as hell!")
                     player.state = 6
                     playing -= 1
@@ -245,8 +243,6 @@ def game_but_cheaty(num_players, init_money, cards):
             if player.money < 0:
                 raise poker_component.WTF
             if player.money == 0 and player.state != 6:
-                player.state = 3
-            if player.state == 3:
                 print(f"{player.name} broke as hell!")
                 player.state = 6
                 playing -= 1
@@ -390,8 +386,6 @@ def game(num_players, init_money):
                 if player.money < 0:
                     raise poker_component.WTF
                 if player.money == 0 and player.state != 6:
-                    player.state = 3
-                if player.state == 3:
                     print(f"{player.name} broke as hell!")
                     player.state = 6
                     playing -= 1
@@ -438,8 +432,6 @@ def game(num_players, init_money):
             if player.money < 0:
                 raise poker_component.WTF
             if player.money == 0 and player.state != 6:
-                player.state = 3
-            if player.state == 3:
                 print(f"{player.name} broke as hell!")
                 player.state = 6
                 playing -= 1
@@ -583,8 +575,6 @@ def fast_testing(num_players, init_money, model_list):
                 if player.money < 0:
                     raise poker_component.WTF
                 if player.money == 0 and player.state != 6:
-                    player.state = 3
-                if player.state == 3:
                     print(f"{player.name} broke as hell!")
                     player.state = 6
                     playing -= 1
@@ -627,8 +617,6 @@ def fast_testing(num_players, init_money, model_list):
             if player.money < 0:
                 raise poker_component.WTF
             if player.money == 0 and player.state != 6:
-                player.state = 3
-            if player.state == 3:
                 print(f"{player.name} broke as hell!")
                 player.state = 6
                 playing -= 1
