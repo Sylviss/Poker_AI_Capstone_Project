@@ -9,6 +9,7 @@ MODEL=0
 # Choose AI module for all bot in a normal game for main.py:
 # 0: simple rule-based AI using probability theorem, game-based rule and some randomness
 # 1: super randomized AI
+# 2: my friend's AI who shove all in every game and play by pure luck
 STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
@@ -30,6 +31,7 @@ RISK_RANGE=0.95
 # The range so that the AI should just all in because it's card is high enough and they don't have much money left
 DRAW=0.7
 WIN=0.6
+CALL_RANGE=0.2
 
 
 PLAYER = 2

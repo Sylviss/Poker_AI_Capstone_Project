@@ -5,7 +5,7 @@ from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN
 
 
 
-def action(self, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -15,14 +15,15 @@ def action(self, indicator, cur_call, last_raised, board_pot, cur_raise, num_pla
     Returns:
         action_function: return the function of the one who should do the actions
     """
+    self=players[index]
     if indicator == 0:
-        return self.action_human(cur_call, last_raised, board_pot, cur_raise)
+        return self.action_human(players, cur_call, last_raised, board_pot, cur_raise)
     elif indicator == 1:
         if self.name == "Player 1":
-            return self.action_human(cur_call, last_raised, board_pot, cur_raise)
-        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
+            return self.action_human(players, cur_call, last_raised, board_pot, cur_raise)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
     else:
-        return action_ai_model(self, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
 
 
 def print_blind_board(players, board, indicator=INDICATOR):
@@ -180,7 +181,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        players[index], indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -373,7 +374,7 @@ def game(num_players, init_money):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        players[index], indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -569,7 +570,7 @@ def fast_testing(num_players, init_money, model_list):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        players[index], indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1

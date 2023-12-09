@@ -15,7 +15,7 @@ def test_win_rate(n):
         d = defaultdict(lambda: 0)
         for t in range(n):
             blockPrint()
-            d[fast_testing(2,100,[0,1])] += 1
+            d[fast_testing(2,100,[0,2])] += 1
             enablePrint()
             print(t)
         for key in d:
@@ -25,7 +25,7 @@ def test_win_rate(n):
         
 def test_hacker():
     try:
-        game_but_cheaty(2,500,["10s","Js","Ad","Ah","As","Ac","Qs","Ks","Kh"])
+        game_but_cheaty(2,500,["4s","4d","Ad","10s","As","10d","4h","Ac","4c"])
     except KeyboardInterrupt:
         sys.exit()
         
@@ -34,4 +34,4 @@ def test_single_game():
     
 
 if __name__=="__main__":
-    test_single_game()
+    test_win_rate(20)

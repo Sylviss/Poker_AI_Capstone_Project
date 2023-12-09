@@ -147,19 +147,4 @@ def auto_predefined_game(num_players, player_1, board, turn, deck):
     elif win == self:
         return (0, 1)
     else:
-        return (1, 0)
-
-def starting_hand_evaluator(player, big_blind, num_players, last_raised, cur_call, board):
-    player_num=int(player.name[::-1][0])-1
-    if player_num>big_blind:
-        distance=player_num-big_blind
-    else:
-        distance=player_num+num_players-big_blind
-    if last_raised==None and board.money==int(cur_call*1.5):
-        pot_type=1
-    elif last_raised==None:
-        pot_type=2
-
-    
-    
-    
+        return (1, 0)    
