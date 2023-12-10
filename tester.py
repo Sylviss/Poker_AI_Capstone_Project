@@ -15,7 +15,7 @@ def test_win_rate(n):
         d = defaultdict(lambda: 0)
         for t in range(n):
             blockPrint()
-            d[fast_testing(2,100,[0,1])] += 1
+            d[fast_testing(2,1000,[0,1])] += 1
             enablePrint()
             print(t)
         for key in d:

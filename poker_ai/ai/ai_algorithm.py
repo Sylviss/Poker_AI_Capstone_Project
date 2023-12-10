@@ -63,11 +63,8 @@ def first_approach_mcs_and_prob_based_ai_agent(index, players, min_money, num_pl
     else:
         win, draw = multi_process_eval_func(player, num_players, board)
     draw += win
-    decides = []
-    for _ in range(DECIDER):
-        decides.append(random.random())
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
-    decide = 1 - (win * 0.75 + draw * 0.1 + sum(decides) / (DECIDER) * 0.15)
+    decide = 1 - (win * 0.75 + draw * 0.1 + random.random() * 0.15)
     if player.name in BLUFF_INDICATOR:
         if BLUFF_INDICATOR[player.name]<turn:
             randomized_value=random.random()
@@ -246,11 +243,8 @@ def second_approach_mcs_and_prob_based_ai_agent(index, players, min_money, num_p
     draw += win
     draw_rate = (1-(1-draw)*rule_dict[turn])*betted
     win_rate = (1-(1-win)*rule_dict[turn])*betted
-    decides = []
-    for _ in range(DECIDER):
-        decides.append(random.random())
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
-    decide = sum(decides) / (DECIDER)
+    decide = random.random()
     if decide > draw_rate:
         if 2 in actions:
             return [2]
