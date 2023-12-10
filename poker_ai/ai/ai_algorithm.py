@@ -2,6 +2,8 @@ import random
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func
 from poker_ai.constant import DECIDER,CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE
 
+BLUFF_INDICATOR={}
+
 def all_in_ai_agent(actions):
     """We do this for the meme
     """
@@ -27,7 +29,7 @@ def super_random_ai_agent(player, actions, cur_call, cur_raise):
         return [a,int(b)]
     return [a]
 
-def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+def first_approach_mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     """Return the actions that the AI do base on the list of actions that it can do.
 
     Args:
@@ -66,14 +68,28 @@ def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, a
         decides.append(random.random())
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + sum(decides) / (DECIDER) * 0.15)
-    
-    if decide >= win_rate:
+    if player.name in BLUFF_INDICATOR:
+        if BLUFF_INDICATOR[player.name]<turn:
+            randomized_value=random.random()
+            if last_raised is None:
+                bluff_range=BLUFF_RANGE[1]*2
+            else:
+                bluff_range=BLUFF_RANGE[0]*2
+            if randomized_value<bluff_range:
+                BLUFF_INDICATOR[player.name]=turn
+                decide = 0.29
+            else:
+                BLUFF_INDICATOR.pop(player.name)
+        else:   
+            BLUFF_INDICATOR.pop(player.name)
+    elif decide >= win_rate:
         randomized_value=random.random()
         if last_raised is None:
             bluff_range=BLUFF_RANGE[1]
         else:
             bluff_range=BLUFF_RANGE[0]
         if randomized_value<bluff_range:
+            BLUFF_INDICATOR[player.name]=turn
             decide = 0.29
     
     if decide > draw_rate:
@@ -105,10 +121,9 @@ def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, a
             if turn != 5:
                 if decide >= win_rate * 0.5:
                     if 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
-                        if player.money - (cur_call - player.pot) > 3 * cur_raise * raise_multipler[turn]:
+                        if player.money - (cur_call - player.pot) > 2.5 * cur_raise * raise_multipler[turn]:
                             cur_raise*=raise_multipler[turn]
-                            raise_value = cur_raise + cur_raise * (
-                                        (1 + random.random()) ** (1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE))))
+                            raise_value = 2.5*cur_raise
                         
                         else:
                             raise_value = cur_raise + (random.random() ** 2) * (
@@ -127,9 +142,7 @@ def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, a
                     if 4 in actions:
                         if player.money - (cur_call - player.pot) > 6 * cur_raise * raise_multipler[turn]:
                             cur_raise*=raise_multipler[turn]
-                            raise_value = 3*cur_raise + cur_raise * (
-                                        (2 + random.random()) ** (1 - (decide - win_rate * (CONFIDENT_RANGE)) / win_rate * (
-                                            0.5 - CONFIDENT_RANGE)))
+                            raise_value = 3*cur_raise
                         else:
                             raise_value = cur_raise + random.random() * (
                                         player.money - cur_call + player.pot - cur_raise) * (
@@ -142,10 +155,9 @@ def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, a
                         return [1]
                 else:
                     if 4 in actions:
-                        if player.money - (cur_call - player.pot) > 6 * cur_raise * raise_multipler[turn]:
+                        if player.money - (cur_call - player.pot) > 3.5 * cur_raise * raise_multipler[turn]:
                             cur_raise*=raise_multipler[turn]
-                            raise_value = 3*cur_raise + cur_raise * (
-                                        (2 + random.random()) ** (1 - decide / win_rate * CONFIDENT_RANGE))
+                            raise_value = 3.5*cur_raise
                         else:
                             raise_value = cur_raise + (player.money - cur_call + player.pot - cur_raise) * (
                                         1 - decide / win_rate * CONFIDENT_RANGE)
@@ -200,7 +212,166 @@ def mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, a
             else:
                 return [5]
                 
-def mcts_ai_model(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+def second_approach_mcs_and_prob_based_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+    """Return the actions that the AI do base on the list of actions that it can do.
+
+    Args:
+        player (poker_ai.poker.poker_component.Player()): the Player object of the AI , which contains the hand cards.
+        num_players (int): the number of active player in the game. Required as the chance of winning decrese when the table has more player.
+        board (poker_ai.poker.poker_component.Player()): the Player object of the board, which contains the community cards.
+        actions (list(int)): the list of actions that the AI can do, represent by integers.
+        cur_call (int): current call value of the phase.
+        cur_raise (int): current raise value of the phase.
+        mul_indicator (int): use multi-process evaluation function or not.
+
+    Returns:
+        int: the actions that the AI do.
+    """ 
+    player=players[index]
+    rule_dict={0:0.85,3:0.9,4:0.95,5:1}
+    betted_dict={0:1,1:0.95}
+    if last_raised is None:
+        betted=betted_dict[0]
+    else:
+        betted=betted_dict[1]
+    turn = len(board.hand.cards)
+    if betted==1:
+        raise_multipler={0:1,3:1.5,4:2,5:2.5}
+    else:
+        raise_multipler={0:1,3:1,4:1,5:1}
+    if mul_indicator == 0:
+        win, draw = eval_func(player, num_players, board)
+    else:
+        win, draw = multi_process_eval_func(player, num_players, board)
+    draw += win
+    draw_rate = (1-(1-draw)*rule_dict[turn])*betted
+    win_rate = (1-(1-win)*rule_dict[turn])*betted
+    decides = []
+    for _ in range(DECIDER):
+        decides.append(random.random())
+    pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
+    decide = sum(decides) / (DECIDER)
+    if decide > draw_rate:
+        if 2 in actions:
+            return [2]
+        else:
+            return [5]
+    elif decide <= draw_rate and decide >= win_rate:
+        if 2 in actions:
+            return [2]
+        elif 3 in actions and pot_odd < 1 - decide:
+            if cur_call - player.pot <= CALL_RANGE * player.money:
+                return [3]
+            else:
+                return [5]
+        else:
+            return [5]
+    elif decide >= win_rate * (1 - CONFIDENT_RANGE):
+        if player.money < RISK_RANGE * board.pot:
+            return [1]
+        elif 3 in actions and pot_odd < 1 - decide:
+            return [3]
+        elif 2 in actions:
+            return [2]
+        else:
+            return [5]
+    else:
+        if min_money!=0:
+            if turn != 5:
+                if decide >= win_rate * 0.5:
+                    if 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
+                        if player.money - (cur_call - player.pot) > 2.5 * cur_raise * raise_multipler[turn]:
+                            cur_raise*=raise_multipler[turn]
+                            raise_value = 2.5*cur_raise
+                        
+                        else:
+                            raise_value = cur_raise + (random.random() ** 2) * (
+                                        player.money - cur_call + player.pot - cur_raise) * (
+                                                    1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE)))
+                        return [4, min(int(raise_value),min_money)]
+                    elif player.money < RISK_RANGE * board.pot:
+                        return [1]
+                    elif 3 in actions:
+                        return [3]
+                    elif 2 in actions:
+                        return [2]
+                    else:
+                        return [5]
+                elif decide >= win_rate * CONFIDENT_RANGE:
+                    if 4 in actions:
+                        if player.money - (cur_call - player.pot) > 6 * cur_raise * raise_multipler[turn]:
+                            cur_raise*=raise_multipler[turn]
+                            raise_value = 3*cur_raise
+                        else:
+                            raise_value = cur_raise + random.random() * (
+                                        player.money - cur_call + player.pot - cur_raise) * (
+                                                    1 - (decide - win_rate * (CONFIDENT_RANGE)) / win_rate * (
+                                                        0.5 - CONFIDENT_RANGE))
+                        return [4, min(int(raise_value),min_money)]
+                    elif 6 in actions:
+                        return [6]
+                    else:
+                        return [1]
+                else:
+                    if 4 in actions:
+                        if player.money - (cur_call - player.pot) > 3.5 * cur_raise * raise_multipler[turn]:
+                            cur_raise*=raise_multipler[turn]
+                            raise_value = 3.5*cur_raise
+                        else:
+                            raise_value = cur_raise + (player.money - cur_call + player.pot - cur_raise) * (
+                                        1 - decide / win_rate * CONFIDENT_RANGE)
+                        return [4, min(int(raise_value),min_money)]
+                    else:
+                        return [1]
+            else:
+                if decide >= win_rate * 0.5:
+                    if 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
+                        raise_value = cur_raise + random.random() * (
+                                    player.money - cur_call + player.pot - cur_raise) * (
+                                                1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE)))
+                        return [4, min(int(raise_value),min_money)]
+                    elif player.money < RISK_RANGE * board.pot:
+                        return [1]
+                    elif 3 in actions:
+                        return [3]
+                    elif 2 in actions:
+                        return [2]
+                    elif 6 in actions:
+                        return [6]
+                    else:
+                        return [5]
+                elif decide >= win_rate * CONFIDENT_RANGE:
+                    if 4 in actions:
+                        raise_value = cur_raise + (0.25 + random.random() * 0.75) * (
+                                    player.money - cur_call + player.pot - cur_raise) * (
+                                                    1 - (decide - win_rate * (CONFIDENT_RANGE)) / win_rate * (
+                                                        0.5 - CONFIDENT_RANGE))
+                        return [4, min(int(raise_value),min_money)]
+                    elif 6 in actions:
+                        return [6]
+                    else:
+                        return [1]
+                else:
+                    if 4 in actions:
+                        raise_value = cur_raise + (0.5 + random.random() * 0.5) * (
+                                    player.money - cur_call + player.pot - cur_raise) * (
+                                                    1 - decide / win_rate * CONFIDENT_RANGE)
+                        return [4, min(int(raise_value),min_money)]
+                    elif 6 in actions:
+                        return [6]
+                    else:
+                        return [1]
+        else:
+            if 2 in actions:
+                return [2]
+            elif 3 in actions:
+                return [3]
+            elif decide < win_rate * 0.5:
+                return [1]
+            else:
+                return [5]
+
+def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     return 0
 
 def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind):
@@ -239,14 +410,17 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
-        agent = mcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
+        agent = first_approach_mcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised)
     elif model == 1:
+        agent = second_approach_mcs_and_prob_based_ai_agent(index,players,min_money, num_players, board,
+                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised)
+    elif model == 4:
         agent = super_random_ai_agent(self, checkout, cur_call, cur_raise)
-    elif model == 2:
-        agent = all_in_ai_agent(checkout)
     elif model == 3:
-        agent = mcts_ai_model(index, players, min_money, num_players, board, 
+        agent = all_in_ai_agent(checkout)
+    elif model == 2:
+        agent = mcts_ai_agent(index, players, min_money, num_players, board, 
                               checkout, cur_call, cur_raise, mul_indicator, big_blind, last_raised)
     else:
         raise ValueError("Invalid AI model specified.")

@@ -24,12 +24,17 @@ Used package:
 - [x] Simple warmup and learn to use Github
 - [x] Find some material
 - [x] Implement the basic UI and game structure
-- [o] Implement the AI:
-    - [x] Implement the evaluate function using Monte-Carlo simulations
+- [ ] Implement the AI:
+    - [x] Implement the evaluate function using simple Monte-Carlo simulations
     - [x] Implement the Monte-Carlo simulation and probability-based AI
     - [ ] Implement the Monte-Carlo tree search-based AI
-    - [ ] Implement a supervised learning to improve the two mentioned above AI
     - [ ] Implement a reinforcement learning for opponent modelling in the Monte-Carlo simulations
+        - [ ] Improve the simulations so that it is not just straight all-in simulations.
+        - [ ] Using opponent modelling to implement enumeration weighting, improving the CALL_CONFIDENT and the simulation itself (2.5.2.4, 2.6)
+        - [ ] After enumeration weighting, use selective sampling to only simulate cases that have high weight to be relevant.
+        - [ ] Implement adaptive sampling based on the current game state, opponents' behaviors, or other relevant factors.
+    - [ ] Implement a supervised learning to calculate all constant that is relevant in the two above AI. 99% we will be using linear regression, because the function is a polynomial function.
+- [ ] Implement a performance evaluation
 - [x] Drink some water
 - [x] Touch the grass
 

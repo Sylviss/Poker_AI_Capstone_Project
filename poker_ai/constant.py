@@ -24,7 +24,7 @@ MULTIPROCESS = 1
 TURN_TO_RAISE_POT = 5
 # Number of turns to increase the big blind pre-bet
 
-DECIDER = 10
+DECIDER = 2
 CONFIDENT_RANGE = 0.3  
 # should be < 0.5
 RISK_RANGE=0.95

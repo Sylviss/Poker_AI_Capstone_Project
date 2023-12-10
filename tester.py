@@ -15,7 +15,7 @@ def test_win_rate(n):
         d = defaultdict(lambda: 0)
         for t in range(n):
             blockPrint()
-            d[fast_testing(2,100,[0,2])] += 1
+            d[fast_testing(2,100,[0,1])] += 1
             enablePrint()
             print(t)
         for key in d:
@@ -34,4 +34,4 @@ def test_single_game():
     
 
 if __name__=="__main__":
-    test_win_rate(20)
+    test_win_rate(50)

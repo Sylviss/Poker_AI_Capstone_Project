@@ -3,9 +3,8 @@ import multiprocessing
 from poker_ai.poker.poker_component import Player, Hand, Deck
 from poker_ai.constant import DEEPNESS,CONFIDENT_RATE
 
-
 def multi_process_eval_func(player, num_players, board):
-    """Return the winning/tie chance of a hand, using Monte-Carlo simulations and simple Bayes belief network. AND it's multiprocess
+    """Return the winning/tie chance of a hand, using Monte-Carlo simulations. AND it's multiprocess
 
     Args:
         num_players (int): the number of active player in the game. Required as the chance of winning decrese when the table has more player.
@@ -46,8 +45,6 @@ def multi_process_eval_func(player, num_players, board):
                 draw += result[x][1]
         return (win/DEEPNESS, draw/DEEPNESS)
 
-
-
 def singly_function(player, num_players, board, state):
     temp_board = Player(Hand(), "Board", 0)
     temp_board.hand.cards = board.hand.cards[:]
@@ -58,9 +55,8 @@ def singly_function(player, num_players, board, state):
         deck.remove_card(card)
     return auto_predefined_game(num_players, player, temp_board, state, deck)
 
-
 def eval_func(player, num_players, board):
-    """Return the winning/tie chance of a hand, using Monte-Carlo simulations and simple Bayes belief network.
+    """Return the winning/tie chance of a hand, using Monte-Carlo simulations.
 
     Args:
         num_players (int): the number of active player in the game. Required as the chance of winning decrese when the table has more player.
@@ -121,8 +117,7 @@ def eval_func(player, num_players, board):
             win += temp[0]
             draw += temp[1]
     return (win/DEEPNESS, draw/DEEPNESS)
-
-
+    
 def auto_predefined_game(num_players, player_1, board, turn, deck):
     """Return the result of a auto game, where the AI cards and some(or none/all) of the community cards are dealt, and all the others
         player's cards are unknown. The other's card and the leftover community cards will be randomized.
@@ -169,3 +164,4 @@ def auto_predefined_game(num_players, player_1, board, turn, deck):
         return (0, 1)
     else:
         return (1, 0)    
+    
