@@ -1,4 +1,5 @@
 import re
+import json
 
 def parse_data(game_data: str) -> dict:
     pattern = r"PokerStars Hand #(\d+): Hold'em No Limit \(50/100\) - (.+)\n"
@@ -18,7 +19,6 @@ def parse_data(game_data: str) -> dict:
         'start_money': int(match[2])
     } for match in player_matches]
     players_name = [match[1] for match in player_matches]
-    print(players_name)
     
     # Extract blind info
     small_blind, small_blind_value = re.findall(
@@ -86,9 +86,13 @@ def parse_data(game_data: str) -> dict:
     winners = re.findall(winner_pattern, turns[-1])
     win_money = int(re.search(r'Total pot (\d+)', game_data).group(1))
 
-        
-
-
+    # Extract cards on beard
+    board_pattern = r'Board \[(.*?)\]'
+    board_match = re.search(board_pattern, game_data)
+    if board_match:
+        board = board_match.group(1).split()
+    else:
+        board = []
 
 
     parsed_data = {
@@ -101,14 +105,16 @@ def parse_data(game_data: str) -> dict:
         'big_blind_value': int(big_blind_value),
         'actions': actions,
         'win_money': win_money,
-        'winners': winners
+        'winners': winners,
+        'board': board
     }
 
     return parsed_data
 
 
-
 with open('poker_ai/datasets/small_dataset.txt', 'r') as f:
     data = f.read().strip()
 parsed_data = parse_data(data)
-print(parsed_data)
+
+# For checking, or just use vscode's debugger
+print(json.dumps(parsed_data, indent=4))
