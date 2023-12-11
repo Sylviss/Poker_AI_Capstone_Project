@@ -101,7 +101,6 @@ class Deck:
             hands_list.append(a)
         return hands_list
 
-
 class Player:
 
     def __init__(self, hand, name, money, state=-1, model=MODEL):
@@ -123,12 +122,16 @@ class Player:
         6: Out of table
         + model: AI model, default is -1 (human)
         """
+        self.mcts_tree=None
+        self.weighted_dict={}
+        self.opponent_prob_dict={}
+        self.ml_data=None
 
     def __str__(self):
         hand = self.hand.printhand()
         return f"{self.name}: {self.money}$\n" + hand + "\n"
 
-    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise):
+    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger):
         """
             types of number:
             1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
@@ -187,6 +190,7 @@ class Player:
             break
 
         if action == 1:
+            gamelogger.keylogging(self, [1])
             if self.money <= cur_call-self.pot:
                 ans = self.all_in_1(cur_call, last_raised,
                                     board_pot, cur_raise)
@@ -195,9 +199,11 @@ class Player:
                                     board_pot, cur_raise)
                 
         elif action == 2:
+            gamelogger.keylogging(self, [2])
             ans = self.check(cur_call, last_raised, board_pot, cur_raise)
 
         elif action == 3:
+            gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money])
             ans = self.call(cur_call, last_raised, board_pot, cur_raise)
 
         elif action == 4:
@@ -212,11 +218,14 @@ class Player:
                     continue
                 ans = self.raise_money(
                     b, cur_call, last_raised, board_pot, cur_raise)
+                gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money])
                 break
 
         elif action == 5:
+            gamelogger.keylogging(self, [5])
             ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
         elif action == 6:
+            gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money])
             ans = self.raise_money(
                     min_money, cur_call, last_raised, board_pot, cur_raise)
         return ans
@@ -527,3 +536,115 @@ def card_to_str(card):
     rank = reverse_rank_dicts[card.rank]
     suit = reverse_suit_dicts[card.suit]
     return rank + suit
+
+def int_to_card(a):
+    if a%13==0:
+        suit=a//13-1
+        rank=13
+    else:
+        rank=a%13
+        suit=a//13
+    return Card(rank,suit)
+
+class Gamelogger:
+    def __init__(self,players):
+        """Explain for keylogging:
+        There are much more stage than normal, because raise 1$ and all in in much different. The action can be changed into different case like this:
+        1: All in -  5: Raise high
+        2: Check -   1: Check
+        3: Call: depend on the money
+        we have 2 stages for call
+                     2: Call min-med
+                     3: Call high
+        4: Raise: depend on the money
+        we have 3 stages for raise:
+                     4: Raise min
+                     5: Raise med
+                     6: Raise high
+        5: Fold  -   7: Fold
+        6: Raise max
+        this is the same as raise, as raise max for one people is just a little bit of money, when with others it's their whole stash.
+    
+        """
+        self.history={player.name:{} for player in players}
+        self.action_count=0
+        self.raise_number=0
+        self.cur_turn=-1
+    
+    def next_turn(self):
+        match self.cur_turn:
+            case -1:
+                self.cur_turn=0
+            case 0:
+                self.cur_turn=3
+            case 3:
+                self.cur_turn=4
+            case 4:
+                self.cur_turn=5
+            case _:
+                raise WTF
+        self.raise_number=0
+        for name in self.history:
+            self.history[name][self.cur_turn]=[]
+        
+    def keylogging(self, player, action):
+        self.action_count+=1
+        match action[0]:
+            case 1:
+                action_logged=6
+            case 2:
+                action_logged=1
+            case 3:
+                ratio=action[1]
+                if ratio<0.2:
+                    action_logged=2
+                else:
+                    action_logged=3
+            case 4:
+                ratio=action[1]
+                match self.raise_number:
+                    case 0:
+                        if ratio<0.2:
+                            action_logged=4
+                        elif ratio<0.4:
+                            action_logged=5
+                        else:
+                            action_logged=6
+                    case 1:
+                        if ratio<0.4:
+                            action_logged=5
+                        else:
+                            action_logged=6
+                    case 2:
+                        if ratio<0.4:
+                            action_logged=5
+                        else:
+                            action_logged=6
+                    case _:
+                        action_logged=6
+                self.raise_number+=1
+            case 5:
+                action_logged=7
+            case 6:
+                ratio=action[1]
+                match self.raise_number:
+                    case 0:
+                        if ratio<0.3:
+                            action_logged=4
+                        elif ratio<0.5:
+                            action_logged=5
+                        else:
+                            action_logged=6
+                    case 1:
+                        if ratio<0.3:
+                            action_logged=5
+                        else:
+                            action_logged=6
+                    case _:
+                        action_logged=6
+                self.raise_number+=1
+            case _:
+                raise WTF
+        self.history[player.name][self.cur_turn].append(action_logged)
+        
+        

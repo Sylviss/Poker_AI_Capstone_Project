@@ -165,3 +165,51 @@ def auto_predefined_game(num_players, player_1, board, turn, deck):
     else:
         return (1, 0)    
     
+def create_enumerate_dict(player, board, turn):
+    deck=Deck()
+    for card in player.hand.cards:
+        deck.remove_card(card)
+    for card in board.hand.cards:
+        deck.remove_card(card)
+    weight_dict={}
+    prob_dict={}
+    deepness=DEEPNESS//500
+    with multiprocessing.Pool() as pool:
+        result=pool.starmap(single_solo_game,[(player, card1, card2, board, deck, turn) for card1 in range(0,50-turn) for card2 in range(card1+1,50-turn) for _ in range(deepness)])
+        for hand,value in result:
+            if hand in prob_dict:
+                weight_dict[hand]+=value/deepness
+            else:
+                weight_dict[hand]=value/deepness
+                prob_dict[hand]=2/(50*51)
+    return (weight_dict,prob_dict)
+
+def enumerate_func(player,opponent_index):
+    return sum(player.weighted_dict[opponent_index][key]*player.opponent_prob_dict[opponent_index][key] for key in player.weighted_dict[opponent_index])
+
+def update_enumerate_dict(player, board, turn, gamelogger):
+    pass
+
+def single_solo_game(player, card1, card2, board, deck, turn):
+    card_1=deck.cards[card1]
+    card_2=deck.cards[card2]
+    temp_deck=Deck()
+    temp_deck.cards=deck.cards[:]
+    temp_deck.remove_card(card_1)
+    temp_deck.remove_card(card_2)
+    opponent_hand=Hand()
+    opponent_hand.add_card(card_1)
+    opponent_hand.add_card(card_2)
+    temp_board=Player(Hand(),"",0)
+    temp_board.hand.cards=board.hand.cards[:]
+    temp_deck.shuffle()
+    for _ in range(turn,5):
+        temp_board.hand.add_card(temp_deck.deal_cards())
+    self = player.hand.create_poker(temp_board.hand).check()
+    other = opponent_hand.create_poker(temp_board.hand).check()
+    hand_str=opponent_hand.printhandsimple()
+    if self>other:
+        return (hand_str,1)
+    if self==other:
+        return (hand_str,0)
+    return (hand_str,-1)

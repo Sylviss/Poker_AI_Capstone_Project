@@ -5,7 +5,7 @@ from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN
 
 
 
-def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -17,13 +17,13 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
     """
     self=players[index]
     if indicator == 0:
-        return self.action_human(players, cur_call, last_raised, board_pot, cur_raise)
+        return self.action_human(players, cur_call, last_raised, board_pot, cur_raise, gamelogger)
     elif indicator == 1:
         if self.name == "Player 1":
-            return self.action_human(players, cur_call, last_raised, board_pot, cur_raise)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
+            return self.action_human(players, cur_call, last_raised, board_pot, cur_raise, gamelogger)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger)
     else:
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger)
 
 
 def print_blind_board(players, board, indicator=INDICATOR):
@@ -93,6 +93,7 @@ def game_but_cheaty(num_players, init_money, cards):
             None, f"Player {x+1}", init_money))
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
+        gamelogger=poker_component.Gamelogger(players)
         if count % TURN_TO_RAISE_POT == 1:
             preflop_big_blind_value = PREFLOP_BIG_BLIND * \
                 int((2**(count//TURN_TO_RAISE_POT)))
@@ -114,6 +115,7 @@ def game_but_cheaty(num_players, init_money, cards):
         turn = ["Preflop", "Flop", "Turn", "River"]
         folded = 0
         for k in range(4):
+            gamelogger.next_turn()
             if k != 0:
                 last_raised, cur_raise = None, preflop_big_blind_value
                 for player in players:
@@ -168,7 +170,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -286,6 +288,7 @@ def game(num_players, init_money):
             None, f"Player {x+1}", init_money))
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
+        gamelogger=poker_component.Gamelogger(players)
         if count % TURN_TO_RAISE_POT == 1:
             preflop_big_blind_value = PREFLOP_BIG_BLIND * \
                 int((2**(count//TURN_TO_RAISE_POT)))
@@ -303,6 +306,7 @@ def game(num_players, init_money):
         turn = ["Preflop", "Flop", "Turn", "River"]
         folded = 0
         for k in range(4):
+            gamelogger.next_turn()
             if k != 0:
                 last_raised, cur_raise = None, preflop_big_blind_value
                 for player in players:
@@ -357,7 +361,7 @@ def game(num_players, init_money):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -478,6 +482,7 @@ def fast_testing(num_players, init_money, model_list):
             None, f"Player {x+1}", init_money,model=model_list[x]))
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
+        gamelogger=poker_component.Gamelogger(players)
         if count % TURN_TO_RAISE_POT == 1:
             preflop_big_blind_value = PREFLOP_BIG_BLIND * \
                 int((2**(count//TURN_TO_RAISE_POT)))
@@ -495,6 +500,7 @@ def fast_testing(num_players, init_money, model_list):
         turn = ["Preflop", "Flop", "Turn", "River"]
         folded = 0
         for k in range(4):
+            gamelogger.next_turn()
             if k != 0:
                 last_raised, cur_raise = None, preflop_big_blind_value
                 for player in players:
@@ -549,7 +555,7 @@ def fast_testing(num_players, init_money, model_list):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1

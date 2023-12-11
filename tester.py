@@ -32,6 +32,9 @@ def test_hacker():
 def test_single_game():
     print(fast_testing(5,500,[0,1,1,1,1]))
     
+def test_module():
+    fast_testing(2,100000000,[1,-1])
+    
 
 if __name__=="__main__":
-    test_win_rate(50)
+    test_module()
