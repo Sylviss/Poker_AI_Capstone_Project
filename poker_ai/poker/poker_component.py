@@ -124,10 +124,14 @@ class Player:
         6: Out of table
         + model: AI model, default is -1 (human)
         """
+        # Used for storing mcts data
         self.mcts_tree=None
+        # Used for storing enumerating data
         self.weighted_dict={}
         self.opponent_prob_dict={}
         self.opponent_can_act={}
+        self.opponent_ingame={}
+        # Used for storing machine learning data
         self.ml_data=None
 
     def __str__(self):
@@ -567,7 +571,6 @@ class Gamelogger:
         5: Fold  -   7: Fold
         6: Raise max
         this is the same as raise, as raise max for one people is just a little bit of money, when with others it's their whole stash.
-    
         """
         self.history=[]
         self.action_history={player.name:0 for player in players if player.state!=6}
@@ -649,5 +652,3 @@ class Gamelogger:
             case _:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))
-        
-        
