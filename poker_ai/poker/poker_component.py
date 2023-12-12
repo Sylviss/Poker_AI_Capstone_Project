@@ -43,6 +43,8 @@ class Card:
 
     def __eq__(self, other):
         return self.rank == other.rank and self.suit == other.suit
+    def __lt__(self, other):
+        return self.rank + self.suit*13<other.rank + other.suit*13
 
 
 class Deck:
@@ -125,6 +127,7 @@ class Player:
         self.mcts_tree=None
         self.weighted_dict={}
         self.opponent_prob_dict={}
+        self.opponent_can_act={}
         self.ml_data=None
 
     def __str__(self):
@@ -550,7 +553,7 @@ class Gamelogger:
     def __init__(self,players):
         """Explain for keylogging:
         There are much more stage than normal, because raise 1$ and all in in much different. The action can be changed into different case like this:
-        1: All in -  5: Raise high
+        1: All in -  8: All in
         2: Check -   1: Check
         3: Call: depend on the money
         we have 2 stages for call
@@ -566,11 +569,12 @@ class Gamelogger:
         this is the same as raise, as raise max for one people is just a little bit of money, when with others it's their whole stash.
     
         """
-        self.history={player.name:{} for player in players}
+        self.history=[]
+        self.action_history={player.name:0 for player in players if player.state!=6}
         self.action_count=0
         self.raise_number=0
-        self.cur_turn=-1
-    
+        self.cur_turn=-1   
+        
     def next_turn(self):
         match self.cur_turn:
             case -1:
@@ -584,14 +588,13 @@ class Gamelogger:
             case _:
                 raise WTF
         self.raise_number=0
-        for name in self.history:
-            self.history[name][self.cur_turn]=[]
         
     def keylogging(self, player, action):
+        self.action_history[player.name]=self.cur_turn
         self.action_count+=1
         match action[0]:
             case 1:
-                action_logged=6
+                action_logged=8
             case 2:
                 action_logged=1
             case 3:
@@ -645,6 +648,6 @@ class Gamelogger:
                 self.raise_number+=1
             case _:
                 raise WTF
-        self.history[player.name][self.cur_turn].append(action_logged)
+        self.history.append((player.name,self.cur_turn,action_logged))
         
         

@@ -1,6 +1,6 @@
 import random
-from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_enumerate_dict
-from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE
+from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
+from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED_DICT
 
 BLUFF_INDICATOR={}
 
@@ -51,15 +51,13 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     - The result of the rule-based AI agent's decision-making process.
     """
     player=players[index]
-    rule_dict={0:0.85,3:0.9,4:0.95,5:1}
-    betted_dict={0:1,1:0.95}
     if last_raised is None:
-        betted=betted_dict[0]
+        betted=BETTED_DICT[0]
     else:
-        betted=betted_dict[1]
+        betted=BETTED_DICT[1]
     turn = len(board.hand.cards)
-    draw_rate = (1-(1-DRAW)*rule_dict[turn])*betted
-    win_rate = (1-(1-WIN)*rule_dict[turn])*betted
+    draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
+    win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
     if betted==1:
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
     else:
@@ -120,12 +118,10 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     """
     
     player=players[index]
-    rule_dict={0:0.85,3:0.9,4:0.95,5:1}
-    betted_dict={0:1,1:0.95}
     if last_raised is None:
-        betted=betted_dict[0]
+        betted=BETTED_DICT[0]
     else:
-        betted=betted_dict[1]
+        betted=BETTED_DICT[1]
     turn = len(board.hand.cards)
     if betted==1:
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
@@ -136,8 +132,8 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     else:
         win, draw = multi_process_eval_func(player, num_players, board)
     draw += win
-    draw_rate = (1-(1-draw)*rule_dict[turn])*betted
-    win_rate = (1-(1-win)*rule_dict[turn])*betted
+    draw_rate = (1-(1-draw)*RULE_DICT[turn])*betted
+    win_rate = (1-(1-win)*RULE_DICT[turn])*betted
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = random.random()
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
@@ -155,31 +151,36 @@ class MCTS_Node:
         self.fold=None
 
 def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
-    betted_dict={0:1,1:0.95}
     if last_raised is None:
-        betted=betted_dict[0]
+        betted=BETTED_DICT[0]
     else:
-        betted=betted_dict[1]
+        betted=BETTED_DICT[1]
     if betted==1:
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
     else:
         raise_multipler={0:1,3:1,4:1,5:1}
-    player=players[index]
     turn = len(board.hand.cards)
+    draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
+    win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
+    player=players[index]
     if turn==0:
         player.weighted_dict={}
-        player.opponent_prob_dict={}
-        weight_dict,prob_dict=create_enumerate_dict(player, board, turn)
-        for k in range(num_players):
-            if k!=index:
-                player.weighted_dict[players[k].name]=weight_dict.copy()
-                player.opponent_prob_dict[players[k].name]=prob_dict.copy()
+        player.opponent_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_can_act={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.weighted_dict[turn],prob_dict=create_enumerate_dict(player, board, turn)
+        for opponent in players:
+            if opponent.state!=6 and opponent.name!=player.name:
+                player.opponent_prob_dict[opponent.name][0]=prob_dict.copy()
+        update_prob_dict(player, turn, gamelogger)
     else:
-        update_enumerate_dict(player, board, turn, gamelogger)
-    hs_list=[]
-    for opponent_index in player.weighted_dict:
-        hs_list.append(enumerate_func(player,opponent_index))
-        
+        update_weighted_dict(player, board, turn, gamelogger)
+        update_prob_dict(player, turn, gamelogger)
+    hs_dict={}
+    for opponent_index in player.opponent_can_act:
+        if player.opponent_can_act[opponent_index]:
+            hs_dict[opponent_index]=enumerate_func(player,opponent_index,gamelogger)
+    decide=0.5
+    print(hs_dict)
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     return rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot_odd, cur_call, cur_raise, min_money, turn, raise_multipler, big_blind_value)
 

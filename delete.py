@@ -15,7 +15,7 @@ def main():
                 # board.hand.add_card(Card(2,3))
                 x,y=create_enumerate_dict(a,board,0)
                 a.weighted_dict[1],a.opponent_prob_dict[1]=x.copy(),y.copy()
-                print(hehe,eval_func(a,3,board),enumerate_func(a,1))
+                print(hehe,eval_func(a,6,board),enumerate_func(a,1))
             else:
                 a=Player(Hand(),"0",0)
                 board=Player(Hand(),"0",0)
@@ -27,6 +27,6 @@ def main():
                 # board.hand.add_card(Card(2,3))
                 x,y=create_enumerate_dict(a,board,0)
                 a.weighted_dict[1],a.opponent_prob_dict[1]=x.copy(),y.copy()
-                print(hehe,eval_func(a,5,board),enumerate_func(a,1))
+                print(hehe,eval_func(a,6,board),enumerate_func(a,1))
 if __name__=="__main__":
     main()
