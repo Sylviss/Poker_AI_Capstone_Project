@@ -102,3 +102,50 @@ Uncalled bet (150) returned to MrBlonde
 MrBlonde collected 250.0 from pot
 *** SUMMARY ***
 Total pot 250 | Rake 0
+
+
+PokerStars Hand #100061: Hold'em No Limit (50/100) - 2019/07/12 03:47:41 ET
+Table 'Pluribus Session 100' 6-max (Play Money) Seat #6 is the button
+Seat 1: MrBlonde (10000 in chips)
+Seat 2: MrWhite (10000 in chips)
+Seat 3: MrPink (10000 in chips)
+Seat 4: MrBrown (10000 in chips)
+Seat 5: Pluribus (10000 in chips)
+Seat 6: MrBlue (10000 in chips)
+MrBlonde: posts small blind 50
+MrWhite: posts big blind 100
+*** HOLE CARDS ***
+Dealt to MrBlonde [Ts Th]
+Dealt to MrWhite [3c 2d]
+Dealt to MrPink [2c Ad]
+Dealt to MrBrown [7s Qs]
+Dealt to Pluribus [As Ah]
+Dealt to MrBlue [5d 5c]
+MrPink: folds
+MrBrown: folds
+Pluribus: raises 100 to 200
+MrBlue: calls 200
+MrBlonde: raises 1050 to 1250
+MrWhite: folds
+Pluribus: calls 1050
+MrBlue: calls 1050
+*** FLOP *** [Qh Kc 5h]
+MrBlonde: checks
+Pluribus: bets 1925
+MrBlue: calls 1925
+MrBlonde: folds
+*** TURN *** [Qh Kc 5h] [Ks]
+Pluribus: checks
+MrBlue: checks
+*** RIVER *** [Qh Kc 5h] [Ks] [6s]
+Pluribus: checks
+MrBlue: bets 6825 and is all-in
+Pluribus: calls 6825 and is all-in
+*** SHOWDOWN ***
+MrBlue: shows [5d 5c]
+MrBlue collected 21350.0 from pot
+*** SUMMARY ***
+Total pot 21350 | Rake 0
+Board [Qh Kc 5h Ks 6s]
+Seat 5: Pluribus showed [As Ah] and lost
+Seat 6: MrBlue showed [5d 5c] and won (21350.0)
