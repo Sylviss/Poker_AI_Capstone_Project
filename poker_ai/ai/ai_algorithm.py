@@ -138,18 +138,6 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     decide = random.random()
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
 
-class MCTS_Node:
-    def __init__(self,turn):
-        self.win=0
-        self.visit_count=0
-        self.turn=turn
-        self.raise_min=None
-        self.raise_mid=None
-        self.raise_high=None
-        self.call=None
-        self.check=None
-        self.fold=None
-
 def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
     if last_raised is None:
         betted=BETTED_DICT[0]
@@ -354,7 +342,18 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
                 return [1]
             else:
                 return [5]
-        
+
+class MCTS_Node:
+    def __init__(self,turn):
+        self.win=0
+        self.visit_count=0
+        self.turn=turn
+        self.raise_min=None
+        self.raise_mid=None
+        self.raise_high=None
+        self.call=None
+        self.check=None
+        self.fold=None        
     
 def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     
