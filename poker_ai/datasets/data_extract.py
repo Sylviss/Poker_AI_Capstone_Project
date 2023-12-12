@@ -154,10 +154,13 @@ def parse_data(data: str) -> list:
         result.append(single_parse_data(d.strip()))
     return result
 
+def main():
+    with open('poker_ai/datasets/small_dataset.txt', 'r') as f:
+        data = f.read().strip()
+    parsed_data = parse_data(data)
 
-with open('poker_ai/datasets/small_dataset.txt', 'r') as f:
-    data = f.read().strip()
-parsed_data = parse_data(data)
+    # For checking
+    print(*parsed_data, sep='\n\n')
 
-# For checking
-print(*parsed_data, sep='\n\n')
+if __name__=="__main__":
+    main()

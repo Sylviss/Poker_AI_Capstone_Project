@@ -233,7 +233,8 @@ def update_prob_dict(player, turn, gamelogger):
                 if opponent_action_turn==turn:     
                     if action==7:
                         player.opponent_can_act[opponent_name]=False
-                        break
+                        player.opponent_ingame[opponent_name]=False
+                        continue
                     elif action==8:
                         player.opponent_can_act[opponent_name]=False
                         top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
@@ -287,7 +288,7 @@ def update_prob_dict(player, turn, gamelogger):
                             raise ValueError("The turn value in update_prob_dict is wrong")
                     if action==7:
                         player.opponent_can_act[opponent_name]=False
-                        break
+                        continue
                     elif action==8:
                         player.opponent_can_act[opponent_name]=False
                         top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]

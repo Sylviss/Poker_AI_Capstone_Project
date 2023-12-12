@@ -167,6 +167,7 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
         player.weighted_dict={}
         player.opponent_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
         player.opponent_can_act={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_ingame={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
         player.weighted_dict[turn],prob_dict=create_enumerate_dict(player, board, turn)
         for opponent in players:
             if opponent.state!=6 and opponent.name!=player.name:
@@ -177,11 +178,38 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
         update_prob_dict(player, turn, gamelogger)
     hs_dict={}
     for opponent_index in player.opponent_can_act:
-        if player.opponent_can_act[opponent_index]:
+        if player.opponent_ingame[opponent_index]:
             hs_dict[opponent_index]=enumerate_func(player,opponent_index,gamelogger)
-    decide=0.5
-    print(hs_dict)
+    # print(hs_dict,player.opponent_ingame)
+    win_list=[hs_dict[key][0] for key in hs_dict]
+    draw_list=[hs_dict[key][1] for key in hs_dict]
+    win=max(win_list)*0.2+min(win_list)*0.8
+    draw=sum(draw_list)/len(draw_list)
+    decide=1-(win*0.85+draw*0.15+random.random()*0.15)
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
+    if player.name in BLUFF_INDICATOR:
+        if BLUFF_INDICATOR[player.name]<turn and decide<0.3:
+            randomized_value=random.random()
+            if last_raised is None:
+                bluff_range=BLUFF_RANGE[1]*2
+            else:
+                bluff_range=BLUFF_RANGE[0]*2
+            if randomized_value<bluff_range:
+                BLUFF_INDICATOR[player.name]=turn
+                decide = 0.29
+            else:
+                BLUFF_INDICATOR.pop(player.name)
+        else:   
+            BLUFF_INDICATOR.pop(player.name)
+    elif decide >= win_rate:
+        randomized_value=random.random()
+        if last_raised is None:
+            bluff_range=BLUFF_RANGE[1]
+        else:
+            bluff_range=BLUFF_RANGE[0]
+        if randomized_value<bluff_range:
+            BLUFF_INDICATOR[player.name]=turn
+            decide = 0.29
     return rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot_odd, cur_call, cur_raise, min_money, turn, raise_multipler, big_blind_value)
 
 def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot_odd, cur_call, cur_raise, min_money, turn, raise_multipler, big_blind_value):

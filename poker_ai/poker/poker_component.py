@@ -124,10 +124,14 @@ class Player:
         6: Out of table
         + model: AI model, default is -1 (human)
         """
+        # Used for storing mcts data
         self.mcts_tree=None
+        # Used for storing enumerating data
         self.weighted_dict={}
         self.opponent_prob_dict={}
         self.opponent_can_act={}
+        self.opponent_ingame={}
+        # Used for storing machine learning data
         self.ml_data=None
 
     def __str__(self):
