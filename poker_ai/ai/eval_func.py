@@ -1,7 +1,7 @@
 import math
 import multiprocessing
 from poker_ai.poker.poker_component import Player, Hand, Deck
-from poker_ai.constant import DEEPNESS,CONFIDENT_RATE
+from poker_ai.constant import DEEPNESS,CONFIDENT_RATE,OPPONENT_CONFIDENT_RANGE
 
 def multi_process_eval_func(player, num_players, board):
     """Return the winning/tie chance of a hand, using Monte-Carlo simulations. AND it's multiprocess
@@ -165,3 +165,194 @@ def auto_predefined_game(num_players, player_1, board, turn, deck):
     else:
         return (1, 0)    
     
+def create_enumerate_dict(player, board, turn):
+    deck=Deck()
+    for card in player.hand.cards:
+        deck.remove_card(card)
+    for card in board.hand.cards:
+        deck.remove_card(card)
+    weight_dict={}
+    prob_dict={}
+    deepness=DEEPNESS//333
+    with multiprocessing.Pool() as pool:
+        result=pool.starmap(single_solo_game,[(player, card1, card2, board, deck, turn) for card1 in range(0,50-turn) for card2 in range(card1+1,50-turn) for _ in range(deepness)])
+        for hand,value in result:
+            if hand in prob_dict:
+                weight_dict[hand][0]+=value[0]/deepness
+                weight_dict[hand][1]+=value[1]/deepness
+            else:
+                weight_dict[hand]=[value[0]/deepness,value[1]/deepness]
+                prob_dict[hand]=2/(50*51)
+    return (weight_dict,prob_dict)
+
+
+def enumerate_func(player,opponent_index,gamelogger):
+    turn=gamelogger.action_history[opponent_index]
+    return (sum(player.weighted_dict[turn][key][0]*player.opponent_prob_dict[opponent_index][turn][key] for key in player.weighted_dict[turn]),
+            sum(player.weighted_dict[turn][key][1]*player.opponent_prob_dict[opponent_index][turn][key] for key in player.weighted_dict[turn]))
+
+def update_weighted_dict(player, board, turn, gamelogger):
+    match turn:
+        case 5:
+            preturn=4
+        case 4:
+            preturn=3
+        case 3:
+            preturn=0
+        case _:
+            raise ValueError("update_weighted_dict error")
+    deck=Deck()
+    for card in player.hand.cards:
+        deck.remove_card(card)
+    for card in board.hand.cards:
+        deck.remove_card(card)
+    player.weighted_dict[turn]={}
+    deepness=DEEPNESS//333
+    for opponent_name in player.opponent_can_act:
+        if turn not in player.opponent_prob_dict[opponent_name]:
+            player.opponent_prob_dict[opponent_name][turn]={}
+    with multiprocessing.Pool() as pool:
+        result=pool.starmap(single_solo_game,[(player, card1, card2, board, deck, turn) for card1 in range(0,50-turn) for card2 in range(card1+1,50-turn) for _ in range(deepness)])
+        for hand,value in result:
+            if hand in player.weighted_dict[turn]:
+                player.weighted_dict[turn][hand][0]+=value[0]/deepness
+                player.weighted_dict[turn][hand][1]+=value[1]/deepness
+            else:
+                player.weighted_dict[turn][hand]=[value[0]/deepness,value[1]/deepness]
+            for opponent_name in player.opponent_can_act:
+                player.opponent_prob_dict[opponent_name][turn][hand]=player.opponent_prob_dict[opponent_name][preturn][hand]
+            
+                    
+
+def update_prob_dict(player, turn, gamelogger):
+    for opponent_name,opponent_action_turn,action in gamelogger.history[::-1]:
+        if opponent_name==player.name:
+            return
+        else:
+            if player.opponent_can_act[opponent_name]:
+                if opponent_action_turn==turn:     
+                    if action==7:
+                        player.opponent_can_act[opponent_name]=False
+                        break
+                    elif action==8:
+                        player.opponent_can_act[opponent_name]=False
+                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                    else:
+                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                    temp_dict=[(key,item) for key,item in player.weighted_dict[turn].items()]
+                    temp_dict.sort(key=lambda a: a[1][0]+a[1][1], reverse=True)
+                    len_dict=len(temp_dict)
+                    top,bot=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
+                    if top_ratio<0 and bot_ratio<0:  
+                        total_reduced_prob=0
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/(bot+(len_dict-top))
+                        for k in range(bot,top):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
+                    elif top_ratio>0:
+                        total_reduced_prob=0
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/bot
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
+                    elif bot_ratio>0:
+                        total_reduced_prob=0
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/(len_dict-top)
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
+                    
+                    total=1/sum(player.opponent_prob_dict[opponent_name][turn].values())
+                    if total!=1:
+                        for key in player.opponent_prob_dict[opponent_name][turn]:
+                            player.opponent_prob_dict[opponent_name][turn][key]*=total
+                else:
+                    match turn:
+                        case 5:
+                            temp_turn=4
+                        case 4:
+                            temp_turn=3
+                        case 3:
+                            temp_turn=0
+                        case _:
+                            raise ValueError("The turn value in update_prob_dict is wrong")
+                    if action==7:
+                        player.opponent_can_act[opponent_name]=False
+                        break
+                    elif action==8:
+                        player.opponent_can_act[opponent_name]=False
+                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                    else:
+                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                    temp_dict=[(key,item) for key,item in player.weighted_dict[temp_turn].items()]
+                    temp_dict.sort(key=lambda a: a[1])
+                    len_dict=len(temp_dict)
+                    top,bot=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
+                    if top_ratio<0 and bot_ratio<0:
+                        total_reduced_prob=0
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/(bot+(len_dict-top))
+                        for k in range(bot,top):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
+                    elif top_ratio>0:
+                        total_reduced_prob=0
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/bot
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
+                    elif bot_ratio>0:        
+                        total_reduced_prob=0
+                        for k in range(top,len_dict):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                        prob_increment=total_reduced_prob/(len_dict-top)
+                        for k in range(0,bot):
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
+                    
+                    total=1/sum(player.opponent_prob_dict[opponent_name][temp_turn].values())
+                    if total!=1:
+                        for key in player.opponent_prob_dict[opponent_name][temp_turn]:
+                            player.opponent_prob_dict[opponent_name][temp_turn][key]*=total
+
+def single_solo_game(player, card1, card2, board, deck, turn):
+    card_1=deck.cards[card1]
+    card_2=deck.cards[card2]
+    temp_deck=Deck()
+    temp_deck.cards=deck.cards[:]
+    temp_deck.remove_card(card_1)
+    temp_deck.remove_card(card_2)
+    opponent_hand=Hand()
+    opponent_hand.add_card(card_1)
+    opponent_hand.add_card(card_2)
+    opponent_hand.cards.sort()
+    hand_str=opponent_hand.printhandsimple()
+    if card_1 in board.hand.cards or card_2 in board.hand.cards:
+        return (hand_str,None)
+    temp_board=Player(Hand(),"",0)
+    temp_board.hand.cards=board.hand.cards[:]
+    temp_deck.shuffle()
+    for _ in range(turn,5):
+        temp_board.hand.add_card(temp_deck.deal_cards())
+    self = player.hand.create_poker(temp_board.hand).check()
+    other = opponent_hand.create_poker(temp_board.hand).check()
+    if self>other:
+        return (hand_str,(1,0))
+    if self==other:
+        return (hand_str,(0,1))
+    return (hand_str,(0,0))
