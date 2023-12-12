@@ -571,7 +571,6 @@ class Gamelogger:
         5: Fold  -   7: Fold
         6: Raise max
         this is the same as raise, as raise max for one people is just a little bit of money, when with others it's their whole stash.
-    
         """
         self.history=[]
         self.action_history={player.name:0 for player in players if player.state!=6}
@@ -653,5 +652,3 @@ class Gamelogger:
             case _:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))
-        
-        

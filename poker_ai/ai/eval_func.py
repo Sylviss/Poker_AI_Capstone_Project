@@ -221,9 +221,7 @@ def update_weighted_dict(player, board, turn, gamelogger):
                 player.weighted_dict[turn][hand]=[value[0]/deepness,value[1]/deepness]
             for opponent_name in player.opponent_can_act:
                 player.opponent_prob_dict[opponent_name][turn][hand]=player.opponent_prob_dict[opponent_name][preturn][hand]
-            
-                    
-
+                
 def update_prob_dict(player, turn, gamelogger):
     for opponent_name,opponent_action_turn,action in gamelogger.history[::-1]:
         if opponent_name==player.name:
