@@ -42,5 +42,20 @@ title.set_color('#ff0000')
 
 ax.axis('off')
 
-#display table 
+def func(x):
+    return '{:.1f}%'.format(x)
+    
+pie_data = np.array([35, 20, 40, 5])
+labels = ['Bot -1', 'Bot 0', 'Bot 1', 'Bot 2']
+
+fig2, ax2 = plt.subplots()
+ax2.pie(pie_data, labels = labels, autopct= lambda x: func(x) )
+plt.legend(title = 'Four Bots:')
+
+title = plt.title('Win rate (%)', fontsize = 30, weight = 'bold')
+title.set_color('#ff0000')
+
+ax2.axis('off')
+
+#display table and pie chart 
 plt.show()
