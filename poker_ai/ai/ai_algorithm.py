@@ -354,19 +354,32 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
                 return [5]
 
 class MCTS_Node:
-    def __init__(self,turn):
-        self.win=0
-        self.visit_count=0
-        self.turn=turn
-        self.child=[]
-    
+    def __init__(self, player_name, turn):
+        """For the actions initialization:
+            0: Fold
+            1: Check/call
+            2: Raise/All in/Raise max/Raise something blah blah
+            
+            Also, for the sake of simulation and less branch, the AI will only attempt to raise for 4 times. The 4th time will always be raise max/all in
+        """
+        self.player_name = player_name
+        self.turn = turn
+        self.visits = 0
+        self.wins = 0
+        self.children = {}
+        
+def selection(root, cur_iteration):
+        if cur_iteration<1000:
+            if not root.children:        
 def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
     if turn==0:
-        player.mcts_tree=MCTS_Node(turn)
+        player.mcts_tree=MCTS_Node(player.name,0)
     cur_node=player.mcts_tree
+    for k in range(1000):
+        cur_node.selection(k)
     
     return [5]
     

@@ -1,7 +1,7 @@
 import math
 import multiprocessing
 from poker_ai.poker.poker_component import Player, Hand, Deck
-from poker_ai.constant import DEEPNESS,CONFIDENT_RATE,OPPONENT_CONFIDENT_RANGE
+from poker_ai.constant import DEEPNESS,CONFIDENT_RATE,OPPONENT_CONFIDENT_RANGE,UPDATE_WEIGHT
 
 def multi_process_eval_func(player, num_players, board):
     """Return the winning/tie chance of a hand, using Monte-Carlo simulations. AND it's multiprocess
@@ -245,10 +245,10 @@ def update_prob_dict(player, turn, gamelogger):
                     if top_ratio<0 and bot_ratio<0:  
                         total_reduced_prob=0
                         for k in range(0,bot):
-                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
                         for k in range(top,len_dict):
-                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/(bot+(len_dict-top))
                         for k in range(bot,top):
@@ -256,7 +256,7 @@ def update_prob_dict(player, turn, gamelogger):
                     elif top_ratio>0:
                         total_reduced_prob=0
                         for k in range(0,bot):
-                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/bot
                         for k in range(top,len_dict):
@@ -264,7 +264,7 @@ def update_prob_dict(player, turn, gamelogger):
                     elif bot_ratio>0:
                         total_reduced_prob=0
                         for k in range(top,len_dict):
-                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/(len_dict-top)
                         for k in range(0,bot):
@@ -299,10 +299,10 @@ def update_prob_dict(player, turn, gamelogger):
                     if top_ratio<0 and bot_ratio<0:
                         total_reduced_prob=0
                         for k in range(0,bot):
-                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
                         for k in range(top,len_dict):
-                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/(bot+(len_dict-top))
                         for k in range(bot,top):
@@ -310,7 +310,7 @@ def update_prob_dict(player, turn, gamelogger):
                     elif top_ratio>0:
                         total_reduced_prob=0
                         for k in range(0,bot):
-                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/bot
                         for k in range(top,len_dict):
@@ -318,7 +318,7 @@ def update_prob_dict(player, turn, gamelogger):
                     elif bot_ratio>0:        
                         total_reduced_prob=0
                         for k in range(top,len_dict):
-                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]/=2
+                            player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
                             total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
                         prob_increment=total_reduced_prob/(len_dict-top)
                         for k in range(0,bot):
