@@ -238,17 +238,27 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
                 return [5]
         else:
             return [5]
-    elif decide >= win_rate * (1 - CONFIDENT_RANGE):
-        if player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
-            return [6 if 6 in actions else 1]
-        elif 3 in actions and pot_odd < 1 - decide:
-            return [3]
-        elif 2 in actions:
-            return [2]
-        else:
-            return [5]
     else:
         if min_money!=0:
+            if decide >= win_rate * (1 - CONFIDENT_RANGE):
+                if player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
+                    return [6]
+                elif 3 in actions and pot_odd < 1 - decide:
+                    return [3]
+                elif 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
+                    if player.money - (cur_call - player.pot) > 1.5 * cur_raise * raise_multipler[turn]:
+                        cur_raise*=raise_multipler[turn]
+                        raise_value = 1.5*cur_raise
+                    
+                    else:
+                        raise_value = cur_raise + (random.random() ** 2) * (
+                                    player.money - cur_call + player.pot - cur_raise) * (
+                                                1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE)))
+                    return [4, min(int(raise_value),min_money)]
+                elif 2 in actions:
+                    return [2]
+                else:
+                    return [5]
             if turn != 5:
                 if decide >= win_rate * 0.5:
                     if 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
@@ -348,7 +358,7 @@ class MCTS_Node:
         self.win=0
         self.visit_count=0
         self.turn=turn
-        self.child=[]      
+        self.child=[]
     
 def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     player=players[index]
