@@ -235,13 +235,13 @@ def update_prob_dict(player, turn, gamelogger):
                         continue
                     elif action==8:
                         player.opponent_can_act[opponent_name]=False
-                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                        bot_ratio,top_ratio=OPPONENT_CONFIDENT_RANGE[action]
                     else:
-                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                        bot_ratio,top_ratio=OPPONENT_CONFIDENT_RANGE[action]
                     temp_dict=[(key,item) for key,item in player.weighted_dict[turn].items()]
-                    temp_dict.sort(key=lambda a: a[1][0]+a[1][1], reverse=True)
+                    temp_dict.sort(key=lambda a: a[1][0]+a[1][1],reverse=True)
                     len_dict=len(temp_dict)
-                    top,bot=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
+                    bot,top=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
                     if top_ratio<0 and bot_ratio<0:  
                         total_reduced_prob=0
                         for k in range(0,bot):
@@ -289,13 +289,13 @@ def update_prob_dict(player, turn, gamelogger):
                         continue
                     elif action==8:
                         player.opponent_can_act[opponent_name]=False
-                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                        bot_ratio,top_ratio=OPPONENT_CONFIDENT_RANGE[action]
                     else:
-                        top_ratio,bot_ratio=OPPONENT_CONFIDENT_RANGE[action]
+                        bot_ratio,top_ratio=OPPONENT_CONFIDENT_RANGE[action]
                     temp_dict=[(key,item) for key,item in player.weighted_dict[temp_turn].items()]
-                    temp_dict.sort(key=lambda a: a[1])
+                    temp_dict.sort(key=lambda a: a[1][0]+a[1][1],reverse=True)
                     len_dict=len(temp_dict)
-                    top,bot=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
+                    bot,top=int(abs(bot_ratio)*len_dict),int((1-abs(top_ratio))*len_dict)
                     if top_ratio<0 and bot_ratio<0:
                         total_reduced_prob=0
                         for k in range(0,bot):

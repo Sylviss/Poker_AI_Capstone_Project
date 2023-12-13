@@ -168,7 +168,7 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
     for opponent_index in player.opponent_can_act:
         if player.opponent_ingame[opponent_index]:
             hs_dict[opponent_index]=enumerate_func(player,opponent_index,gamelogger)
-    # print(hs_dict,player.opponent_ingame)
+    print(hs_dict)
     win_list=[hs_dict[key][0] for key in hs_dict]
     draw_list=[hs_dict[key][1] for key in hs_dict]
     win=max(win_list)*0.2+min(win_list)*0.8
@@ -222,7 +222,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
     Returns:
         The action of the AI
     """  
-    # print(decide,win_rate,draw_rate)
+    print(decide,win_rate,draw_rate)
     if decide > draw_rate:
         if 2 in actions:
             return [2]
@@ -238,17 +238,27 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
                 return [5]
         else:
             return [5]
-    elif decide >= win_rate * (1 - CONFIDENT_RANGE):
-        if player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
-            return [6 if 6 in actions else 1]
-        elif 3 in actions and pot_odd < 1 - decide:
-            return [3]
-        elif 2 in actions:
-            return [2]
-        else:
-            return [5]
     else:
         if min_money!=0:
+            if decide >= win_rate * (1 - CONFIDENT_RANGE):
+                if player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
+                    return [6]
+                elif 3 in actions and pot_odd < 1 - decide:
+                    return [3]
+                elif 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
+                    if player.money - (cur_call - player.pot) > 1.5 * cur_raise * raise_multipler[turn]:
+                        cur_raise*=raise_multipler[turn]
+                        raise_value = 1.5*cur_raise
+                    
+                    else:
+                        raise_value = cur_raise + (random.random() ** 2) * (
+                                    player.money - cur_call + player.pot - cur_raise) * (
+                                                1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE)))
+                    return [4, min(int(raise_value),min_money)]
+                elif 2 in actions:
+                    return [2]
+                else:
+                    return [5]
             if turn != 5:
                 if decide >= win_rate * 0.5:
                     if 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
@@ -348,15 +358,9 @@ class MCTS_Node:
         self.win=0
         self.visit_count=0
         self.turn=turn
-        self.raise_min=None
-        self.raise_mid=None
-        self.raise_high=None
-        self.call=None
-        self.check=None
-        self.fold=None        
+        self.child=[]
     
 def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
-    
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
