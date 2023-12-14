@@ -33,18 +33,19 @@ def selection(root, cur_iteration):
             next_node=random.choice(choices)
             return selection(root.children[next_node],cur_iteration)
     else:
-        ev_list=expected_value_gen(root)
-        return max(ev_list,key = lambda a: a[1])
+        if len(root.children)==0:
+            return root
+        else:
+            ev_list=expected_value_gen(root)
+            next_node=max(ev_list,key=lambda a:a[1])[0]
+            return selection(root.children[next_node],cur_iteration)
 
 def expected_value_gen(root):
-    if len(root.children.items())==0:
-        ev=root.values/root.visit + UBC1_CONSTANT*(2*(math.log(root.parent.visits)/root.visits))**0.5
-        return [(root,ev)]
-    else:
-        res=[]
-        for node in root.children.items():
-            res+=expected_value_gen(node)
-        return res
+    res=[]
+    for key,node in root.children.items():
+        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(node.parent.visits)/node.visits)**0.5
+        res.append([key,ev])
+    return res
 
 def expansion(root,actions,next_turn,next_player_name):
     if root.turn!=-1:
@@ -52,14 +53,13 @@ def expansion(root,actions,next_turn,next_player_name):
             root.children[action]=MCTS_Node(next_player_name,next_turn,root)
             
 
-def simulation(selected_node, player_1, num_players, init_money, big_blind, small_blind, preflop_big_blind_value):
+def simulation(selected_node, player_1, players, num_players, init_money, big_blind, small_blind, preflop_big_blind_value):
     """Play a game with {num_players} player with {init_money} base money
 
     Args:
         num_players (int): the number of players
         init_money (int): the number of base money
-    """    """"""
-    indicator = 2
+    """
     playing = num_players
     players = [player_1]
     temp_board_money = 0
@@ -118,12 +118,10 @@ def simulation(selected_node, player_1, num_players, init_money, big_blind, smal
                 cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
         if k >= 2:
             board.hand.add_card(a.deal_cards())
-            print_blind_board(players, board)
         elif k == 1:
             board.hand.add_card(a.deal_cards())
             board.hand.add_card(a.deal_cards())
             board.hand.add_card(a.deal_cards())
-            print_blind_board(players, board)
         conditioner = True
         index = (big_blind+1) % num_players
         while conditioner:
@@ -148,12 +146,8 @@ def simulation(selected_node, player_1, num_players, init_money, big_blind, smal
         if folded == playing-1:
             break
     if folded == playing-1:
-        if DEBUG_MODE==1:
-            print("Post-game")
-            print_board(players, board)
         for player in players:
             if player.state not in [3, 4, 5, 6]:
-                print(f"{player.name} win the game!")
                 player.money += board.money
                 board.money = 0
                 break
@@ -161,10 +155,8 @@ def simulation(selected_node, player_1, num_players, init_money, big_blind, smal
             if player.money < 0:
                 raise poker_component.WTF
             if player.money == 0 and player.state != 6:
-                print(f"{player.name} broke as hell!")
                 player.state = 6
                 playing -= 1
-        count += 1
         big_blind = (big_blind+1) % num_players
         while players[big_blind].state == 6:
             big_blind = (big_blind+1) % num_players
@@ -172,12 +164,6 @@ def simulation(selected_node, player_1, num_players, init_money, big_blind, smal
         while players[small_blind].state == 6 or big_blind == small_blind:
             small_blind = (small_blind+1) % num_players
         temp_board_money = 0
-        if STOP == 0:
-            print("Press any key for the next game")
-            input()
-        bext.clear()
-    print("Post-game")
-    print_board(players, board)
     checker = []
     for player in players:
         if player.state in [0, 1, 2]:
@@ -198,34 +184,43 @@ def simulation(selected_node, player_1, num_players, init_money, big_blind, smal
     for x in range(len(winner)):
         if winner[x]:
             players[x].money += money_win
-    print(hehe+" win the game!")
     for player in players:
         if player.money < 0:
             raise poker_component.WTF
         if player.money == 0 and player.state != 6:
-            print(f"{player.name} broke as hell!")
             player.state = 6
             playing -= 1
     if playing == 1:
-        table_condition = False
-        break
-    count += 1
-    big_blind = (big_blind+1) % num_players
-    while players[big_blind].state == 6:
-        big_blind = (big_blind+1) % num_players
-    small_blind = (small_blind+1) % num_players
-    while players[small_blind].state == 6 or big_blind == small_blind:
-        small_blind = (small_blind+1) % num_players
-    if STOP == 0:
-        print("Press any key for the next game")
-        input()
-    bext.clear()
-    for player in players:
-        if player.state != 6:
-            print(f"{player.name} wins the table! All others are just some random bots")
+        pass
+    
+def create_tree(player, gamelogger, big_blind):
+    head=MCTS_Node(None,0,None)
+    action_dict={}
+    cur_node=head
+    for turn in gamelogger.history:
+        for player_name,action in turn:
+            cur_node.player_name=player_name
+            cur_node.children[action_dict[action]]=MCTS_Node(None,0,cur_node)
+            cur_node=cur_node.children[action_dict[action]]
+    cur_node.player_name=player.name
+    return (head,cur_node)
 
-def update_tree():
-    pass
+def update_tree(player_1,gamelogger):
+    cur_node=player_1.root_node_tree
+    action_dict={}
+    for turn in gamelogger.history:
+        for player,action in turn:
+            if player!=cur_node.player_name:
+                if cur_node.player_name is None:
+                    cur_node.player_name=player
+                else:
+                    raise ValueError("update_tree error")
+            if action_dict[action] in cur_node.children:
+                cur_node=cur_node.children[action_dict[action]]
+            else:
+                cur_node.children[action_dict[action]]=MCTS_Node(None,0,cur_node)
+                cur_node=cur_node.children[action_dict[action]]
+            
 
 def next_parameter(selected_node):
     pass
@@ -235,14 +230,16 @@ def backpropagation(root,reward):
         root.values+=reward
         root.visits+=1
         backpropagation(root.parent,reward)
+    else:
+        root.values+=reward
+        root.visits+=1
 
-def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
+def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised, gamelogger):
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
     if turn==0:
-        player.root_node_tree=MCTS_Node(player.name,0)
-        player.mcts_tree=player.root_node_tree
+        player.root_node_tree,player.mcts_tree=create_tree(player, gamelogger, big_blind)
     else:
         player.mcts_tree=update_tree()
         cur_node=player.mcts_tree
