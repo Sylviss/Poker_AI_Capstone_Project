@@ -370,12 +370,17 @@ class MCTS_Node:
         
 def selection(root, cur_iteration):
         if cur_iteration<1000:
-            if not root.children:        
+            if not root.children:
+                choices=[1,2,3]
+                action=random.choice(choices)
+                root.children[1]=MCTS_Node(next_player_name, turn)    
+                   
 def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised):
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
     if turn==0:
+        player.root_node_tree=MCTS_Node(player.name,0)
         player.mcts_tree=MCTS_Node(player.name,0)
     cur_node=player.mcts_tree
     for k in range(1000):
@@ -415,8 +420,16 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(2)
     elif cur_call > self.pot and self.money > cur_call-self.pot:
         checkout.append(3)
-    if self.money > cur_call-self.pot+cur_raise:
-        checkout.append(4)
+    if gamelogger.raised_time<3:
+        if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+            checkout.append(6)
+        if self.money > cur_call-self.pot+cur_raise:
+            checkout.append(4)
+    elif gamelogger.raised_time==3:
+        if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+            checkout.append(6)
+        if self.money > cur_call-self.pot+cur_raise and 6 not in checkout:
+            checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
