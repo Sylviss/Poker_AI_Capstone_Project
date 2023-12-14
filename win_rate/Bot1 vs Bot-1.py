@@ -8,6 +8,8 @@ update_weight = ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', 
 plt.plot(update_weight, bot_minus1, label='Win rate of bot -1', marker = 'o', markerfacecolor = 'blue')
 plt.plot(update_weight, bot_1, label='Win rate of bot 1', marker = 'o', markerfacecolor = 'red')
 
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+
 plt.xlabel('UPDATE WEIGHT')
 plt.ylabel('WIN RATE')
 
