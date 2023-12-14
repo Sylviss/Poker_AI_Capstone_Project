@@ -53,25 +53,29 @@ Bot 1: 28 25
 Bot -1: 22 25
 
 UPDATE_WEIGHT = 0.4
-Bot 1:
-Bot -1:
+Bot 1: 30 26
+Bot -1: 20 24
+
+UPDATE_WEIGHT = 0.5 
+Bot 1: 22 25
+Bot -1: 28 25
 
 UPDATE_WEIGHT = 0.6
-Bot 1:
-Bot -1:
+Bot 1: 26 22
+Bot -1: 24 28
 
 UPDATE_WEIGHT = 0.7
-Bot 1:
-Bot -1:
+Bot 1: 23 24
+Bot -1: 27 26
 
 UPDATE_WEIGHT = 0.8
-Bot 1:
-Bot -1:
+Bot 1: 20 21
+Bot -1: 30 29
 
 UPDATE_WEIGHT = 0.9
-Bot 1:
-Bot -1:
+Bot 1: 29 29 25
+Bot -1: 21 21 25
 
 UPDATE_WEIGHT = 1
-Bot 1:
-Bot -1:
+Bot 1: 21 29 23
+Bot -1: 29 21 27
