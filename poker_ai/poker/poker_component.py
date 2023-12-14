@@ -125,6 +125,7 @@ class Player:
         + model: AI model, default is -1 (human)
         """
         # Used for storing mcts data
+        self.root_node_tree=None
         self.mcts_tree=None
         # Used for storing enumerating data
         self.weighted_dict={}
@@ -168,23 +169,30 @@ class Player:
             stack.append("check")
             checkout.append(2)
             word.append("2: check")
-
         elif cur_call > self.pot and self.money > cur_call-self.pot:
             stack.append("call")
             checkout.append(3)
             word.append("3: call")
-
-        if self.money > cur_call-self.pot+cur_raise:
-            stack.append("raise")
-            checkout.append(4)
-            word.append("4: raise")
         min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
-        if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
-            stack.append("raise max")
+        if gamelogger.raised_time<3:
+            if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+                stack.append("raise max")
             checkout.append(6)
             word.append("6: raise max")
+            if self.money > cur_call-self.pot+cur_raise:
+                stack.append("raise")
+                checkout.append(4)
+                word.append("4: raise")
+        elif gamelogger.raised_time==3:
+            if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+                stack.append("raise max")
+            checkout.append(6)
+            word.append("6: raise max")
+            if self.money > cur_call-self.pot+cur_raise and 6 not in checkout:
+                stack.append("raise")
+                checkout.append(4)
+                word.append("4: raise")
         print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-
         while True:
             print("Choose between:")
             print(", ".join(word))
@@ -572,6 +580,7 @@ class Gamelogger:
         6: Raise max
         this is the same as raise, as raise max for one people is just a little bit of money, when with others it's their whole stash.
         """
+        self.raised_time=0
         self.history=[]
         self.action_history={player.name:0 for player in players if player.state!=6}
         self.action_count=0
@@ -591,6 +600,7 @@ class Gamelogger:
             case _:
                 raise WTF
         self.raise_number=0
+        self.raised_time=0
         
     def keylogging(self, player, action):
         self.action_history[player.name]=self.cur_turn
@@ -629,6 +639,7 @@ class Gamelogger:
                     case _:
                         action_logged=6
                 self.raise_number+=1
+                self.raised_time+=1
             case 5:
                 action_logged=7
             case 6:
@@ -649,6 +660,7 @@ class Gamelogger:
                     case _:
                         action_logged=6
                 self.raise_number+=1
+                self.raised_time+=1
             case _:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))

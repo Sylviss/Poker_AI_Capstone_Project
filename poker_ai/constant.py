@@ -13,7 +13,7 @@ STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
 # Value of the big blind pre-bet.
-INDICATOR = 1
+INDICATOR = 0
 # 0 is for testing against all human-controlled
 # 1 is for bot: Player 1 will be human, all others will be bot
 # 2 is all bot for testing purpose

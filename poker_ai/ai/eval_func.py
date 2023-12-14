@@ -246,10 +246,10 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/(bot+(len_dict-top))
                         for k in range(bot,top):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
@@ -257,7 +257,7 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/bot
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
@@ -265,7 +265,7 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/(len_dict-top)
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][turn][temp_dict[k][0]]+=prob_increment
@@ -300,10 +300,10 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/(bot+(len_dict-top))
                         for k in range(bot,top):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
@@ -311,7 +311,7 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/bot
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
@@ -319,7 +319,7 @@ def update_prob_dict(player, turn, gamelogger):
                         total_reduced_prob=0
                         for k in range(top,len_dict):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*=UPDATE_WEIGHT
-                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]
+                            total_reduced_prob+=player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]*(1-UPDATE_WEIGHT)
                         prob_increment=total_reduced_prob/(len_dict-top)
                         for k in range(0,bot):
                             player.opponent_prob_dict[opponent_name][temp_turn][temp_dict[k][0]]+=prob_increment
