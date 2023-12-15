@@ -45,6 +45,7 @@ class Card:
         return self.rank == other.rank and self.suit == other.suit
     def __lt__(self, other):
         return self.rank + self.suit*13<other.rank + other.suit*13
+    
 
 
 class Deck:
@@ -316,8 +317,6 @@ class Hand(Deck):
     
     def hand_to_str(self):
         return " ".join([card_to_str(card) for card in self.cards])
-
-
 class Poker(Hand):
 
     def __init__(self):

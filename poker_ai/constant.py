@@ -4,7 +4,7 @@
 DEBUG_MODE=1
 # Turn on for better visibility
 
-MODEL=2
+MODEL=-1
 # Choose AI module for all bot in a normal game for main.py:
 # 0: simple rule-based AI using probability theorem, game-based rule and some randomness
 # 1: super randomized AI

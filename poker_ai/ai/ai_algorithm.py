@@ -479,7 +479,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     player.mcts_tree=None
     player.mcts_tree=create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn)
     cur_node=player.mcts_tree
-    for k in range(10000):
+    for k in range(1000):
         selected_node=selection(cur_node,k)
         if selected_node.turn!=-1:
             next_list=[]
@@ -488,9 +488,11 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
             node_list=expansion(selected_node, next_list)
             for node in node_list:
                 reward=simulation(index, preflop_big_blind_value, node)
+                print(reward)
                 backpropagation(node,reward)
         else:
             reward=simulation(index, preflop_big_blind_value, selected_node)
+            print(reward)
             backpropagation(selected_node,reward)
     action_list=choose_action(cur_node,actions)
     print(action_list)
@@ -678,6 +680,8 @@ def simulation_game(player_1,num_players,board):
         for player in players[1:]:
             checker.append(player.hand.create_poker(board.hand).check())
         win = max(checker)
+        print(player_1.hand)
+        print(win,self)
         if win > self:
             return -player_1.pot
         elif win == self:
@@ -696,6 +700,8 @@ def simulation_game(player_1,num_players,board):
         for player in players:
             checker.append(player.hand.create_poker(board.hand).check())
         win = max(checker)
+        print(player_1.hand)
+        print(win,self)
         if win > self:
             return -player_1.pot
         elif win == self:
