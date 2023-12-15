@@ -25,7 +25,7 @@ def test_win_rate(n):
         
 def test_hacker():
     try:
-        game_but_cheaty(2,500,["4s","4d","Ad","10s","As","10d","4h","Ac","4c"])
+        game_but_cheaty(2,500,["4s","4d","Ad","As","10s","10d","Ac","4h","4c"])
     except KeyboardInterrupt:
         sys.exit()
         

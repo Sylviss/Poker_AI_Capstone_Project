@@ -174,21 +174,12 @@ class Player:
             checkout.append(3)
             word.append("3: call")
         min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
-        if gamelogger.raised_time<3:
+        if gamelogger.raised_time<=3:
             if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
                 stack.append("raise max")
-            checkout.append(6)
-            word.append("6: raise max")
+                checkout.append(6)
+                word.append("6: raise max")
             if self.money > cur_call-self.pot+cur_raise:
-                stack.append("raise")
-                checkout.append(4)
-                word.append("4: raise")
-        elif gamelogger.raised_time==3:
-            if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
-                stack.append("raise max")
-            checkout.append(6)
-            word.append("6: raise max")
-            if self.money > cur_call-self.pot+cur_raise and 6 not in checkout:
                 stack.append("raise")
                 checkout.append(4)
                 word.append("4: raise")
@@ -233,14 +224,14 @@ class Player:
                     continue
                 ans = self.raise_money(
                     b, cur_call, last_raised, board_pot, cur_raise)
-                gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money])
+                gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b])
                 break
 
         elif action == 5:
             gamelogger.keylogging(self, [5])
             ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
         elif action == 6:
-            gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money])
+            gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money])
             ans = self.raise_money(
                     min_money, cur_call, last_raised, board_pot, cur_raise)
         return ans
@@ -583,6 +574,7 @@ class Gamelogger:
         self.raised_time=0
         self.history=[]
         self.action_history={player.name:0 for player in players if player.state!=6}
+        self.money_history=[]
         self.action_count=0
         self.raise_number=0
         self.cur_turn=-1   
@@ -605,6 +597,7 @@ class Gamelogger:
     def keylogging(self, player, action):
         self.action_history[player.name]=self.cur_turn
         self.action_count+=1
+        money=0
         match action[0]:
             case 1:
                 action_logged=8
@@ -618,6 +611,7 @@ class Gamelogger:
                     action_logged=3
             case 4:
                 ratio=action[1]
+                money=action[2]
                 match self.raise_number:
                     case 0:
                         if ratio<0.2:
@@ -644,6 +638,7 @@ class Gamelogger:
                 action_logged=7
             case 6:
                 ratio=action[1]
+                money=action[2]
                 match self.raise_number:
                     case 0:
                         if ratio<0.3:
@@ -664,3 +659,4 @@ class Gamelogger:
             case _:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))
+        self.money_history.append(money)
