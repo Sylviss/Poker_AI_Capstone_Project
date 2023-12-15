@@ -2,6 +2,7 @@ import bext
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
+from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling
 
 
 
@@ -280,12 +281,14 @@ def game(num_players, init_money):
     playing = num_players
     table_condition = True
     players = []
+    tables = {}
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
+        tables[players[-1].name] = Data_table()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -362,6 +365,7 @@ def game(num_players, init_money):
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
                         index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
+                    print(gamelogger.history[-1],'\n')
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -404,6 +408,7 @@ def game(num_players, init_money):
                 table_condition = False
                 break
             temp_board_money = 0
+            opponent_modelling(gamelogger.history, players, tables)
             if STOP == 0:
                 print("Press any key for the next game")
                 input()
@@ -449,6 +454,7 @@ def game(num_players, init_money):
         small_blind = (small_blind+1) % num_players
         while players[small_blind].state == 6 or big_blind == small_blind:
             small_blind = (small_blind+1) % num_players
+        opponent_modelling(gamelogger.history, players, tables)
         if STOP == 0:
             print("Press any key for the next game")
             input()

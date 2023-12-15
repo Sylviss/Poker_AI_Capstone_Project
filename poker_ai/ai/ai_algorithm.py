@@ -1,5 +1,6 @@
 import random
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
+from poker_ai.ai.ml.opponent_modelling import Rate_recorder
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED_DICT
 
 BLUFF_INDICATOR={}
@@ -50,6 +51,9 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     Returns:
     - The result of the rule-based AI agent's decision-making process.
     """
+
+    recorder = Rate_recorder()
+
     player=players[index]
     if last_raised is None:
         betted=BETTED_DICT[0]
@@ -69,6 +73,7 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     draw += win
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + random.random() * 0.15)
+    recorder.win = win_rate
     if player.name in BLUFF_INDICATOR:
         if BLUFF_INDICATOR[player.name]<turn:
             randomized_value=random.random()
@@ -116,6 +121,8 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     - The result of the rule-based AI agent's decision-making process.
 
     """
+
+    recorder = Rate_recorder() # for opponent modelling purposes
     
     player=players[index]
     if last_raised is None:
@@ -136,6 +143,7 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     win_rate = (1-(1-win)*RULE_DICT[turn])*betted
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = random.random()
+    recorder.win = win_rate
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
 
 class MCTS_Node:
@@ -151,6 +159,9 @@ class MCTS_Node:
         self.fold=None
 
 def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
+
+    recorder = Rate_recorder()
+
     if last_raised is None:
         betted=BETTED_DICT[0]
     else:
@@ -162,6 +173,7 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
     turn = len(board.hand.cards)
     draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
     win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
+    recorder.win = win_rate
     player=players[index]
     if turn==0:
         player.weighted_dict={}

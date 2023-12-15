@@ -1,5 +1,6 @@
 import random
 from poker_ai.constant import MODEL
+from poker_ai.ai.ml.opponent_modelling import Data_table
 
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone in development team who see this embarrasing of themself
@@ -105,13 +106,14 @@ class Deck:
 
 class Player:
 
-    def __init__(self, hand, name, money, state=-1, model=MODEL):
+    def __init__(self, hand, name, money, state=-1, model=MODEL, table={}):
         self.name = name
         self.hand = hand
         self.money = money
         self.state = state
         self.pot = 0
         self.model = model
+        self.table = Data_table()
         """
         + State explain:
         -1: Initial state
@@ -317,6 +319,26 @@ class Hand(Deck):
     
     def hand_to_str(self):
         return " ".join([card_to_str(card) for card in self.cards])
+
+    def starting_hand_str(self):
+        rank_names = [None, '2', '3', '4', '5', '6',
+                      '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
+        if len(self.cards) != 2:
+            raise Exception('Not a starting hand!')
+        c1 = self.cards[0].printcardsimple()
+        c2 = self.cards[1].printcardsimple()
+        if c1[:-1] == c2[:-1]:
+            w = c1[:-1]+c2[:-1]
+            return w.replace('10','T')
+        elif rank_names.index(c1[:-1]) > rank_names.index(c2[:-1]):
+            w = c1[:-1] + c2[:-1]
+        elif rank_names.index(c1[:-1]) < rank_names.index(c2[:-1]):
+            w = c2[:-1] + c1[:-1]
+        if c1[-1] == c2[-1]:
+            w += 's'
+        else:
+            w += 'o'
+        return w
 
 
 class Poker(Hand):
@@ -556,7 +578,7 @@ def int_to_card(a):
 class Gamelogger:
     def __init__(self,players):
         """Explain for keylogging:
-        There are much more stage than normal, because raise 1$ and all in in much different. The action can be changed into different case like this:
+        There are much more stage than normal, because raise 1$ and all in are much different. The action can be changed into different case like this:
         1: All in -  8: All in
         2: Check -   1: Check
         3: Call: depend on the money

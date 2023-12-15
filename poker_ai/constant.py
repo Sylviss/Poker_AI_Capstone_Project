@@ -1,3 +1,4 @@
+from poker_ai.ai.ml.opponent_modelling import Data_table
 
 ###############################################
 # Constant:
@@ -40,6 +41,9 @@ OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.
 
 PLAYER = 6
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
+
+
+TABLE = Data_table() # TODO Change to default table after data crunching
 
 
 DEEPNESS = 5000
