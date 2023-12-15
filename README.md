@@ -26,14 +26,20 @@ Used package:
 - [x] Implement the basic UI and game structure
 - [ ] Implement the AI:
     - [x] Implement the evaluate function using simple Monte-Carlo simulations
-    - [x] Implement the Monte-Carlo simulation and probability-based AI
-    - [ ] Implement the Monte-Carlo tree search-based AI
-    - [ ] Implement a reinforcement learning for opponent modelling in the Monte-Carlo simulations
+    - [x] Implement the Monte-Carlo simulation/rule-based and enumeration/rule-based AI
+    - [X] Implement the Monte-Carlo tree search-based AI
+    - [ ] Implement a supervised learning for opponent modelling for all of the AI:
+      - [ ] For the simulation/rule-based AI:
         - [ ] Improve the simulations so that it is not just straight all-in simulations.
         - [ ] Using opponent modelling to implement enumeration weighting, improving the CALL_CONFIDENT and the simulation itself (2.5.2.4, 2.6)
         - [ ] After enumeration weighting, use selective sampling to only simulate cases that have high weight to be relevant.
         - [ ] Implement adaptive sampling based on the current game state, opponents' behaviors, or other relevant factors.
+      - [ ] For the enumeration/rule-based AI:
+
+      - [ ] For the MCTS AI:
+        - [ ] Implement the opponent modelling as the main selection policy for the AI.
     - [ ] Implement a supervised learning to calculate all constant that is relevant in the two above AI. 99% we will be using linear regression, because the function is a polynomial function.
+    - [ ] Implement a deep reinforcement AI
 - [ ] Implement a performance evaluation
 - [x] Drink some water
 - [x] Touch the grass
