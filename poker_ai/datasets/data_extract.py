@@ -155,12 +155,14 @@ def parse_data(data: str) -> list:
     return result
 
 def main():
-    with open('poker_ai/datasets/small_dataset.txt', 'r') as f:
+    with open('poker_ai/datasets/pluribus.txt', 'r') as f:
         data = f.read().strip()
     parsed_data = parse_data(data)
 
     # For checking
     print(*parsed_data, sep='\n\n')
+
+    return parsed_data
 
 if __name__=="__main__":
     main()

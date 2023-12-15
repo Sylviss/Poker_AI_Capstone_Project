@@ -1,15 +1,15 @@
 class Rate_recorder():
     def __init__(self):
-        self.win = 0
+        self.win = 0.0
     def refresh(self):
         self.__init__()
 
 class Data_table():
     def __init__(self):
-        self.counting_table = {i: {j: {k: 1 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
+        self.counting_table = {i: {j: {k: 0 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
                         for j in ['preflop', 'flop', 'turn', 'river']}\
                         for i in ['strong', 'medium', 'weak']}
-        self.data_table = {i: {j: {k: 1 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
+        self.data_table = {i: {j: {k: 0 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
                         for j in ['preflop', 'flop', 'turn', 'showdown']}\
                         for i in ['strong', 'medium', 'weak']}
         self.count = 45
