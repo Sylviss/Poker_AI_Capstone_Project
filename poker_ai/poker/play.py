@@ -1,9 +1,19 @@
-import bext
+import bext, json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
-from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling
+from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling, table_counting
 
+
+def default_table():
+    try:
+        f = open("poker_ai/ai/ml/default_data.json")
+    except:
+        print('No file exist!')
+    else:
+        data = json.load(f)
+        f.close()
+        return data
 
 
 def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger):
@@ -289,6 +299,8 @@ def game(num_players, init_money):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
         tables[players[-1].name] = Data_table()
+        tables[players[-1].name].counting_table = default_table()
+        tables[players[-1].name].count = table_counting(tables[players[-1].name].counting_table)
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -365,7 +377,7 @@ def game(num_players, init_money):
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
                         index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
-                    print(gamelogger.history[-1],'\n')
+                    tables = opponent_modelling(gamelogger.history, tables, k, players[0], board, playing-folded)[1]
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -408,7 +420,6 @@ def game(num_players, init_money):
                 table_condition = False
                 break
             temp_board_money = 0
-            opponent_modelling(gamelogger.history, players, tables)
             if STOP == 0:
                 print("Press any key for the next game")
                 input()
@@ -454,7 +465,6 @@ def game(num_players, init_money):
         small_blind = (small_blind+1) % num_players
         while players[small_blind].state == 6 or big_blind == small_blind:
             small_blind = (small_blind+1) % num_players
-        opponent_modelling(gamelogger.history, players, tables)
         if STOP == 0:
             print("Press any key for the next game")
             input()
