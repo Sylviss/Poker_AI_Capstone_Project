@@ -25,13 +25,13 @@ def test_win_rate(n):
         
 def test_hacker():
     try:
-        game_but_cheaty(2,500,["4s","4d","Ad","As","10s","10d","Ac","4h","4c"])
+        game_but_cheaty(2,2000,["4s","4d","Ad","As","10s","10d","Ac","4h","4c"])
         # game_but_cheaty(2,500,["Ad","As","4s","4d","10s","10d","Ac","4h","4c"])
     except KeyboardInterrupt:
         sys.exit()
         
 def test_single_game():
-    print(fast_testing(5,500,[0,1,1,1,1]))
+    test_hacker()
     
 def test_module():
     fast_testing(2,1000,[1,-1])

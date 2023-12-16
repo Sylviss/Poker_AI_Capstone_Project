@@ -45,9 +45,6 @@ class Card:
         return self.rank == other.rank and self.suit == other.suit
     def __lt__(self, other):
         return self.rank + self.suit*13<other.rank + other.suit*13
-    
-
-
 class Deck:
 
     def __init__(self, num=1):

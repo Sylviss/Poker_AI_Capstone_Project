@@ -2,7 +2,7 @@ import random
 import math
 from copy import deepcopy
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
-from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED_DICT, UBC1_CONSTANT
+from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
 
@@ -56,9 +56,9 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     """
     player=players[index]
     if last_raised is None:
-        betted=BETTED_DICT[0]
+        betted=1
     else:
-        betted=BETTED_DICT[1]
+        betted=BETTED
     turn = len(board.hand.cards)
     draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
     win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
@@ -123,9 +123,9 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     
     player=players[index]
     if last_raised is None:
-        betted=BETTED_DICT[0]
+        betted=1
     else:
-        betted=BETTED_DICT[1]
+        betted=BETTED
     turn = len(board.hand.cards)
     if betted==1:
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
@@ -144,9 +144,9 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
 
 def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
     if last_raised is None:
-        betted=BETTED_DICT[0]
+        betted=1
     else:
-        betted=BETTED_DICT[1]
+        betted=BETTED
     if betted==1:
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
     else:
@@ -172,7 +172,7 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
     for opponent_index in player.opponent_can_act:
         if player.opponent_ingame[opponent_index]:
             hs_dict[opponent_index]=enumerate_func(player,opponent_index,gamelogger)
-    print(hs_dict)
+    # print(hs_dict)
     win_list=[hs_dict[key][0] for key in hs_dict]
     draw_list=[hs_dict[key][1] for key in hs_dict]
     win=max(win_list)*0.2+min(win_list)*0.8
@@ -226,7 +226,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
     Returns:
         The action of the AI
     """  
-    print(decide,win_rate,draw_rate)
+    # print(decide,win_rate,draw_rate)
     if decide > draw_rate:
         if 2 in actions:
             return [2]
@@ -479,7 +479,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     player.mcts_tree=None
     player.mcts_tree=create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn)
     cur_node=player.mcts_tree
-    for k in range(1000):
+    for k in range(10000):
         selected_node=selection(cur_node,k)
         if selected_node.turn!=-1:
             next_list=[]
@@ -488,38 +488,36 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
             node_list=expansion(selected_node, next_list)
             for node in node_list:
                 reward=simulation(index, preflop_big_blind_value, node)
-                print(reward)
                 backpropagation(node,reward)
         else:
             reward=simulation(index, preflop_big_blind_value, selected_node)
-            print(reward)
             backpropagation(selected_node,reward)
     action_list=choose_action(cur_node,actions)
     print(action_list)
-    action=max(action_list,key=lambda a: a[1])[0]
-    if action==3:
-        if player.money - (cur_call - player.pot) < 2.5 * cur_raise:
-            return [1]
-        if 2.5*cur_raise>min_money:
-            return [4,min_money]
-        return [4,int(2.5*cur_raise)]
-    elif action==1:
-        return [5]
-    else:
-        if 3 in actions:
-            return [3]
-        elif 2 in actions:
-            return [2]
-        else:
-            raise ValueError('Something wrong')
+    return [2]
+    # action=max(action_list,key=lambda a: a[1])[0]
+    # if action==3:
+    #     if player.money - (cur_call - player.pot) < 2.5 * cur_raise:
+    #         return [1]
+    #     if 2.5*cur_raise>min_money:
+    #         return [4,min_money]
+    #     return [4,int(2.5*cur_raise)]
+    # elif action==1:
+    #     return [5]
+    # else:
+    #     if 3 in actions:
+    #         return [3]
+    #     elif 2 in actions:
+    #         return [2]
+    #     else:
+    #         raise ValueError('Something wrong')
         
-
 def create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn):
     mcts_tree=MCTS_Node(player.name, turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history))
     return mcts_tree
 
 def selection(root, cur_iteration):
-    if cur_iteration<10000:
+    if cur_iteration<1000:
         if len(root.children)==0:
             return root
         else:
@@ -537,7 +535,7 @@ def selection(root, cur_iteration):
 def expected_value_gen(root):
     res=[]
     for key,node in root.children.items():
-        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(root.visits)/node.visits)**0.5
+        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(root.parent.visits)/node.visits)**0.5
         res.append([key,ev])
     return res
 
@@ -612,8 +610,8 @@ def expansion(root, next_list):
     return list(root.children.values())
 
 def simulation(index, preflop_big_blind_value, node):
-    return (simulation_self(index, preflop_big_blind_value, node) + \
-        simulation_other(index, preflop_big_blind_value, node))/2
+    reward=(simulation_self(index, preflop_big_blind_value, node) + simulation_other(index, preflop_big_blind_value, node))/2
+    return reward
 
 def simulation_self(index, preflop_big_blind_value, node):
     temp_players, cur_raise, cur_call, temp_board, last_raised = node.state
@@ -663,7 +661,7 @@ def simulation_other(index, preflop_big_blind_value, node):
     return simulation_game(cur_player,simulation_num,board)/preflop_big_blind_value    
 
 def simulation_game(player_1,num_players,board):
-    if player_1.state not in [-1,1,2]:
+    if player_1.state not in [-1,0,1,2]:
         return -player_1.pot
     if num_players==1:
         return board.money-player_1.pot
@@ -680,8 +678,6 @@ def simulation_game(player_1,num_players,board):
         for player in players[1:]:
             checker.append(player.hand.create_poker(board.hand).check())
         win = max(checker)
-        print(player_1.hand)
-        print(win,self)
         if win > self:
             return -player_1.pot
         elif win == self:
@@ -700,15 +696,12 @@ def simulation_game(player_1,num_players,board):
         for player in players:
             checker.append(player.hand.create_poker(board.hand).check())
         win = max(checker)
-        print(player_1.hand)
-        print(win,self)
         if win > self:
             return -player_1.pot
         elif win == self:
             return board.money/2-player_1.pot
         else:
             return board.money-player_1.pot
-
 def backpropagation(root,reward):
     if root.parent is not None:
         root.values+=reward
