@@ -9,43 +9,42 @@ def data_crunch():
     SUIT = {'d':1, 'h':2, 's':3, 'c':0}
     ACTIONS = {1:8, 2:1, 3:2, 4:4, 5:7}
     dataset = main()[0:100]
+    res = []
     hands = {}
     actions = {}
     table = {'default':Data_table()}
     test = Player(Hand(), 'bruh', 4000)
-    dealer = Player(Hand(), 'board', 4000)
     for datapack in dataset:
         for player_dict in datapack['players']:
             hands[player_dict['player_name']]=player_dict['player_hand']
-        for turn in datapack['actions']:
-            if datapack['actions'][turn] == None:
-                continue
-            hand_tmp = hands['Pluribus']
+            actions[player_dict['player_name']] = {i:[] for i in [0,3,4,5]}
+        for i in [0,3,4,5]:
+            bruh = datapack['actions'][i]
+            if bruh != None:
+                for bruhbruh in bruh:
+                    actions[bruhbruh[0]][i].append(ACTIONS[bruhbruh[1][0]])
+        for player in hands:
+            hand_tmp = hands[player]
             hand = []
-            board = []
             for card in hand_tmp:
                 a, b = card[0], card[1]
                 hand.append(Card(RANK[a],SUIT[b]))
-            for card in datapack['board']:
-                a, b = card[0], card[1]
-                board.append(Card(RANK[a],SUIT[b]))
             test.hand.cards = hand[:]
-            dealer.hand.cards = board[:turn]
-            win, draw = multi_process_eval_func_but_in_opponent_modelling(test, 6, dealer)
+            win, draw = multi_process_eval_func_but_in_opponent_modelling(test, 6, Player(Hand(), '', 1000))
             recorder = Rate_recorder()
             recorder.win = win
+            print(recorder.win, hand_tmp)
             if 0.45<= recorder.win:
                 hs = 'strong'
             elif 0.35 <= recorder.win < 0.45:
                 hs = 'medium'
             else:
                 hs = 'weak'
-            bruh_action = []
-            for action in datapack['actions'][turn]:
-                if action[0] == 'Pluribus':
-                    continue
-                bruh_action.append(('default',turn,ACTIONS[action[1][0]]))
-                table = table_building(bruh_action, table, hs)
+            for turn in actions[player]:
+                bruh_action = []
+                for i in actions[player][turn]:
+                    bruh_action.append(('default',turn,i))
+                    table = table_building(bruh_action, table, hs)
         print(datapack['gameid'])
     return(table['default'].counting_table)
 

@@ -54,13 +54,14 @@ def opponent_modelling(history, tables, turn, human, board, num_player):
     TURN_TABLE = ['preflop','flop','turn','river']
 
     recorder = multi_process_eval_func_but_in_opponent_modelling(human, num_player, board)[0]
+    print(recorder)
 
     if 0.45<= recorder:
-        hs = 'strong'
+        hs = 'weak'
     elif 0.35 <= recorder < 0.45:
         hs = 'medium'
     else:
-        hs = 'weak'
+        hs = 'strong'
     tables = table_building(history, tables, hs)
     tmp = {i:{'phi':[None,0,0,0,0,0],\
               'po':0,\
