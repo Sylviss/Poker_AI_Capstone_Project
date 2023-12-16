@@ -51,9 +51,9 @@ def opponent_modelling(history, tables, recorder, turn):
 
     TURN_TABLE = ['preflop',None,None,'flop','turn','river']
 
-    if recorder.win >= 60:
+    if 0.45<= recorder.win:
         hs = 'strong'
-    elif 40 <= recorder.win < 60:
+    elif 0.35 <= recorder.win < 0.45:
         hs = 'medium'
     else:
         hs = 'weak'
@@ -76,96 +76,96 @@ def opponent_modelling(history, tables, recorder, turn):
                         for _action in table[_hs][_turn]:
                             match _action:
                                 case 'fold':
-                                    shf += 1
-                                    shs[0] += 1
-                                    sturn[0] += 1
-                                    shs[1] += 1
-                                    sturn[1] += 1
+                                    shf += table[_hs][_turn]['fold']
+                                    shs[0] += table[_hs][_turn]['fold']
+                                    sturn[0] += table[_hs][_turn]['fold']
+                                    shs[1] += table[_hs][_turn]['fold']
+                                    sturn[1] += table[_hs][_turn]['fold']
                                 case 'check':
-                                    shch += 1
-                                    shs[0] += 1
-                                    sturn[0] += 1
-                                    shs[2] += 1
-                                    sturn[2] += 1
+                                    shch += table[_hs][_turn]['check']
+                                    shs[0] += table[_hs][_turn]['check']
+                                    sturn[0] += table[_hs][_turn]['check']
+                                    shs[2] += table[_hs][_turn]['check']
+                                    sturn[2] += table[_hs][_turn]['check']
                                 case 'call':
-                                    shc += 1
-                                    shs[0] += 1
-                                    sturn[0] += 1
-                                    shs[3] += 1
-                                    sturn[3] += 1
+                                    shc += table[_hs][_turn]['call']
+                                    shs[0] += table[_hs][_turn]['call']
+                                    sturn[0] += table[_hs][_turn]['call']
+                                    shs[3] += table[_hs][_turn]['call']
+                                    sturn[3] += table[_hs][_turn]['call']
                                 case 'raise':
-                                    shr += 1
-                                    shs[0] += 1
-                                    sturn[0] += 1
-                                    shs[4] += 1
-                                    sturn[4] += 1
+                                    shr += table[_hs][_turn]['raise']
+                                    shs[0] += table[_hs][_turn]['raise']
+                                    sturn[0] += table[_hs][_turn]['raise']
+                                    shs[4] += table[_hs][_turn]['raise']
+                                    sturn[4] += table[_hs][_turn]['raise']
                                 case 'all in':
-                                    sha += 1
-                                    shs[0] += 1
-                                    sturn[0] += 1
-                                    shs[5] += 1
-                                    sturn[5] += 1
+                                    sha += table[_hs][_turn]['all in']
+                                    shs[0] += table[_hs][_turn]['all in']
+                                    sturn[0] += table[_hs][_turn]['all in']
+                                    shs[5] += table[_hs][_turn]['all in']
+                                    sturn[5] += table[_hs][_turn]['all in']
                     else:
                         for _action in table[_hs][_turn]:
                             match _action:
                                 case 'fold':
-                                    shf += 1
-                                    shs[0] += 1
-                                    shs[1] += 1
+                                    shf += table[_hs][_turn]['fold']
+                                    shs[0] += table[_hs][_turn]['fold']
+                                    shs[1] += table[_hs][_turn]['fold']
                                 case 'check':
-                                    shch += 1
-                                    shs[0] += 1
-                                    shs[2] += 1
+                                    shch += table[_hs][_turn]['check']
+                                    shs[0] += table[_hs][_turn]['check']
+                                    shs[2] += table[_hs][_turn]['check']
                                 case 'call':
-                                    shc += 1
-                                    shs[0] += 1
-                                    shs[3] += 1
+                                    shc += table[_hs][_turn]['call']
+                                    shs[0] += table[_hs][_turn]['call']
+                                    shs[3] += table[_hs][_turn]['call']
                                 case 'raise':
-                                    shr += 1
-                                    shs[0] += 1
-                                    shs[4] += 1
+                                    shr += table[_hs][_turn]['raise']
+                                    shs[0] += table[_hs][_turn]['raise']
+                                    shs[4] += table[_hs][_turn]['raise']
                                 case 'all in':
-                                    sha += 1
-                                    shs[0] += 1
-                                    shs[5] += 1
+                                    sha += table[_hs][_turn]['all in']
+                                    shs[0] += table[_hs][_turn]['all in']
+                                    shs[5] += table[_hs][_turn]['all in']
             else:
                 for _turn in table[_hs]:
                     if _turn == TURN_TABLE[turn]:
                         for _action in table[_hs][_turn]:
                             match _action:
                                 case 'fold':
-                                    shf += 1
-                                    sturn[0] += 1
-                                    sturn[1] += 1
+                                    shf += table[_hs][_turn]['fold']
+                                    sturn[0] += table[_hs][_turn]['fold']
+                                    sturn[1] += table[_hs][_turn]['fold']
                                 case 'check':
-                                    shch += 1
-                                    sturn[0] += 1
-                                    sturn[2] += 1
+                                    shch += table[_hs][_turn]['check']
+                                    sturn[0] += table[_hs][_turn]['check']
+                                    sturn[2] += table[_hs][_turn]['check']
                                 case 'call':
-                                    shc += 1
-                                    sturn[0] += 1
-                                    sturn[3] += 1
+                                    shc += table[_hs][_turn]['call']
+                                    sturn[0] += table[_hs][_turn]['call']
+                                    sturn[3] += table[_hs][_turn]['call']
                                 case 'raise':
-                                    shr += 1
-                                    sturn[0] += 1
-                                    sturn[4] += 1
+                                    shr += table[_hs][_turn]['raise']
+                                    sturn[0] += table[_hs][_turn]['raise']
+                                    sturn[4] += table[_hs][_turn]['raise']
                                 case 'all in':
-                                    sha += 1
-                                    sturn[0] += 1
-                                    sturn[5] += 1
+                                    sha += table[_hs][_turn]['all in']
+                                    sturn[0] += table[_hs][_turn]['all in']
+                                    sturn[5] += table[_hs][_turn]['all in']
                     else:
                         for _action in table[_hs][_turn]:
                             match _action:
                                 case 'fold':
-                                    shf += 1
+                                    shf += table[_hs][_turn]['fold']
                                 case 'check':
-                                    shch += 1
+                                    shch += table[_hs][_turn]['check']
                                 case 'call':
-                                    shc += 1
+                                    shc += table[_hs][_turn]['call']
                                 case 'raise':
-                                    shr += 1
+                                    shr += table[_hs][_turn]['raise']
                                 case 'all in':
-                                    sha += 1
+                                    sha += table[_hs][_turn]['all in']
         tmp[player]['phi'][1] = shf/count
         tmp[player]['phi'][2] = shch/count
         tmp[player]['phi'][3] = shc/count
