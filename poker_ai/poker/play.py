@@ -15,7 +15,6 @@ def default_table():
         f.close()
         return data
 
-
 def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn):
     """Choose who will do the actions base on the indicator.
 
@@ -282,7 +281,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -572,8 +571,7 @@ def game(num_players, init_money):
         bext.clear()
     for player in players:
         if player.state != 6:
-            print(f"{player.name} wins the table! All others are just some random bots")
-            
+            print(f"{player.name} wins the table! All others are just some random bots")        
 
 def fast_testing(num_players, init_money, model_list):
     """Play a game with {num_players} player with {init_money} base money
@@ -777,3 +775,4 @@ def fast_testing(num_players, init_money, model_list):
                 json.dump(datas, file)
                 file.close()
             return player.name
+        

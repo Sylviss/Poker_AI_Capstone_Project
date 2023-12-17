@@ -4,7 +4,7 @@
 DEBUG_MODE=1
 # Turn on for better visibility
 
-MODEL=-1
+MODEL=2
 # Choose AI module for all bot in a normal game for main.py:
 # 0: simple rule-based AI using probability theorem, game-based rule and some randomness
 # 1: super randomized AI
@@ -33,10 +33,13 @@ CALL_RANGE=0.05
 BLUFF_RANGE=(0.05,0.1)
 BLUFF_INCREASE=0.7
 RULE_DICT={0:0.85,3:0.9,4:0.95,5:1}
-BETTED_DICT={0:1,1:0.95}
+BETTED=0.95
 OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.5),5:(-0.15,0.3),6:(-0.2,0.2),8:(-0.3,0.1)}
+UPDATE_WEIGHT=0.5
+UBC1_CONSTANT=100
 
-PLAYER = 6
+
+PLAYER = 2
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
 
 DEEPNESS = 5000
