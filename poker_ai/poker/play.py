@@ -609,7 +609,6 @@ def fast_testing(num_players, init_money, model_list):
         for player in datas:
             tables[player] = Data_table()
             tables[player].counting_table = datas[player]
-            print(tables[player].counting_table)
             tables[player].count = table_counting(tables[player].counting_table)
         f.close()
     while table_condition:
@@ -776,4 +775,5 @@ def fast_testing(num_players, init_money, model_list):
                 datas[_player] = tables[_player].counting_table
             with open("poker_ai/ai/ml/play_data.json", 'w') as file:
                 json.dump(datas, file)
+                file.close()
             return player.name

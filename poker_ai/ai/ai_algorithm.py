@@ -414,8 +414,6 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(3)
     if self.money > cur_call-self.pot+cur_raise:
         checkout.append(4)
-    print(checkout)
-    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)[0])
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
@@ -438,8 +436,8 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     a = agent[0]
     ans = 0
     if a == 1:
+        gamelogger.keylogging(self,[1])
         if self.money <= cur_call-self.pot:
-            gamelogger.keylogging(self,[1])
             ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)
         else:
             ans = self.all_in_2(cur_call, last_raised, board_pot, cur_raise)
@@ -459,4 +457,5 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money])
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
+    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)[0])
     return ans
