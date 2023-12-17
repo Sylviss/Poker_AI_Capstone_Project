@@ -139,7 +139,7 @@ class Player:
         hand = self.hand.printhand()
         return f"{self.name}: {self.money}$\n" + hand + "\n"
 
-    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger):
+    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board):
         """
             types of number:
             1.1: All-in 1: Avalable if self.money <= cur_call-self.pot

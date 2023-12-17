@@ -33,7 +33,7 @@ def test_single_game():
     print(fast_testing(5,500,[0,1,1,1,1]))
     
 def test_module():
-    fast_testing(5,10000,[1,1,1,-1,-1])
+    fast_testing(2,100000,[1,-1])
     
 
 if __name__=="__main__":

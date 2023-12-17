@@ -2,6 +2,7 @@ import random
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
 from poker_ai.ai.ml.opponent_modelling import Rate_recorder
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED_DICT
+from poker_ai.ai.ml.opponent_modelling import opponent_modelling
 
 BLUFF_INDICATOR={}
 
@@ -379,7 +380,7 @@ def mcts_ai_agent(index, players, min_money, num_players, board, actions, cur_ca
     
     return [5]
     
-def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger):
+def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn):
     """
     Make the AI act in the game using the basic AI model.
 
@@ -413,6 +414,8 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         checkout.append(3)
     if self.money > cur_call-self.pot+cur_raise:
         checkout.append(4)
+    print(checkout)
+    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)[0])
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,

@@ -23,7 +23,6 @@ MULTIPROCESS = 1
 TURN_TO_RAISE_POT = 5
 # Number of turns to increase the big blind pre-bet
 
-
 CONFIDENT_RANGE = 0.25
 # should be < 0.5
 RISK_RANGE=0.95
@@ -46,4 +45,8 @@ DEEPNESS = 5000
 CONFIDENT_RATE = 0.8
 # The base confident_rate of a player, represent the chance that the player will check/call in a 2 player games
 # Don't ask where I get this number, it's taken by testing a lot
+
+# constants for opponent modelling
+RESCALING_SIZE = 8
+
 ################################################

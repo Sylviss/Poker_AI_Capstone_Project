@@ -2,7 +2,7 @@ import bext, json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
-from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling, table_counting
+from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling, table_counting, table_rescaling
 
 
 def default_table():
@@ -16,7 +16,7 @@ def default_table():
         return data
 
 
-def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -28,13 +28,114 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
     """
     self=players[index]
     if indicator == 0:
-        return self.action_human(players, cur_call, last_raised, board_pot, cur_raise, gamelogger)
+        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board)
     elif indicator == 1:
         if self.name == "Player 1":
-            return self.action_human(players, cur_call, last_raised, board_pot, cur_raise, gamelogger)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn)
     else:
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn)
+
+
+def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board):
+    """
+        types of number:
+        1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
+        1.2. All-in 2: Avalable if self.money > cur_call-self.pot
+        2. Check: Avalable if cur_call == self.pot
+        3. Call: Avalable if cur_call > self.pot
+        4. Raise: Avalable if self.money > cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
+        5. Fold: whenever you want it
+        6. Raise max: This is a new one.
+
+    Allow a human to act ingame
+
+    Args:
+        cur_call (int): current call value of the phase.
+        last_raised (string): the player.name of the last player that raise the pot.
+        board_pot (int): current pot of the board.
+        cur_raise (int): current raise value of the phase.
+
+    Returns:
+        tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
+    """
+    checkout = [1, 5]
+    stack = ["fold", "all in"]
+    word = ["1: all in", "5: fold"]
+
+    if cur_call == self.pot:
+        stack.append("check")
+        checkout.append(2)
+        word.append("2: check")
+
+    elif cur_call > self.pot and self.money > cur_call-self.pot:
+        stack.append("call")
+        checkout.append(3)
+        word.append("3: call")
+
+    if self.money > cur_call-self.pot+cur_raise:
+        stack.append("raise")
+        checkout.append(4)
+        word.append("4: raise")
+    min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
+    if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+        stack.append("raise max")
+        checkout.append(6)
+        word.append("6: raise max")
+    print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+    opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)
+
+    while True:
+        print("Choose between:")
+        print(", ".join(word))
+        try:
+            action = int(input('>>> '))
+        except ValueError:
+            continue
+        if action not in checkout:
+            continue
+        break
+
+    if action == 1:
+        gamelogger.keylogging(self, [1])
+        if self.money <= cur_call-self.pot:
+            ans = self.all_in_1(cur_call, last_raised,
+                                board_pot, cur_raise)
+        else:
+            ans = self.all_in_2(cur_call, last_raised,
+                                board_pot, cur_raise)
+            
+    elif action == 2:
+        gamelogger.keylogging(self, [2])
+        ans = self.check(cur_call, last_raised, board_pot, cur_raise)
+
+    elif action == 3:
+        gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money])
+        ans = self.call(cur_call, last_raised, board_pot, cur_raise)
+
+    elif action == 4:
+        while True:
+            print(
+                f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
+            try:
+                b = int(input('>>> '))
+            except ValueError:
+                continue
+            if b < cur_raise or b > self.money-1-(cur_call-self.pot):
+                continue
+            ans = self.raise_money(
+                b, cur_call, last_raised, board_pot, cur_raise)
+            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money])
+            break
+
+    elif action == 5:
+        gamelogger.keylogging(self, [5])
+        ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
+    elif action == 6:
+        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money])
+        ans = self.raise_money(
+                min_money, cur_call, last_raised, board_pot, cur_raise)
+    return ans
 
 
 def print_blind_board(players, board, indicator=INDICATOR):
@@ -490,12 +591,27 @@ def fast_testing(num_players, init_money, model_list):
     playing = num_players
     table_condition = True
     players = []
+    tables ={}
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
+        tables[players[-1].name] = Data_table()
+    try:
+        f = open("poker_ai/ai/ml/play_data.json")
+    except:
+        for x in range(num_players):
+            tables[players[-1].name] = Data_table()
+    else:
+        datas = json.load(f)
+        for player in datas:
+            tables[player] = Data_table()
+            tables[player].counting_table = datas[player]
+            print(tables[player].counting_table)
+            tables[player].count = table_counting(tables[player].counting_table)
+        f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -571,7 +687,7 @@ def fast_testing(num_players, init_money, model_list):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, tables, playing, folded, k)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -655,4 +771,9 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
+            datas = {}
+            for _player in tables:
+                datas[_player] = tables[_player].counting_table
+            with open("poker_ai/ai/ml/play_data.json", 'w') as file:
+                json.dump(datas, file)
             return player.name
