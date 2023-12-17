@@ -2,14 +2,13 @@ import json
 from poker_ai.datasets.data_extract import main
 from poker_ai.poker.poker_component import Card, Hand, Player
 from poker_ai.ai.eval_func import multi_process_eval_func_but_in_opponent_modelling
-from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling, Rate_recorder, table_building
+from poker_ai.ai.ml.opponent_modelling import Data_table, Rate_recorder, table_building
 
 def data_crunch():
     RANK = {'2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8':7, '9':8, 'T':9, 'J':10, 'Q':11, 'K':12, 'A':13}
     SUIT = {'d':1, 'h':2, 's':3, 'c':0}
     ACTIONS = {1:8, 2:1, 3:2, 4:4, 5:7}
-    dataset = main()[0:100]
-    res = []
+    dataset = main()
     hands = {}
     actions = {}
     table = {'default':Data_table()}
@@ -30,7 +29,7 @@ def data_crunch():
                 a, b = card[0], card[1]
                 hand.append(Card(RANK[a],SUIT[b]))
             test.hand.cards = hand[:]
-            win, draw = multi_process_eval_func_but_in_opponent_modelling(test, 6, Player(Hand(), '', 1000))
+            win = multi_process_eval_func_but_in_opponent_modelling(test, 6, Player(Hand(), '', 1000))[0]
             recorder = Rate_recorder()
             recorder.win = win
             print(recorder.win, hand_tmp)
