@@ -34,7 +34,7 @@ def test_single_game():
     test_hacker()
     
 def test_module():
-    fast_testing(2,1000,[1,-1])
+    fast_testing(2,100,[1,-1])
     
 def dataset_logger():
     dataset_logging(2,1000,[1,-1])

@@ -169,6 +169,7 @@ def main():
     with open('poker_ai/datasets/parsed_data.json', 'w') as f2:
         json.dump(parsed_data, f2, indent=4)
     print('Done')
+    return parsed_data
 
-if __name__ == '__main__':
+if __name__=="__main__":
     main()

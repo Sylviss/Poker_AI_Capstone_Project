@@ -103,13 +103,14 @@ class Deck:
 
 class Player:
 
-    def __init__(self, hand, name, money, state=-1, model=MODEL):
+    def __init__(self, hand, name, money, state=-1, model=MODEL, table={}):
         self.name = name
         self.hand = hand
         self.money = money
         self.state = state
         self.pot = 0
         self.model = model
+        self.table = Data_table()
         """
         + State explain:
         -1: Initial state
@@ -137,7 +138,7 @@ class Player:
         hand = self.hand.printhand()
         return f"{self.name}: {self.money}$\n" + hand + "\n"
 
-    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger):
+    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board):
         """
             types of number:
             1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
@@ -314,6 +315,27 @@ class Hand(Deck):
     
     def hand_to_str(self):
         return " ".join([card_to_str(card) for card in self.cards])
+
+    def starting_hand_str(self):
+        rank_names = [None, '2', '3', '4', '5', '6',
+                      '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
+        if len(self.cards) != 2:
+            raise Exception('Not a starting hand!')
+        c1 = self.cards[0].printcardsimple()
+        c2 = self.cards[1].printcardsimple()
+        if c1[:-1] == c2[:-1]:
+            w = c1[:-1]+c2[:-1]
+            return w.replace('10','T')
+        elif rank_names.index(c1[:-1]) > rank_names.index(c2[:-1]):
+            w = c1[:-1] + c2[:-1]
+        elif rank_names.index(c1[:-1]) < rank_names.index(c2[:-1]):
+            w = c2[:-1] + c1[:-1]
+        if c1[-1] == c2[-1]:
+            w += 's'
+        else:
+            w += 'o'
+        return w
+
 class Poker(Hand):
 
     def __init__(self):
@@ -551,7 +573,7 @@ def int_to_card(a):
 class Gamelogger:
     def __init__(self,players):
         """Explain for keylogging:
-        There are much more stage than normal, because raise 1$ and all in in much different. The action can be changed into different case like this:
+        There are much more stage than normal, because raise 1$ and all in are much different. The action can be changed into different case like this:
         1: All in -  8: All in
         2: Check -   1: Check
         3: Call: depend on the money
@@ -656,3 +678,21 @@ class Gamelogger:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))
         self.money_history.append(money)
+        
+class Rate_recorder():
+    def __init__(self):
+        self.win = 0.0
+    def refresh(self):
+        self.__init__()
+
+class Data_table():
+    def __init__(self):
+        self.counting_table = {i: {j: {k: 0 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
+                        for j in ['preflop', 'flop', 'turn', 'river']}\
+                        for i in ['strong', 'medium', 'weak']}
+        self.data_table = {i: {j: {k: 0 for k in ['fold', 'check', 'call', 'raise', 'all in']}\
+                        for j in ['preflop', 'flop', 'turn', 'showdown']}\
+                        for i in ['strong', 'medium', 'weak']}
+        self.count = 45
+    def refresh_table(self):
+        self.__init__()
