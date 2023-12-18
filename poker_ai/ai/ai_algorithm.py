@@ -445,14 +445,15 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
 
 # Realm of madness starts here
 class MCTS_Node:
-    def __init__(self, player_name, turn, players, cur_call, cur_raise, board, last_raised, action_turn, parent=None):
+    def __init__(self, player_name, turn, players, cur_call, cur_raise, board, last_raised, action_turn, next_player_name, num_raise, parent=None):
         """For the actions initialization:
-            0: Fold
-            1: Check/call
-            2: Raise/All in/Raise max/Raise something blah blah
+            1: Fold
+            2: Check/call
+            3: Raise min
+            4: Raise high/re-raise
+            5: All in
             Also, for the sake of simulation and less branch, the AI will only attempt to raise for 4 times. The 4th time will always be raise max/all in
             For the turn initialization:
-            -1: End state
             0: Pre-flop
             1: Flop
             2: Turn
@@ -466,13 +467,16 @@ class MCTS_Node:
             temp_players[-1].hand.cards=player.hand.cards[:]
         self.state=[temp_players, cur_raise, cur_call, deepcopy(board), last_raised]
         self.player_name = player_name
+        self.next_player_name = next_player_name
         self.turn = turn
         self.visits = 0
         self.values = 0
+        self.num_raise = num_raise
         self.children = {}
         self.parent = parent
         
 def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value):
+    total_money=board.money+sum([p.money for p in players])
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
@@ -481,19 +485,34 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     cur_node=player.mcts_tree
     for k in range(10000):
         selected_node=selection(cur_node,k)
-        if selected_node.turn!=-1:
+        if selected_node.next_player_name!="Terminal":
             next_list=[]
-            for action in (1,2,3):
-                next_list.append(next_parameter(big_blind, preflop_big_blind_value, selected_node,index, action))
+            for action in [1,2,3,4,5,6]:
+                next_list.append(next_parameter(big_blind, preflop_big_blind_value, selected_node, index, action, min_money))
             node_list=expansion(selected_node, next_list)
             for node in node_list:
                 reward=simulation(index, preflop_big_blind_value, node)
-                backpropagation(node,reward)
+                backpropagation(node,reward,player,total_money,players)
         else:
             reward=simulation(index, preflop_big_blind_value, selected_node)
-            backpropagation(selected_node,reward)
-    action_list=choose_action(cur_node,actions)
+            backpropagation(selected_node,reward,player,total_money,players)
+    action_list=choose_action(cur_node)
+    a=[cur_node]
+    print(cur_node.player_name,cur_node.next_player_name,cur_node.visits,cur_node.turn,cur_node.action_turn)
+    while(len(a)!=0):
+        hehe=a.pop(0)
+        for key in hehe.children:
+            hehehe=hehe.children[key]
+            print(key,hehehe.player_name,hehehe.next_player_name,hehehe.visits,hehehe.values,hehehe.turn,hehehe.action_turn)
+            a.append(hehehe)
     print(action_list)
+    print()
+    if turn==3:
+        a=[cur_node]
+        print(cur_node.player_name,cur_node.next_player_name,cur_node.visits,cur_node.turn,cur_node.action_turn)
+        if 4 in actions:
+            return [4,int(cur_raise*2.5)]
+        return [1]
     return [2]
     # action=max(action_list,key=lambda a: a[1])[0]
     # if action==3:
@@ -513,11 +532,11 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     #         raise ValueError('Something wrong')
         
 def create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn):
-    mcts_tree=MCTS_Node(player.name, turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history))
+    mcts_tree=MCTS_Node("Initiator", turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history), player.name, gamelogger.raised_time)
     return mcts_tree
 
 def selection(root, cur_iteration):
-    if cur_iteration<1000:
+    if cur_iteration<500:
         if len(root.children)==0:
             return root
         else:
@@ -535,12 +554,12 @@ def selection(root, cur_iteration):
 def expected_value_gen(root):
     res=[]
     for key,node in root.children.items():
-        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(root.parent.visits)/node.visits)**0.5
+        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(root.visits)/node.visits)**0.5
         res.append([key,ev])
     return res
 
-def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action):
-    player_name=node.player_name
+def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action, min_money):
+    player_name=node.next_player_name
     turn=node.turn
     temp_players, cur_raise, cur_call, temp_board, last_raised = node.state
     board=deepcopy(temp_board)
@@ -552,6 +571,7 @@ def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action):
     board_pot=board.money
     index=players.index([player for player in players if player.name==player_name][0])
     self=players[index]
+    raised_time=node.num_raise
     blockPrint()
     match action:
         case 1:
@@ -564,33 +584,53 @@ def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action):
             else:
                 return (None,None)
         case 3:
-            if self.money > cur_call-self.pot+2.5*cur_raise:
+            if 0.3*self.money > cur_call-self.pot+2.5*cur_raise and cur_raise==preflop_big_blind_value and raised_time<=3:
                 ans = self.raise_money(2.5*cur_raise, cur_call, last_raised, board_pot, cur_raise)
-            elif self.money <= cur_call-self.pot:
+                raised_time+=1
+            else:
+                return (None,None)
+        case 4:
+            if self.money > cur_call-self.pot+2.5*cur_raise and raised_time<=3:
+                ans = self.raise_money(2.5*cur_raise, cur_call, last_raised, board_pot, cur_raise)
+                raised_time+=1
+            else:
+                return (None,None)
+        case 5:
+            if self.money <= cur_call-self.pot:
                 ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)
             else:
                 ans = self.all_in_2(cur_call, last_raised, board_pot, cur_raise)
+                raised_time+=1
+        case 6:
+            if self.money > cur_call-self.pot+2.5*cur_raise and raised_time<=3:
+                ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
+                raised_time+=1
+            else:
+                return (None,None)
         case _:
             raise ValueError("next_parameter error")
     enablePrint()
     cur_call, last_raised, board.money, cur_raise = ans
     playing=sum(1 for player in players if player.state in [-1,0,1,2])
     if players[my_id].state in [3,4,5,6]:
-        return (action,MCTS_Node("Terminal",-1, players, cur_raise, cur_call, board, last_raised, node.action_turn+1,node))
+        return (action,MCTS_Node(player_name, turn, players, cur_call, cur_raise, board, last_raised, node.action_turn+1, "Terminal", 0, node))
     if playing==1:
-        return (action,MCTS_Node("Terminal",-1, players, cur_raise, cur_call, board, last_raised, node.action_turn+1,node))
+        return (action,MCTS_Node(player_name, turn, players, cur_call, cur_raise, board, last_raised, node.action_turn+1, "Terminal", 0, node))
     actable=sum(1 for player in players if player.state in [-1,1,2])
     next_player=players[(index+1)%len(players)]
     if actable==0:
-        return (action,MCTS_Node("Terminal",-1, players, cur_raise, cur_call, board, last_raised, node.action_turn+1,node))
+        return (action,MCTS_Node(player_name, turn, players, cur_call, cur_raise, board, last_raised, node.action_turn+1, "Terminal", 0, node))
     if actable!=1:
         temp_index=index
         while next_player.state in [0,3,4,5,6]:
             temp_index+=1
             next_player=players[temp_index%len(players)]
-            
-    if (players[big_blind].name==self.name and last_raised is None) or (actable==1) or (last_raised==next_player.name):
+    
+    if (players[big_blind].name==self.name and last_raised is None) or (last_raised==next_player.name):
         turn+=1
+        raised_time=0
+        if turn>=4:
+            return (action,MCTS_Node(player_name, turn, players, cur_call, cur_raise, board, last_raised, node.action_turn+1, "Terminal", 0, node))
         next_player=players[(big_blind+1)%len(players)]
         temp_big_blind=big_blind+1
         while next_player.state in [0,3,4,5,6]:
@@ -600,7 +640,7 @@ def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action):
         for player in players:
             if player.state not in [0, 3, 4, 5, 6]:
                 player.state = -1
-    return (action,MCTS_Node(next_player.name, turn, players, cur_raise, cur_call, board, last_raised, node.action_turn+1,node))
+    return (action,MCTS_Node(player_name, turn, players, cur_call, cur_raise, board, last_raised, node.action_turn+1, next_player.name, raised_time, node))
                 
 def expansion(root, next_list):
     for action,new_node in next_list:
@@ -610,8 +650,12 @@ def expansion(root, next_list):
     return list(root.children.values())
 
 def simulation(index, preflop_big_blind_value, node):
-    reward=(simulation_self(index, preflop_big_blind_value, node) + simulation_other(index, preflop_big_blind_value, node))/2
-    return reward
+    name,self_reward=simulation_self(index, preflop_big_blind_value, node)
+    reward_dict=simulation_other(index, preflop_big_blind_value, node)
+    reward_dict[name]=self_reward
+    print(reward_dict)
+    print()
+    return reward_dict
 
 def simulation_self(index, preflop_big_blind_value, node):
     temp_players, cur_raise, cur_call, temp_board, last_raised = node.state
@@ -627,14 +671,16 @@ def simulation_self(index, preflop_big_blind_value, node):
     simulation_num=0
     for idx in range(len(players)):
         if players[idx].state in [1,2]:
-            if players[idx].money>cur_call-players[idx].pot:
-                board.money+=cur_call-players[idx].pot
-                players[idx].money-=cur_call-players[idx].pot
+            if players[idx].money>=cur_call-players[idx].pot:
+                call_money=cur_call-players[idx].pot
+                board.money+=call_money
+                players[idx].money-=call_money
+                players[idx].pot+=call_money
             else:
                 players[idx].state=6
         if players[idx].state not in [3,4,5,6]:
             simulation_num+=1
-    return simulation_game(cur_player,simulation_num,board)/preflop_big_blind_value
+    return (cur_player.name,simulation_game_self(cur_player,simulation_num,board))
     
 def simulation_other(index, preflop_big_blind_value, node):
     temp_players, cur_raise, cur_call, temp_board, last_raised = node.state
@@ -647,20 +693,47 @@ def simulation_other(index, preflop_big_blind_value, node):
     cur_player=Player(Hand(),players[index].name,players[index].money,players[index].state)
     cur_player.pot=players[index].pot
     cur_player.hand.cards+=players[index].hand.cards
-    simulation_num=0
+    simulation_list=[]
     for idx in range(len(players)):
         if players[idx].state in [1,2]:
-            if players[idx].money>cur_call-players[idx].pot:
-                board.money+=cur_call-players[idx].pot
-                players[idx].money-=cur_call-players[idx].pot
+            if players[idx].money>=cur_call-players[idx].pot:
+                call_money=cur_call-players[idx].pot
+                board.money+=call_money
+                players[idx].money-=call_money
+                players[idx].pot+=call_money
             else:
                 players[idx].state=6
         if players[idx].state not in [3,4,5,6]:
-            simulation_num+=1
+            simulation_list+=[players[idx].name]
     cur_player.hand=None
-    return simulation_game(cur_player,simulation_num,board)/preflop_big_blind_value    
+    return simulation_game_other(cur_player,simulation_list,board,preflop_big_blind_value,players) 
 
-def simulation_game(player_1,num_players,board):
+def simulation_game_other(player_1,simulation_list,board,bb_val,players):
+    deck=Deck()
+    for card in board.hand.cards:
+        deck.remove_card(card)
+    while len(board.hand.cards)<5:
+        board.hand.add_card(deck.deal_cards())
+    hands=deck.deal_hands(len(simulation_list), 2)
+    players_check=[Player(hands.pop(), simulation_list[x] , 0) for x in range(len(simulation_list))]
+    checker = {}
+    for player in players_check:
+        checker[player.name]=player.hand.create_poker(board.hand).check()
+    win = max(list(checker.values()))
+    # print(checker)
+    # print()
+    return_dict={}
+    winner=[]
+    for player in players:
+        if player.name not in checker or win > checker[player.name]:
+            return_dict[player.name] = -player.pot
+        elif win == checker[player.name]:
+            winner.append(player)
+    for player in winner:
+        return_dict[player.name] = (board.money/len(winner)-player.pot)
+    return return_dict
+
+def simulation_game_self(player_1,num_players,board):
     if player_1.state not in [-1,0,1,2]:
         return -player_1.pot
     if num_players==1:
@@ -668,50 +741,41 @@ def simulation_game(player_1,num_players,board):
     deck=Deck()
     for card in board.hand.cards:
         deck.remove_card(card)
-    if player_1.hand is None:
-        while len(board.hand.cards)<5:
-            board.hand.add_card(deck.deal_cards())
-        hands=deck.deal_hands(num_players, 2)
-        players=[Player(hands.pop(), "Player", 0) for _ in range(num_players)]
-        self = players[0].hand.create_poker(board.hand).check()
-        checker = []
-        for player in players[1:]:
-            checker.append(player.hand.create_poker(board.hand).check())
-        win = max(checker)
-        if win > self:
-            return -player_1.pot
-        elif win == self:
-            return board.money/2-player_1.pot
-        else:
-            return board.money-player_1.pot
+    for card in player_1.hand.cards:
+        deck.remove_card(card)
+    while len(board.hand.cards)<5:
+        board.hand.add_card(deck.deal_cards())
+    hands=deck.deal_hands(num_players-1, 2)
+    players=[Player(hands.pop(), "Player", 0) for _ in range(num_players-1)]
+    self = player_1.hand.create_poker(board.hand).check()
+    checker = []
+    for player in players:
+        checker.append(player.hand.create_poker(board.hand).check())
+    win = max(checker)
+    if win > self:
+        return -player_1.pot
+    elif win == self:
+        return board.money/2-player_1.pot
     else:
-        for card in player_1.hand.cards:
-            deck.remove_card(card)
-        while len(board.hand.cards)<5:
-            board.hand.add_card(deck.deal_cards())
-        hands=deck.deal_hands(num_players-1, 2)
-        players=[Player(hands.pop(), "Player", 0) for _ in range(num_players-1)]
-        self = player_1.hand.create_poker(board.hand).check()
-        checker = []
-        for player in players:
-            checker.append(player.hand.create_poker(board.hand).check())
-        win = max(checker)
-        if win > self:
-            return -player_1.pot
-        elif win == self:
-            return board.money/2-player_1.pot
+        return board.money-player_1.pot
+
+def backpropagation(root,reward,player_1,total_money,players):
+    if root.parent is not None and root.player_name != "Initiator":
+        cur_player=[player for player in players if player.name==root.player_name][0]
+        if root.player_name!=player_1.name:
+            action=[action for action in root.parent.children if root.parent.children[action] is root][0]
+            root.values+=reward[root.player_name]/(total_money-cur_player.money-cur_player.pot)
+            root.visits+=1
         else:
-            return board.money-player_1.pot
-def backpropagation(root,reward):
-    if root.parent is not None:
-        root.values+=reward
+            root.values+=reward[root.player_name]/(total_money-cur_player.money-cur_player.pot)
+            root.visits+=1
+        backpropagation(root.parent,reward,player_1,total_money,players)
+    elif root.player_name!="Initiator":
+        root.values+=reward[root.player_name]/(total_money-cur_player.money-cur_player.pot)
         root.visits+=1
-        backpropagation(root.parent,reward)
     else:
-        root.values+=reward
         root.visits+=1
 
-def choose_action(cur_node,actions):
-    action_dict={1:3,2:2,3:2,4:3,5:1,6:3}
-    action_list=[(action_dict[action],cur_node.children[action_dict[action]].values/cur_node.children[action_dict[action]].visits,cur_node.children[action_dict[action]].values,cur_node.children[action_dict[action]].visits) for action in actions]
+def choose_action(cur_node):
+    action_list=[(action,cur_node.children[action].values/cur_node.children[action].visits,cur_node.children[action].values,cur_node.children[action].visits) for action in cur_node.children]
     return action_list
