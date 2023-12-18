@@ -476,6 +476,10 @@ class MCTS_Node:
         self.parent = parent
         
 def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value):
+    if cur_raise==preflop_big_blind_value:
+        raise_multipler=[1,1.5,2,2.5]
+    else:
+        raise_multipler=[1,1,1,1]
     total_money=board.money+sum([p.money for p in players])
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
@@ -487,7 +491,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
         selected_node=selection(cur_node,k)
         if selected_node.next_player_name!="Terminal":
             next_list=[]
-            for action in [1,2,3,4,5,6]:
+            for action in [1,2,3,4,5]:
                 next_list.append(next_parameter(big_blind, preflop_big_blind_value, selected_node, index, action, min_money))
             node_list=expansion(selected_node, next_list)
             for node in node_list:
@@ -497,40 +501,80 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
             reward=simulation(index, preflop_big_blind_value, selected_node)
             backpropagation(selected_node,reward,player,total_money,players)
     action_list=choose_action(cur_node)
-    a=[cur_node]
-    print(cur_node.player_name,cur_node.next_player_name,cur_node.visits,cur_node.turn,cur_node.action_turn)
-    while(len(a)!=0):
-        hehe=a.pop(0)
-        for key in hehe.children:
-            hehehe=hehe.children[key]
-            print(key,hehehe.player_name,hehehe.next_player_name,hehehe.visits,hehehe.values,hehehe.turn,hehehe.action_turn)
-            a.append(hehehe)
+    # a=[cur_node]
+    # print(cur_node.player_name,cur_node.next_player_name,cur_node.visits,cur_node.turn,cur_node.action_turn)
+    # while(len(a)!=0):
+    #     hehe=a.pop(0)
+    #     for key in hehe.children:
+    #         hehehe=hehe.children[key]
+    #         print(key,hehehe.player_name,hehehe.next_player_name,hehehe.visits,hehehe.values,hehehe.turn,hehehe.action_turn)
+    #         a.append(hehehe)
     print(action_list)
     print()
+    action=max(action_list,key=lambda a: a[1])[0]
+    # Rule-based starts here
+    match action:
+        case 1:
+            if 2 in actions:
+                return [2]
+            return [5]
+        case 2:
+            if 2 in actions:
+                return [2]
+            elif 3 in action:
+                return [3]
+            else:
+                raise ValueError("MCTS ai error")
     if turn==3:
-        a=[cur_node]
-        print(cur_node.player_name,cur_node.next_player_name,cur_node.visits,cur_node.turn,cur_node.action_turn)
-        if 4 in actions:
-            return [4,int(cur_raise*2.5)]
-        return [1]
-    return [2]
-    # action=max(action_list,key=lambda a: a[1])[0]
-    # if action==3:
-    #     if player.money - (cur_call - player.pot) < 2.5 * cur_raise:
-    #         return [1]
-    #     if 2.5*cur_raise>min_money:
-    #         return [4,min_money]
-    #     return [4,int(2.5*cur_raise)]
-    # elif action==1:
-    #     return [5]
-    # else:
-    #     if 3 in actions:
-    #         return [3]
-    #     elif 2 in actions:
-    #         return [2]
-    #     else:
-    #         raise ValueError('Something wrong')
-        
+        match action:
+            case 3:
+                raise_value = cur_raise + (0.25 + 0.75 * random.random()) * (
+                                player.money - cur_call + player.pot - cur_raise)
+                return [4,raise_value]
+            case 4:
+                raise_value = cur_raise + (0.5 + 0.5 * random.random()) * (
+                                player.money - cur_call + player.pot - cur_raise)
+                return [4,raise_value]
+            case 5:
+                if 6 in actions:
+                    return [6]
+                return [1]
+            case _:
+                raise ValueError("MCTS ai error")
+    else:
+        match action:
+            case 3:
+                if player.money - (cur_call - player.pot) > 1.5 * cur_raise * raise_multipler[turn]:
+                    cur_raise*=raise_multipler[turn]
+                    raise_value = 2.5*cur_raise
+                
+                else:
+                    raise_value = cur_raise + (random.random() ** 1.5) * (
+                                player.money - cur_call + player.pot - cur_raise)
+                return [4,raise_value]
+            case 4:
+                if player.money - (cur_call - player.pot) > 2.5 * cur_raise * raise_multipler[turn]:
+                    cur_raise*=raise_multipler[turn]
+                    raise_value = 3.5*cur_raise
+                else:
+                    raise_value = cur_raise + random.random() * (
+                                player.money - cur_call + player.pot - cur_raise)
+                return [4,raise_value]
+            case 5:
+                if 4 in actions:
+                    if player.money - (cur_call - player.pot) > 3.5 * cur_raise * raise_multipler[turn]:
+                        cur_raise*=raise_multipler[turn]
+                        raise_value = 3.5*cur_raise
+                    else:
+                        raise_value = cur_raise + (0.5+0.5*random.random()) * (
+                                    player.money - cur_call + player.pot - cur_raise)
+                    return [4,raise_value]
+                elif 6 in actions:
+                    return [6]
+                return [1]
+            case _:
+                raise ValueError("MCTS ai error")
+    
 def create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn):
     mcts_tree=MCTS_Node("Initiator", turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history), player.name, gamelogger.raised_time)
     return mcts_tree
@@ -596,17 +640,14 @@ def next_parameter(big_blind, preflop_big_blind_value, node, my_id, action, min_
             else:
                 return (None,None)
         case 5:
+            if min_money!=0 and self.money > cur_call-self.pot+min_money and raised_time<=3:
+                ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
+                raised_time+=1
             if self.money <= cur_call-self.pot:
                 ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)
             else:
                 ans = self.all_in_2(cur_call, last_raised, board_pot, cur_raise)
                 raised_time+=1
-        case 6:
-            if self.money > cur_call-self.pot+2.5*cur_raise and raised_time<=3:
-                ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-                raised_time+=1
-            else:
-                return (None,None)
         case _:
             raise ValueError("next_parameter error")
     enablePrint()
@@ -653,8 +694,8 @@ def simulation(index, preflop_big_blind_value, node):
     name,self_reward=simulation_self(index, preflop_big_blind_value, node)
     reward_dict=simulation_other(index, preflop_big_blind_value, node)
     reward_dict[name]=self_reward
-    print(reward_dict)
-    print()
+    # print(reward_dict)
+    # print()
     return reward_dict
 
 def simulation_self(index, preflop_big_blind_value, node):
