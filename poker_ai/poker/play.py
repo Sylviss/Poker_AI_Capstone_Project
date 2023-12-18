@@ -15,7 +15,7 @@ def default_table():
         f.close()
         return data
 
-def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -27,16 +27,16 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
     """
     self=players[index]
     if indicator == 0:
-        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board)
+        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
-            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
     else:
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, tables, playing, folded, turn)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
 
 
-def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board):
+def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players):
     """
         types of number:
         1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
@@ -82,7 +82,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)
+    opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)
 
     while True:
         print("Choose between:")
@@ -399,8 +399,18 @@ def game(num_players, init_money):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
         tables[players[-1].name] = Data_table()
-        tables[players[-1].name].counting_table = default_table()
-        tables[players[-1].name].count = table_counting(tables[players[-1].name].counting_table)
+    try:
+        f = open("poker_ai/ai/ml/play_data.json")
+    except:
+        for x in range(num_players):
+            tables[players[-1].name] = Data_table()
+    else:
+        datas = json.load(f)
+        for player in datas:
+            tables[player] = Data_table()
+            tables[player].counting_table = datas[player]
+            tables[player].count = table_counting(tables[player].counting_table)
+        f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -476,8 +486,7 @@ def game(num_players, init_money):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger)
-                    tables = opponent_modelling(gamelogger.history, tables, k, players[0], board, playing-folded)[1]
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -572,6 +581,12 @@ def game(num_players, init_money):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")        
+            datas = {}
+            for _player in tables:
+                datas[_player] = tables[_player].counting_table
+            with open("poker_ai/ai/ml/play_data.json", 'w') as file:
+                json.dump(datas, file)
+                file.close()
 
 def fast_testing(num_players, init_money, model_list):
     """Play a game with {num_players} player with {init_money} base money
@@ -684,7 +699,7 @@ def fast_testing(num_players, init_money, model_list):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, tables, playing, folded, k)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1

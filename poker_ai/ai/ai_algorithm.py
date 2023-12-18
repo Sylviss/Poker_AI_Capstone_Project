@@ -370,7 +370,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
             else:
                 return [5]
     
-def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value):
+def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
     """
     Make the AI act in the game using the basic AI model.
 
@@ -450,7 +450,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money])
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, playing-folded, checkout)[0])
+    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)[0])
     return ans
 
 
