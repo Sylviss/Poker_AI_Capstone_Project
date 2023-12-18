@@ -40,39 +40,39 @@ Bot 1 vs Bot -1
 
 Win rate:
 
-UPDATE_WEIGHT = 0.1
-Bot 1: 31 20 21 26
-Bot -1: 19 30 29 24
+UPDATE_WEIGHT = 0.1 (100 games)
+Bot 1: 46
+Bot -1: 54
 
-UPDATE_WEIGHT = 0.2
-Bot 1: 25 21 26 25
-Bot -1: 25 29 24 25
+UPDATE_WEIGHT = 0.2 (100 games)
+Bot 1: 21 29
+Bot -1: 29 21
 
-UPDATE_WEIGHT = 0.3
-Bot 1: 20 25 24 27
-Bot -1: 30 25 26 23
+UPDATE_WEIGHT = 0.3 (100 games)
+Bot 1: 30 32
+Bot -1: 20 18
 
-UPDATE_WEIGHT = 0.4
-Bot 1: 24 26 21 29
-Bot -1: 26 24 29 21
+UPDATE_WEIGHT = 0.4 (100 games)
+Bot 1: 30 26
+Bot -1: 20 24
 
-UPDATE_WEIGHT = 0.5 
-Bot 1: 21 24 25 26
-Bot -1: 29 26 25 24
+UPDATE_WEIGHT = 0.5 (100 games)
+Bot 1: 27 29
+Bot -1: 23 21
 
-UPDATE_WEIGHT = 0.6
-Bot 1: 25 26 28 20
-Bot -1: 25 24 22 30
+UPDATE_WEIGHT = 0.6 (100 games)
+Bot 1: 23 26
+Bot -1: 27 24
 
-UPDATE_WEIGHT = 0.7
-Bot 1: 28 25 30 35
-Bot -1: 22 25 20 15
+UPDATE_WEIGHT = 0.7 (100 games)
+Bot 1: 27 26
+Bot -1: 23 24
 
-UPDATE_WEIGHT = 0.8
-Bot 1: 29 27 30 26
-Bot -1: 21 23 20 24
+UPDATE_WEIGHT = 0.8 (100 games)
+Bot 1: 25 30
+Bot -1: 25 20
 
-UPDATE_WEIGHT = 0.9
-Bot 1: 18 26 27 18
-Bot -1: 32 24 23 32
+UPDATE_WEIGHT = 0.9 (100 games)
+Bot 1: 29 31
+Bot -1: 21 19
 
