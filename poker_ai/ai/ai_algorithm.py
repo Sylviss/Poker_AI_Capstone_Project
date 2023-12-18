@@ -521,7 +521,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
         case 2:
             if 2 in actions:
                 return [2]
-            elif 3 in action:
+            elif 3 in actions:
                 return [3]
             else:
                 raise ValueError("MCTS ai error")
