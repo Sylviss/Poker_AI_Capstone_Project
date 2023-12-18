@@ -1,5 +1,5 @@
 from collections import defaultdict
-from poker_ai.poker.play import fast_testing,game_but_cheaty
+from poker_ai.poker.play import fast_testing,game_but_cheaty,dataset_logging
 import sys,os
 
 # Disable print
@@ -36,6 +36,7 @@ def test_single_game():
 def test_module():
     fast_testing(2,100,[1,-1])
     
-
+def dataset_logger():
+    dataset_logging(2,1000,[1,-1])
 if __name__=="__main__":
     test_hacker()
