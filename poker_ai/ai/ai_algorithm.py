@@ -544,11 +544,11 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
             case 3:
                 raise_value = cur_raise + (0.25 + 0.75 * random.random()) * (
                                 player.money - cur_call + player.pot - cur_raise)
-                return [4,raise_value]
+                return [4,int(raise_value)]
             case 4:
                 raise_value = cur_raise + (0.5 + 0.5 * random.random()) * (
                                 player.money - cur_call + player.pot - cur_raise)
-                return [4,raise_value]
+                return [4,int(raise_value)]
             case 5:
                 if 6 in actions:
                     return [6]
@@ -565,7 +565,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
                 else:
                     raise_value = cur_raise + (random.random() ** 1.5) * (
                                 player.money - cur_call + player.pot - cur_raise)
-                return [4,raise_value]
+                return [4,int(raise_value)]
             case 4:
                 if player.money - (cur_call - player.pot) > 2.5 * cur_raise * raise_multipler[turn]:
                     cur_raise*=raise_multipler[turn]
@@ -573,7 +573,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
                 else:
                     raise_value = cur_raise + random.random() * (
                                 player.money - cur_call + player.pot - cur_raise)
-                return [4,raise_value]
+                return [4,int(raise_value)]
             case 5:
                 if 4 in actions:
                     if player.money - (cur_call - player.pot) > 3.5 * cur_raise * raise_multipler[turn]:
@@ -582,7 +582,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
                     else:
                         raise_value = cur_raise + (0.5+0.5*random.random()) * (
                                     player.money - cur_call + player.pot - cur_raise)
-                    return [4,raise_value]
+                    return [4,int(raise_value)]
                 elif 6 in actions:
                     return [6]
                 return [1]

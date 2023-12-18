@@ -15,7 +15,7 @@ def test_win_rate(n):
         d = defaultdict(lambda: 0)
         for t in range(n):
             blockPrint()
-            d[fast_testing(2,1000,[0,1])] += 1
+            d[fast_testing(2,1000,[2,1])] += 1
             enablePrint()
             print(t)
         for key in d:
@@ -39,4 +39,4 @@ def test_module():
 def dataset_logger():
     dataset_logging(2,1000,[1,-1])
 if __name__=="__main__":
-    test_module()
+    test_win_rate(1)
