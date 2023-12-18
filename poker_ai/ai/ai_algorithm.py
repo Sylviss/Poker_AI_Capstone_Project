@@ -560,7 +560,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
                 if 4 in actions:
                     if player.money - (cur_call - player.pot) > 1.5 * cur_raise * raise_multipler[turn]:
                         cur_raise*=raise_multipler[turn]
-                        raise_value = 2.5*cur_raise
+                        raise_value = 1.5*cur_raise
                     
                     else:
                         raise_value = cur_raise + (random.random() ** 1.5) * (
@@ -577,7 +577,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
                 if 4 in actions:
                     if player.money - (cur_call - player.pot) > 2.5 * cur_raise * raise_multipler[turn]:
                         cur_raise*=raise_multipler[turn]
-                        raise_value = 3.5*cur_raise
+                        raise_value = 2.5*cur_raise
                     else:
                         raise_value = cur_raise + random.random() * (
                                     player.money - cur_call + player.pot - cur_raise)
