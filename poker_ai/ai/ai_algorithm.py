@@ -258,9 +258,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
     else:
         if min_money!=0:
             if decide >= win_rate * (1 - CONFIDENT_RANGE):
-                if player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
-                    return [6]
-                elif 3 in actions and pot_odd < 1 - decide:
+                if 3 in actions and pot_odd < 1 - decide:
                     return [3]
                 elif 4 in actions and cur_raise + cur_call - player.pot <= (1 - CONFIDENT_RANGE) * player.money:
                     if player.money - (cur_call - player.pot) > 1.5 * cur_raise * raise_multipler[turn]:
@@ -288,7 +286,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
                                         player.money - cur_call + player.pot - cur_raise) * (
                                                     1 - (decide - win_rate * 0.5 / win_rate * (0.5 - CONFIDENT_RANGE)))
                         return [4, min(int(raise_value),min_money)]
-                    elif player.money < RISK_RANGE * board.pot or big_blind_value >= player.money:
+                    elif 6 in actions and (player.money < RISK_RANGE * board.pot or big_blind_value >= player.money):
                         return [6 if 6 in actions else 1]
                     elif 3 in actions:
                         return [3]
