@@ -2,7 +2,7 @@ import math, multiprocessing, json
 from poker_ai.constant import CONFIDENT_RATE
 from poker_ai.poker.poker_component import Player, Hand, Deck
 
-def multi_process_eval_func_but_in_opponent_modelling(player, num_players, board):
+def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, board):
     """Return the winning/tie chance of a hand, using Monte-Carlo simulations. AND it's multiprocess
 
     Args:
@@ -16,6 +16,8 @@ def multi_process_eval_func_but_in_opponent_modelling(player, num_players, board
     DEEPNESS = 1000
     # I tried many functions for the call_confident, and this is the best I can get. I don't know but simply ln(num_players-1) doesn't work
     a = len(board.hand.cards)
+    player = Player(player_temp.hand, player_temp.name, player_temp.money, player_temp.state)
+    player.pot = player_temp.pot
     if a == 0:
         state = 0
     elif a == 3:
@@ -32,6 +34,7 @@ def multi_process_eval_func_but_in_opponent_modelling(player, num_players, board
                 tempdraw = 0
                 result = pool.starmap(singly_function, [(player, num_players-k, board, state) for _ in range(DEEPNESS)])
                 for x in range(DEEPNESS):
+                    print(x)
                     tempwin += result[x][0]
                     tempdraw += result[x][1]
                 win += tempwin * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
@@ -47,6 +50,7 @@ def multi_process_eval_func_but_in_opponent_modelling(player, num_players, board
 
 
 def singly_function(player, num_players, board, state):
+    print(board)
     temp_board = Player(Hand(), "Board", 0)
     temp_board.hand.cards = board.hand.cards[:]
     deck = Deck()

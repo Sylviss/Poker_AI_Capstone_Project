@@ -1,23 +1,13 @@
 from poker_ai.ai.ml.methods import multi_process_eval_func_but_in_opponent_modelling
 from poker_ai.constant import RESCALING_SIZE
 from test import check_validity
-
-class Rate_recorder():
-    def __init__(self):
-        self.win = 0.0
-    def refresh(self):
-        self.__init__()
+from time import time
 
 class Data_table():
     def __init__(self):
         self.counting_table = {i: {j: {k: {l:0.0000001 for l in ['fold', 'check', 'call', 'raise', 'all in']}\
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}\
-                        for i in ['strong', 'medium', 'weak']}
-
-        self.data_table = {i: {j: {k: {l:0.0000001 for l in ['fold', 'check', 'call', 'raise', 'all in']}\
-                        for k in ['can check', "can't check"]}
-                        for j in ['preflop', 'flop', 'turn', 'showdown']}\
                         for i in ['strong', 'medium', 'weak']}
         self.count = 3*4*2*5
     def refresh_table(self):
@@ -78,7 +68,6 @@ def opponent_modelling(history, tables, turn, human, board, num_player, checkout
     else:
         raise Exception('wait wot???')
     tables = table_building(history, tables, hs, check_flag)
-    print(history[-1][0],history[-1][2],ACTION_TABLE[history[-1][2]], checkout)
     for player in tables:
         if not check_validity(tables[player].counting_table):
             raise Exception('Invalid')

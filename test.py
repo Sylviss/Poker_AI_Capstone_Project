@@ -1,5 +1,4 @@
 import json
-from types import prepare_class
 
 def check_validity(data):
     for hs in data:
@@ -36,11 +35,5 @@ if __name__ == '__main__':
         data = json.load(f)
         for player in data:
             check_validity(data[player])
-        for player in data:
-            for hs in data[player]:
-                for turn in data[player][hs]:
-                    for check in data[player][hs][turn]:
-                        for action in data[player][hs][turn][check]:
-                            data[player][hs][turn][check][action] = int(data[player][hs][turn][check][action])
         print(data)
         f.close()

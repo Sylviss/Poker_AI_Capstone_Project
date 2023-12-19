@@ -110,7 +110,6 @@ class Player:
         self.state = state
         self.pot = 0
         self.model = model
-        self.table = Data_table()
         """
         + State explain:
         -1: Initial state
@@ -137,103 +136,6 @@ class Player:
     def __str__(self):
         hand = self.hand.printhand()
         return f"{self.name}: {self.money}$\n" + hand + "\n"
-
-    def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, playing, folded, turn, board):
-        """
-            types of number:
-            1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
-            1.2. All-in 2: Avalable if self.money > cur_call-self.pot
-            2. Check: Avalable if cur_call == self.pot
-            3. Call: Avalable if cur_call > self.pot
-            4. Raise: Avalable if self.money > cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
-            5. Fold: whenever you want it
-            6. Raise max: This is a new one.
-
-        Allow a human to act ingame
-
-        Args:
-            cur_call (int): current call value of the phase.
-            last_raised (string): the player.name of the last player that raise the pot.
-            board_pot (int): current pot of the board.
-            cur_raise (int): current raise value of the phase.
-
-        Returns:
-            tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
-        """
-        checkout = [1, 5]
-        stack = ["fold", "all in"]
-        word = ["1: all in", "5: fold"]
-
-        if cur_call == self.pot:
-            stack.append("check")
-            checkout.append(2)
-            word.append("2: check")
-        elif cur_call > self.pot and self.money > cur_call-self.pot:
-            stack.append("call")
-            checkout.append(3)
-            word.append("3: call")
-        min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
-        if gamelogger.raised_time<=3:
-            if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
-                stack.append("raise max")
-                checkout.append(6)
-                word.append("6: raise max")
-            if self.money > cur_call-self.pot+cur_raise:
-                stack.append("raise")
-                checkout.append(4)
-                word.append("4: raise")
-        print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-        while True:
-            print("Choose between:")
-            print(", ".join(word))
-            try:
-                action = int(input('>>> '))
-            except ValueError:
-                continue
-            if action not in checkout:
-                continue
-            break
-
-        if action == 1:
-            gamelogger.keylogging(self, [1])
-            if self.money <= cur_call-self.pot:
-                ans = self.all_in_1(cur_call, last_raised,
-                                    board_pot, cur_raise)
-            else:
-                ans = self.all_in_2(cur_call, last_raised,
-                                    board_pot, cur_raise)
-                
-        elif action == 2:
-            gamelogger.keylogging(self, [2])
-            ans = self.check(cur_call, last_raised, board_pot, cur_raise)
-
-        elif action == 3:
-            gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money])
-            ans = self.call(cur_call, last_raised, board_pot, cur_raise)
-
-        elif action == 4:
-            while True:
-                print(
-                    f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
-                try:
-                    b = int(input('>>> '))
-                except ValueError:
-                    continue
-                if b < cur_raise or b > self.money-1-(cur_call-self.pot):
-                    continue
-                ans = self.raise_money(
-                    b, cur_call, last_raised, board_pot, cur_raise)
-                gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b])
-                break
-
-        elif action == 5:
-            gamelogger.keylogging(self, [5])
-            ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
-        elif action == 6:
-            gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money])
-            ans = self.raise_money(
-                    min_money, cur_call, last_raised, board_pot, cur_raise)
-        return ans
 
 
     def all_in_1(self, cur_call, last_raised, board_pot, cur_raise):

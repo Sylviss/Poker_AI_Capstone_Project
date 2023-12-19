@@ -3,7 +3,6 @@ import math
 from copy import deepcopy
 from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
-from poker_ai.ai.ml.opponent_modelling import Rate_recorder
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
 from poker_ai.ai.ml.opponent_modelling import opponent_modelling
@@ -57,8 +56,6 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     - The result of the rule-based AI agent's decision-making process.
     """
 
-    recorder = Rate_recorder()
-
     player=players[index]
     if last_raised is None:
         betted=1
@@ -78,7 +75,6 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
     draw += win
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + random.random() * 0.15)
-    recorder.win = win_rate
     if player.name in BLUFF_INDICATOR:
         if BLUFF_INDICATOR[player.name]<turn:
             randomized_value=random.random()
@@ -127,8 +123,6 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
 
     """
 
-    recorder = Rate_recorder() # for opponent modelling purposes
-    
     player=players[index]
     if last_raised is None:
         betted=1
@@ -148,12 +142,9 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     win_rate = (1-(1-win)*RULE_DICT[turn])*betted
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = random.random()
-    recorder.win = win_rate
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
 
 def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
-
-    recorder = Rate_recorder()
 
     if last_raised is None:
         betted=1
@@ -166,7 +157,6 @@ def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, 
     turn = len(board.hand.cards)
     draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
     win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
-    recorder.win = win_rate
     player=players[index]
     if turn==0:
         player.weighted_dict={}
@@ -448,7 +438,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money])
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    print(opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)[0])
+    print(opponent_modelling(gamelogger.history, tables, turn, players[index], board, num_players, checkout)[0])
     return ans
 
 
