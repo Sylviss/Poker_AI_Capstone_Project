@@ -39,4 +39,4 @@ def test_module():
 def dataset_logger():
     dataset_logging(2,1000,[1,-1])
 if __name__=="__main__":
-    test_win_rate(1)
+    test_module()

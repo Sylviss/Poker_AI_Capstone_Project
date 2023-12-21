@@ -2,7 +2,7 @@ import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
-from poker_ai.ai.ml.opponent_modelling import Data_table, opponent_modelling, table_counting, table_rescaling
+from poker_ai.ai.ml.opponent_modelling import Data_table, modelling, recording, table_counting, table_rescaling
 
 
 def default_table():
@@ -62,6 +62,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
     stack = ["fold", "all in"]
     word = ["1: all in", "5: fold"]
 
+
     if cur_call == self.pot:
         stack.append("check")
         checkout.append(2)
@@ -82,6 +83,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+    modelling(tables[players[0].name], turn, players[0], board, num_players, checkout)
     while True:
         print("Choose between:")
         print(", ".join(word))
@@ -89,7 +91,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
             action = int(input('>>> '))
         except ValueError:
             continue
-        if action not in     checkout:
+        if action not in checkout:
             continue
         break
 
@@ -132,7 +134,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money])
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
-    opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)
+    tables[players[0].name] = recording(tables[players[0].name], gamelogger.history, checkout, players[0], num_players, board)
     return ans
 
 
@@ -202,18 +204,20 @@ def game_but_cheaty(num_players, init_money, cards):
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
-        tables[players[-1].name] = Data_table()
+    for player in players:
+        tables[player.name] = {pl.name: Data_table() for pl in players}
     try:
         f = open("poker_ai/ai/ml/play_data.json")
     except:
-        for x in range(num_players):
-            tables[players[-1].name] = Data_table()
+        for player in players:
+            tables[player.name] = {pl.name: Data_table() for pl in players}
     else:
         datas = json.load(f)
-        for player in datas:
-            tables[player] = Data_table()
-            tables[player].counting_table = datas[player]
-            tables[player].count = table_counting(tables[player].counting_table)
+        for player in tables:
+            for pl in tables[player]:
+                tables[player][pl] = Data_table()
+                tables[player][pl].counting_table = datas[pl]
+                tables[player][pl].count = table_counting(tables[player][pl].counting_table)
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
@@ -411,18 +415,20 @@ def game(num_players, init_money):
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
-        tables[players[-1].name] = Data_table()
+    for player in players:
+        tables[player.name] = {pl.name: Data_table() for pl in players}
     try:
         f = open("poker_ai/ai/ml/play_data.json")
     except:
-        for x in range(num_players):
-            tables[players[-1].name] = Data_table()
+        for player in players:
+            tables[player.name] = {pl.name: Data_table() for pl in players}
     else:
         datas = json.load(f)
-        for player in datas:
-            tables[player] = Data_table()
-            tables[player].counting_table = datas[player]
-            tables[player].count = table_counting(tables[player].counting_table)
+        for player in tables:
+            for pl in tables[player]:
+                tables[player][pl] = Data_table()
+                tables[player][pl].counting_table = datas[pl]
+                tables[player][pl].count = table_counting(tables[player][pl].counting_table)
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
@@ -596,7 +602,7 @@ def game(num_players, init_money):
             print(f"{player.name} wins the table! All others are just some random bots")        
             datas = {}
             for _player in tables:
-                datas[_player] = tables[_player].counting_table
+                datas[_player] = tables[list(tables.keys())[0]][_player].counting_table
             with open("poker_ai/ai/ml/play_data.json", 'w') as file:
                 json.dump(datas, file)
                 file.close()
@@ -617,25 +623,21 @@ def fast_testing(num_players, init_money, model_list):
     playing = num_players
     table_condition = True
     players = []
-    tables ={}
+    tables = Data_table()
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
-        tables[players[-1].name] = Data_table()
     try:
         f = open("poker_ai/ai/ml/play_data.json")
     except:
-        for x in range(num_players):
-            tables[players[-1].name] = Data_table()
+        tables = Data_table()
     else:
         datas = json.load(f)
-        for player in datas:
-            tables[player] = Data_table()
-            tables[player].counting_table = datas[player]
-            tables[player].count = table_counting(tables[player].counting_table)
+        tables.counting_table = datas
+        tables.count = table_counting(tables.counting_table)
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
@@ -796,9 +798,7 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            datas = {}
-            for _player in tables:
-                datas[_player] = tables[_player].counting_table
+            datas = tables.counting_table
             with open("poker_ai/ai/ml/play_data.json", 'w') as file:
                 json.dump(datas, file)
                 file.close()
@@ -831,18 +831,20 @@ def dataset_logging(num_players, init_money, model_list):
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
-        tables[players[-1].name] = Data_table()
+    for player in players:
+        tables[player.name] = {pl.name: Data_table() for pl in players}
     try:
         f = open("poker_ai/ai/ml/play_data.json")
     except:
-        for x in range(num_players):
-            tables[players[-1].name] = Data_table()
+        for player in players:
+            tables[player.name] = {pl.name: Data_table() for pl in players}
     else:
         datas = json.load(f)
-        for player in datas:
-            tables[player] = Data_table()
-            tables[player].counting_table = datas[player]
-            tables[player].count = table_counting(tables[player].counting_table)
+        for player in tables:
+            for pl in tables[player]:
+                tables[player][pl] = Data_table()
+                tables[player][pl].counting_table = datas[pl]
+                tables[player][pl].count = table_counting(tables[player][pl].counting_table)
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
