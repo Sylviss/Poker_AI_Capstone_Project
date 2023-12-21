@@ -34,7 +34,6 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
                 tempdraw = 0
                 result = pool.starmap(singly_function, [(player, num_players-k, board, state) for _ in range(DEEPNESS)])
                 for x in range(DEEPNESS):
-                    print(x)
                     tempwin += result[x][0]
                     tempdraw += result[x][1]
                 win += tempwin * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
@@ -50,7 +49,6 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
 
 
 def singly_function(player, num_players, board, state):
-    print(board)
     temp_board = Player(Hand(), "Board", 0)
     temp_board.hand.cards = board.hand.cards[:]
     deck = Deck()

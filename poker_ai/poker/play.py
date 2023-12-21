@@ -82,8 +82,6 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)
-
     while True:
         print("Choose between:")
         print(", ".join(word))
@@ -91,7 +89,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
             action = int(input('>>> '))
         except ValueError:
             continue
-        if action not in checkout:
+        if action not in     checkout:
             continue
         break
 
@@ -124,16 +122,17 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
                 continue
             ans = self.raise_money(
                 b, cur_call, last_raised, board_pot, cur_raise)
-            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money])
+            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b])
             break
 
     elif action == 5:
         gamelogger.keylogging(self, [5])
         ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
     elif action == 6:
-        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money])
+        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money])
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
+    opponent_modelling(gamelogger.history, tables, turn, players[0], board, num_players, checkout)
     return ans
 
 
@@ -196,12 +195,26 @@ def game_but_cheaty(num_players, init_money, cards):
     playing = num_players
     table_condition = True
     players = []
+    tables={}
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
+        tables[players[-1].name] = Data_table()
+    try:
+        f = open("poker_ai/ai/ml/play_data.json")
+    except:
+        for x in range(num_players):
+            tables[players[-1].name] = Data_table()
+    else:
+        datas = json.load(f)
+        for player in datas:
+            tables[player] = Data_table()
+            tables[player].counting_table = datas[player]
+            tables[player].count = table_counting(tables[player].counting_table)
+        f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -281,7 +294,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value,tables,k)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -811,12 +824,26 @@ def dataset_logging(num_players, init_money, model_list):
     playing = num_players
     table_condition = True
     players = []
+    tables={}
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
+        tables[players[-1].name] = Data_table()
+    try:
+        f = open("poker_ai/ai/ml/play_data.json")
+    except:
+        for x in range(num_players):
+            tables[players[-1].name] = Data_table()
+    else:
+        datas = json.load(f)
+        for player in datas:
+            tables[player] = Data_table()
+            tables[player].counting_table = datas[player]
+            tables[player].count = table_counting(tables[player].counting_table)
+        f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -898,7 +925,7 @@ def dataset_logging(num_players, init_money, model_list):
                 call_value=cur_call-players[index].pot
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k)
                 if players[index].state in [0,1,2,4]:
                     if players[index].state==0:
                         log_action=[players[index].name,[1,0]]

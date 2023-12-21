@@ -52,7 +52,6 @@ def opponent_modelling(history, tables, turn, human, board, num_player, checkout
     ACTION_TABLE = [None, '2', '3', '3', '4', '4', '4', '5', '1']
 
     recorder = multi_process_eval_func_but_in_opponent_modelling(human, num_player, board)[0]
-
     if 0.45<= recorder:
         hs = 'weak'
     elif 0.35 <= recorder < 0.45:
