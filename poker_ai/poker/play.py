@@ -1,7 +1,7 @@
 import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
-from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
+from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color
 
 
 
@@ -40,8 +40,12 @@ def print_blind_board(players, board, indicator=INDICATOR):
                 print(player)
             elif player.state not in [4, 5, 6] and player.name != "Player 1":
                 print(f"{player.name}: {player.money}$")
-                print('\n'.join([' ___   ___ ', '|## | |## |',
-                      '|###| |###|', '|_##| |_##|']))
+                '''print(f'\n'.join([' ___   ___ ', '|## | |## |',
+                      '|###| |###|', '|_##| |_##|']))'''
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                
                 print()
             elif player.state != 6:
                 print(f"{player.name}: {player.money}$")
