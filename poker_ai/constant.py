@@ -6,9 +6,13 @@ DEBUG_MODE=1
 
 MODEL=2
 # Choose AI module for all bot in a normal game for main.py:
-# 0: simple rule-based AI using probability theorem, game-based rule and some randomness
-# 1: super randomized AI
-# 2: my friend's AI who shove all in every game and play by pure luck
+# -1: enumeration ai agent
+# 0: first  approach mcs ai agent
+# 1: second approach mcs ai agent
+# 2: mcts ai agent
+# 3: all in ai agent 
+# 4: super random ai agent 
+
 STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
@@ -37,8 +41,7 @@ RULE_DICT={0:0.85,3:0.9,4:0.95,5:1}
 BETTED=0.95
 OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.5),5:(-0.15,0.3),6:(-0.2,0.2),8:(-0.3,0.1)}
 UPDATE_WEIGHT=0.5
-UBC1_CONSTANT=1
-
+UBC1_CONSTANT=1.3
 
 PLAYER = 4
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
