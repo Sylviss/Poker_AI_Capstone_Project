@@ -1,6 +1,5 @@
 import random
-from termcolor import colored
-from poker_ai.constant import MODEL
+from poker_ai.constant import MODEL, color
 
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone in development team who see this embarrasing of themself
@@ -22,17 +21,20 @@ class Card:
     def printcard(self):
         rank_names = [None, '2', '3', '4', '5', '6',
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
-        suit_names = [chr(9827), chr(9829), chr(9824), chr(9830)]
-        color_dict = {i: 'green' if i % 2 == 0 else 'red' for i in range(4)}
+        suit_names = [chr(9827), chr(9830), chr(9829), chr(9824)]
         
-        ceiling = ' ___ '
-        row2 = f'| {colored(suit_names[self.suit], color_dict[self.suit])} |'
+        color_dict = {i: 'Green' if i in {chr(9827), chr(9824)} else 'Red' for i in suit_names}
+        
+        ceiling = f"{color['Hidden']} ___ {color['ResetAll']}"
+        row2 = f"{color['BackgroundWhite']}  {color[color_dict[suit_names[self.suit]]]}{suit_names[self.suit]}{color['Hidden']} |{color['ResetAll']}"
+        
         if self.rank == 9:
-            row1 = '|' + colored('10', color_dict[self.suit]) + ' |'
-            row3 = '|_' + colored('10', color_dict[self.suit]) + '|'
+            row1 = f"{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{'10'}{color['Hidden']}  |{color['ResetAll']}"
+            row3 = f"{color['BackgroundWhite']}  {color['Hidden']}|{color['ResetAll']}{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{'10'}{color['ResetAll']}"
+        
         else:
-            row1 = f'|{colored(rank_names[self.rank], color_dict[self.suit])}  |'
-            row3 = f'|__{colored(rank_names[self.rank], color_dict[self.suit])}|'
+            row1 = f"{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]}{color['Hidden']}   |{color['ResetAll']}"
+            row3 = f"{color['BackgroundWhite']}   {color['Hidden']}|{color['ResetAll']}{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]}{color['ResetAll']}"
         
         return [ceiling, row1, row2, row3]
 
@@ -40,9 +42,9 @@ class Card:
         rank_names = [None, '2', '3', '4', '5', '6',
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
         suit_names = ["c","d","h","s"]
-        color_dict = {i: 'green' if i % 2 == 0 else 'red' for i in range(4)}
+        color_dict = {i: 'Green' if i in {'c', 's'} else 'Red' for i in suit_names}
         
-        return colored(rank_names[self.rank]+suit_names[self.suit], color_dict[self.suit])
+        return f'{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]+suit_names[self.suit]}{color["ResetAll"]}'
     
     def __str__(self):
         return "\n".join(self.printcard())
