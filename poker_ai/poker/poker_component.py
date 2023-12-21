@@ -1,4 +1,5 @@
 import random
+from termcolor import colored
 from poker_ai.constant import MODEL
 
 class UAreStupidIfThisShowsUp(Exception):
@@ -21,22 +22,27 @@ class Card:
     def printcard(self):
         rank_names = [None, '2', '3', '4', '5', '6',
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
-        suit_names = [chr(9827), chr(9830), chr(9829), chr(9824)]
+        suit_names = [chr(9827), chr(9829), chr(9824), chr(9830)]
+        color_dict = {i: 'green' if i % 2 == 0 else 'red' for i in range(4)}
+        
         ceiling = ' ___ '
-        row2 = f'| {suit_names[self.suit]} |'
+        row2 = f'| {colored(suit_names[self.suit], color_dict[self.suit])} |'
         if self.rank == 9:
-            row1 = '|10 |'
-            row3 = '|_10|'
+            row1 = '|' + colored('10', color_dict[self.suit]) + ' |'
+            row3 = '|_' + colored('10', color_dict[self.suit]) + '|'
         else:
-            row1 = f'|{rank_names[self.rank]}  |'
-            row3 = f'|__{rank_names[self.rank]}|'
+            row1 = f'|{colored(rank_names[self.rank], color_dict[self.suit])}  |'
+            row3 = f'|__{colored(rank_names[self.rank], color_dict[self.suit])}|'
+        
         return [ceiling, row1, row2, row3]
 
     def printcardsimple(self):
         rank_names = [None, '2', '3', '4', '5', '6',
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
         suit_names = ["c","d","h","s"]
-        return rank_names[self.rank]+suit_names[self.suit]
+        color_dict = {i: 'green' if i % 2 == 0 else 'red' for i in range(4)}
+        
+        return colored(rank_names[self.rank]+suit_names[self.suit], color_dict[self.suit])
     
     def __str__(self):
         return "\n".join(self.printcard())
