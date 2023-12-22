@@ -11,13 +11,14 @@ def check_validity(data):
 
 def main():
     try:
-        with open("poker_ai/ai/ml/play_data.json") as f:
+        with open("poker_ai/ai/ml/bruh.json") as f:
             data = json.load(f)
             for hand in data:
                 for turn in data[hand]:
                     for check in data[hand][turn]:
                         for action in data[hand][turn][check]:
                             data[hand][turn][check][action] = round(data[hand][turn][check][action])
+            print(data)
             return check_validity(data)
     except:
         print('No file exist!')

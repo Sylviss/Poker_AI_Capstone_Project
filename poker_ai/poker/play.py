@@ -30,8 +30,8 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
-            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gameloger, tables, turn, board, num_players)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, bi_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
     else:
         return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
 
@@ -621,21 +621,23 @@ def fast_testing(num_players, init_money, model_list):
     playing = num_players
     table_condition = True
     players = []
-    tables = Data_table()
+    tables = {}
     big_blind = num_players-1
     small_blind = num_players-2
     temp_board_money = 0
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
+        tables[players[-1].name] = Data_table()
     try:
-        f = open("poker_ai/ai/ml/play_data.json")
+        f = open("poker_ai/ai/ml/bruh.json")
     except:
-        tables = Data_table()
+        pass
     else:
         datas = json.load(f)
-        tables.counting_table = datas
-        tables.count = table_counting(tables.counting_table)
+        for player in tables:
+            tables[player].counting_table = datas
+            tables[player].count = table_counting(tables[player].counting_table)
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
@@ -796,7 +798,7 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            datas = tables.counting_table
+            datas = tables[players[0].name].counting_table
             with open("poker_ai/ai/ml/play_data.json", 'w') as file:
                 json.dump(datas, file)
                 file.close()
