@@ -51,4 +51,4 @@ def training(n):
 
 
 if __name__=="__main__":
-    training(2)
+    test_module()
