@@ -27,7 +27,6 @@ MULTIPROCESS = 1
 TURN_TO_RAISE_POT = 5
 # Number of turns to increase the big blind pre-bet
 
-
 CONFIDENT_RANGE = 0.25
 # should be < 0.5
 RISK_RANGE=0.95
@@ -43,9 +42,8 @@ OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.
 UPDATE_WEIGHT=0.5
 UBC1_CONSTANT=1.3
 
-PLAYER = 4
+PLAYER = 2
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
-
 
 DEEPNESS = 5000
 # The number of iterations of the Monte-Carlo simulation. Higher is better but requires more time and memory
@@ -53,7 +51,6 @@ DEEPNESS = 5000
 CONFIDENT_RATE = 0.8
 # The base confident_rate of a player, represent the chance that the player will check/call in a 2 player games
 # Don't ask where I get this number, it's taken by testing a lot
-################################################
 
 color = {
 	'ResetAll' : "\033[0m",
@@ -108,3 +105,9 @@ color = {
 	'BackgroundLightCyan'    : "\033[106m",
 	'BackgroundWhite'        : "\033[107m"
 }
+
+# constants for opponent modelling
+RESCALING_SIZE = 8
+
+################################################
+
