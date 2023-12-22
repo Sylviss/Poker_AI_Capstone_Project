@@ -142,7 +142,7 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     decide = random.random()
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
 
-def enumeraion_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
+def enumeration_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
     if last_raised is None:
         betted=1
     else:
@@ -400,7 +400,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         agent = second_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
     elif model == -1:
-        agent = enumeraion_ai_agent(index, players, min_money, num_players, board, 
+        agent = enumeration_ai_agent(index, players, min_money, num_players, board, 
                                                    checkout, cur_call, cur_raise, big_blind, last_raised,big_blind_value, gamelogger)
     elif model == 4:
         agent = super_random_ai_agent(self, checkout, cur_call, cur_raise)
