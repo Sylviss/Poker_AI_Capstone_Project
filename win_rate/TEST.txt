@@ -76,3 +76,53 @@ UPDATE_WEIGHT = 0.9 (100 games)
 Bot 1: 29 31
 Bot -1: 21 19
 
+####################################
+
+Bot 2 vs Bot 1
+
+Win rate:
+
+UBC1_CONSTANT = 1
+Bot 1: 31 25 21 24
+Bot 2: 19 25 29 26
+
+UBC1_CONSTANT = 1.1
+Bot 1: 29 26
+Bot 2: 21 24
+
+UBC1_CONSTANT = 1.2
+Bot 1: 25 20
+Bot 2: 25 30
+
+UBC1_CONSTANT = 1.3
+Bot 1: 15 24
+Bot 2: 35 26
+
+UBC1_CONSTANT = 1.4
+Bot 1: 20 33
+Bot 2: 30 17
+
+UBC1_CONSTANT = 1.5
+Bot 1: 30 27
+Bot 2: 20 23
+
+UBC1_CONSTANT = 1.6
+Bot 1: 24 27
+Bot 2: 26 23
+
+UBC1_CONSTANT = 1.7
+Bot 1: 24 21
+Bot 2: 26 29
+
+UBC1_CONSTANT = 1.8
+Bot 1: 23 28
+Bot 2: 27 22
+
+UBC1_CONSTANT = 1.9
+Bot 1: 19 29
+Bot 2: 31 21
+
+UBC1_CONSTANT = 2
+Bot 1: 23 23
+Bot 2: 27 27
+
