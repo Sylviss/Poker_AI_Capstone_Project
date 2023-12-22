@@ -42,9 +42,7 @@ class Card:
         rank_names = [None, '2', '3', '4', '5', '6',
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
         suit_names = ["c","d","h","s"]
-        color_dict = {i: 'Green' if i in {'c', 's'} else 'Red' for i in suit_names}
-        
-        return f'{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]+suit_names[self.suit]}{color["ResetAll"]}'
+        return rank_names[self.rank]+suit_names[self.suit]
     
     def __str__(self):
         return "\n".join(self.printcard())
