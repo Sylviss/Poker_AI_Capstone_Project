@@ -5,7 +5,7 @@ from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enu
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
-from poker_ai.ai.ml.opponent_modelling import modelling, recording
+from poker_ai.ai.ml.opponent_modelling import modelling, magical_four, table_record
 
 BLUFF_INDICATOR={}
 
@@ -395,7 +395,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         if self.money > cur_call-self.pot+cur_raise:
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
-    (modelling(tables, turn, players[index], board, num_players, checkout))
+    magical_four(tables, turn, checkout)
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
@@ -417,26 +417,26 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     a = agent[0]
     ans = 0
     if a == 1:
-        gamelogger.keylogging(self,[1])
+        gamelogger.keylogging(self,[1],checkout)
         if self.money <= cur_call-self.pot:
             ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)
         else:
             ans = self.all_in_2(cur_call, last_raised, board_pot, cur_raise)
     elif a == 2:
-        gamelogger.keylogging(self,[2])
+        gamelogger.keylogging(self,[2],checkout)
         ans = self.check(cur_call, last_raised, board_pot, cur_raise)
     elif a == 3:
-        gamelogger.keylogging(self,[3,(cur_call-self.pot)/self.money])
+        gamelogger.keylogging(self,[3,(cur_call-self.pot)/self.money],checkout)
         ans = self.call(cur_call, last_raised, board_pot, cur_raise)
     elif a == 4:
         b = agent[1]
-        gamelogger.keylogging(self,[4,(b+cur_call-self.pot)/self.money,b])
+        gamelogger.keylogging(self,[4,(b+cur_call-self.pot)/self.money,b],checkout)
         ans = self.raise_money(b, cur_call, last_raised, board_pot, cur_raise)
     elif a == 5:
-        gamelogger.keylogging(self,[5])
+        gamelogger.keylogging(self,[5],checkout)
         ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
     elif a==6:
-        gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money])
+        gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
     return ans
 

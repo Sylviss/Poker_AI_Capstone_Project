@@ -2,7 +2,7 @@ import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color
-from poker_ai.ai.ml.opponent_modelling import Data_table, modelling, recording, table_counting, table_rescaling
+from poker_ai.ai.ml.opponent_modelling import Data_table, preprocess_table, table_counting, table_rescaling
 
 
 
@@ -96,7 +96,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         break
 
     if action == 1:
-        gamelogger.keylogging(self, [1])
+        gamelogger.keylogging(self, [1],checkout)
         if self.money <= cur_call-self.pot:
             ans = self.all_in_1(cur_call, last_raised,
                                 board_pot, cur_raise)
@@ -105,11 +105,11 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
                                 board_pot, cur_raise)
             
     elif action == 2:
-        gamelogger.keylogging(self, [2])
+        gamelogger.keylogging(self, [2],checkout)
         ans = self.check(cur_call, last_raised, board_pot, cur_raise)
 
     elif action == 3:
-        gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money])
+        gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money],checkout)
         ans = self.call(cur_call, last_raised, board_pot, cur_raise)
 
     elif action == 4:
@@ -124,14 +124,14 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
                 continue
             ans = self.raise_money(
                 b, cur_call, last_raised, board_pot, cur_raise)
-            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b])
+            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b],checkout)
             break
 
     elif action == 5:
-        gamelogger.keylogging(self, [5])
+        gamelogger.keylogging(self, [5],checkout)
         ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
     elif action == 6:
-        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money])
+        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
     return ans
@@ -641,8 +641,9 @@ def fast_testing(num_players, init_money, model_list):
     else:
         datas = json.load(f)
         for player in tables:
-            tables[player].counting_table = datas
+            tables[player].counting_table = datas.copy()
             tables[player].count = table_counting(tables[player].counting_table)
+            tables[player].data_observation, tables[player].data_action = preprocess_table(tables[player])
         f.close()
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
@@ -803,9 +804,9 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            datas = tables[players[0].name].counting_table
-            with open("poker_ai/ai/ml/play_data.json", 'w') as file:
-                json.dump(datas, file)
-                file.close()
+            # datas = tables[players[0].name].counting_table
+            # with open("poker_ai/ai/ml/play_data.json", 'w') as file:
+            #     json.dump(datas, file)
+            #     file.close()
             return player.name
         

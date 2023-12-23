@@ -504,6 +504,7 @@ class Gamelogger:
         self.action_count=0
         self.raise_number=0
         self.cur_turn=-1   
+        self.checkout = []
         
     def next_turn(self):
         match self.cur_turn:
@@ -520,7 +521,7 @@ class Gamelogger:
         self.raise_number=0
         self.raised_time=0
         
-    def keylogging(self, player, action):
+    def keylogging(self, player, action, checkout):
         self.action_history[player.name]=self.cur_turn
         self.action_count+=1
         money=0
@@ -586,6 +587,7 @@ class Gamelogger:
                 raise WTF
         self.history.append((player.name,self.cur_turn,action_logged))
         self.money_history.append(money)
+        self.checkout.append((player.name, checkout.copy()))
         
 class Rate_recorder():
     def __init__(self):
