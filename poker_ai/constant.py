@@ -107,7 +107,7 @@ color = {
 }
 
 # constants for opponent modelling
-RESCALING_SIZE = 8
+RESCALING_SIZE = 10
 
 ################################################
 
