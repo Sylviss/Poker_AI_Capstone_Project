@@ -619,14 +619,14 @@ def selection(root, cur_iteration):
         if len(root.children)==0:
             return root
         else:
-            ev_list=expected_value_gen(root)
+            ev_list=expected_value_gen(root,cur_iteration)
             next_node=max(ev_list,key=lambda a:a[1])[0]
             return selection(root.children[next_node],cur_iteration)
 
-def expected_value_gen(root):
+def expected_value_gen(root,k):
     res=[]
     for key,node in root.children.items():
-        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(root.visits)/node.visits)**0.5
+        ev=node.values/node.visits + UBC1_CONSTANT*(math.log(k)/node.visits)**0.5
         res.append([key,ev])
     return res
 
