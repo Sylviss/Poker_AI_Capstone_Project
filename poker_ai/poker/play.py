@@ -2,7 +2,8 @@ import bext,json
 from copy import deepcopy
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
-from poker_ai.constant import INIT_MONEY, STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color
+from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
+from poker_ai.constant import INIT_MONEY, STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, table_counting, table_record
 
 def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
@@ -16,15 +17,22 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         action_function: return the function of the one who should do the actions
     """
     self=players[index]
+    
     if indicator == 0:
         return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
             return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+        else:
+            if OM_IND==0:
+                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+            else:
+                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
     else:
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
-
+        if OM_IND==0:
+            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+        else:
+            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
 
 def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players):
     """
