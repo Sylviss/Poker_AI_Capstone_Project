@@ -550,7 +550,6 @@ def fast_testing(num_players, init_money, model_list):
             continue
         print("Post-game")
         print_board(players, board)
-        table_record(tables, gamelogger.history, gamelogger.checkout, players)
         checker = []
         for player in players:
             if player.state in [0, 1, 2]:
@@ -592,10 +591,10 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            # datas = tables[players[0].name].counting_table
-            # with open("poker_ai/ai/ml/play_data.json", 'w') as file:
-            #     json.dump(datas, file)
-            #     file.close()
+            datas = tables.counting_table
+            with open("poker_ai/ai/ml/bruh.json", 'w') as file:
+                json.dump(datas, file)
+                file.close()
             return player.name
         
 def game_loop(num_players, init_money):

@@ -5,7 +5,7 @@ import time
 
 class Data_table():
     def __init__(self):
-        self.counting_table = {i: {j: {k: {l:1 for l in ['fold', 'check', 'call', 'raise', 'all in']}
+        self.counting_table = {i: {j: {k: {l: 0.0000001 for l in ['fold', 'check', 'call', 'raise', 'all in']}
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}
                         for i in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
@@ -18,7 +18,7 @@ class Data_table():
                         for j in ['preflop', 'flop', 'turn', 'river']}
                         for i in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}}
         self.data_action = {'fold':0, 'check':0, 'call':0, 'raise':0, 'all in':0} # shf, shch, shc, shr and sha respectively in modelling
-        self.count = 10*4*3*5
+        self.count = 0
     def refresh_table(self):
         self.__init__()
 

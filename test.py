@@ -11,7 +11,7 @@ def check_validity(data):
 
 def main():
     try:
-        with open("poker_ai/ai/ml/play_data_vu_4.json") as f:
+        with open("poker_ai/ai/ml/bruh.json") as f:
             data = json.load(f)
             print(data)
             return check_validity(data)

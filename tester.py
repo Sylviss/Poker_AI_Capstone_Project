@@ -34,7 +34,7 @@ def test_single_game():
     test_hacker()
     
 def test_module():
-    fast_testing(2,100,[1,-1])
+    fast_testing(2,100,[1,1])
     
     
 def training(n):
@@ -49,6 +49,5 @@ def training(n):
         print(main()) 
 
 
-
 if __name__=="__main__":
-    test_module()
+    training(2)
