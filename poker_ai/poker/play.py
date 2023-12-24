@@ -2,6 +2,7 @@ import bext,json
 from copy import deepcopy
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
+from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
 from poker_ai.constant import INIT_MONEY, STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
