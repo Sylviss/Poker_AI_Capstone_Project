@@ -1,10 +1,11 @@
 import random
 import math
 from copy import deepcopy
-from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
+from poker_ai.ai.eval_func_om import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
+from poker_ai.ai.ml.opponent_modelling import magical_four
 
 BLUFF_INDICATOR={}
 
@@ -156,7 +157,7 @@ def enumeration_ai_agent(index, players, min_money, num_players, board, actions,
     draw_rate = (1-(1-DRAW)*RULE_DICT[turn])*betted
     win_rate = (1-(1-WIN)*RULE_DICT[turn])*betted
     player=players[index]
-    if turn==0 and len(player.weighted_dict) == 0:
+    if turn==0:
         player.weighted_dict={}
         player.opponent_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
         player.opponent_can_act={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
@@ -204,6 +205,29 @@ def enumeration_ai_agent(index, players, min_money, num_players, board, actions,
             BLUFF_INDICATOR[player.name]=turn
             decide = 0.29
     return rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot_odd, cur_call, cur_raise, min_money, turn, raise_multipler, big_blind_value)
+
+def initialization_table(index, players, min_money, num_players, board, actions, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger):
+    turn = len(board.hand.cards)
+    player=players[index]
+    if turn==0 and len(player.weighted_dict) == 0:
+        player.weighted_dict={}
+        player.partition_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_can_act={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_ingame={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.weighted_dict[turn],prob_dict=create_enumerate_dict(player, board, turn)
+        for opponent in players:
+            if opponent.state!=6 and opponent.name!=player.name:
+                player.opponent_prob_dict[opponent.name][0]=prob_dict.copy()
+        update_prob_dict(player, turn, gamelogger)
+    else:
+        update_weighted_dict(player, board, turn, gamelogger)
+        update_prob_dict(player, turn, gamelogger)
+    hs_dict={}
+    for opponent_index in player.opponent_can_act:
+        if player.opponent_ingame[opponent_index]:
+            hs_dict[opponent_index]=enumerate_func(player,opponent_index,gamelogger)
+    # print(hs_dict)
 
 def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot_odd, cur_call, cur_raise, min_money, turn, raise_multipler, big_blind_value):
     """
@@ -356,9 +380,9 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
             else:
                 return [5]
     
-def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
+def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
     """
-    Make the AI act in the game using the basic AI model.
+    Make the AI act in the game using the basic AI model. Also using opponent modeling
 
     Args:
         index (int): The index of the current player.
@@ -394,6 +418,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         if self.money > cur_call-self.pot+cur_raise:
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
+    magical_four(players[index].data_table, turn, checkout)
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
