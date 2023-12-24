@@ -5,7 +5,7 @@ from poker_ai.ai.eval_func import eval_func, multi_process_eval_func, create_enu
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
-from poker_ai.ai.ml.opponent_modelling import modelling, magical_four, table_record
+from poker_ai.ai.ml.opponent_modelling import magical_four
 
 BLUFF_INDICATOR={}
 
