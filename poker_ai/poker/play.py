@@ -2,8 +2,7 @@ import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color
-from poker_ai.ai.ml.opponent_modelling import Data_table, preprocess_table, table_counting, table_rescaling
-
+from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, table_counting, table_rescaling, table_record
 
 
 def default_table():
@@ -31,8 +30,8 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
-            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gameloger, tables, turn, board, num_players)
-        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, bi_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
+        return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
     else:
         return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
 
@@ -84,6 +83,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+    magical_four(players[0].data_table, turn, checkout)
     while True:
         print("Choose between:")
         print(", ".join(word))
@@ -418,21 +418,21 @@ def game(num_players, init_money):
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money))
-    for player in players:
-        tables[player.name] = {pl.name: Data_table() for pl in players}
+        tables[players[-1].name] = Data_table()
     try:
-        f = open("poker_ai/ai/ml/play_data.json")
+        f = open("poker_ai/ai/ml/bruh.json")
     except:
-        for player in players:
-            tables[player.name] = {pl.name: Data_table() for pl in players}
+        pass
     else:
         datas = json.load(f)
-        for player in tables:
-            for pl in tables[player]:
-                tables[player][pl] = Data_table()
-                tables[player][pl].counting_table = datas[pl]
-                tables[player][pl].count = table_counting(tables[player][pl].counting_table)
+        for player in players:
+            tables[player.name].counting_table = datas.copy()
+            tables[player.name].count = table_counting(tables[player.name].counting_table)
+            tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
+        for player in players:
+            player.data_table = tables.copy()
+            print(player.data_table)
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -557,6 +557,7 @@ def game(num_players, init_money):
             bext.clear()
             continue
         print("Post-game")
+        table_record(tables, gamelogger.history, gamelogger.checkout, players)
         print_board(players, board)
         checker = []
         for player in players:
@@ -640,11 +641,14 @@ def fast_testing(num_players, init_money, model_list):
         pass
     else:
         datas = json.load(f)
-        for player in tables:
-            tables[player].counting_table = datas.copy()
-            tables[player].count = table_counting(tables[player].counting_table)
-            tables[player].data_observation, tables[player].data_action = preprocess_table(tables[player])
+        for player in players:
+            tables[player.name].counting_table = datas.copy()
+            tables[player.name].count = table_counting(tables[player.name].counting_table)
+            tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
+        for player in players:
+            player.data_table = tables.copy()
+            print(player.data_table)
     while table_condition:
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
@@ -763,6 +767,7 @@ def fast_testing(num_players, init_money, model_list):
             continue
         print("Post-game")
         print_board(players, board)
+        table_record(tables, gamelogger.history, gamelogger.checkout, players)
         checker = []
         for player in players:
             if player.state in [0, 1, 2]:

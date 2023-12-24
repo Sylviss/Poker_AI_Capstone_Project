@@ -109,7 +109,7 @@ class Deck:
 
 class Player:
 
-    def __init__(self, hand, name, money, state=-1, model=MODEL, table={}):
+    def __init__(self, hand, name, money, state=-1, model=MODEL):
         self.name = name
         self.hand = hand
         self.money = money
@@ -138,6 +138,7 @@ class Player:
         self.opponent_ingame={}
         # Used for storing machine learning data
         self.ml_data=None
+        self.data_table = {}
 
     def __str__(self):
         hand = self.hand.printhand()

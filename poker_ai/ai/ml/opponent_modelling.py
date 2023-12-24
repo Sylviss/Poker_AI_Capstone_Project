@@ -1,6 +1,5 @@
 from poker_ai.constant import RESCALING_SIZE
 from poker_ai.poker.poker_component import card_to_str
-from test import check_validity
 
 class Data_table():
     def __init__(self):

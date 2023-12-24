@@ -395,7 +395,7 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
         if self.money > cur_call-self.pot+cur_raise:
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
-    magical_four(tables, turn, checkout)
+    magical_four(players[index].data_table, turn, checkout)
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
