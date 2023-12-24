@@ -106,3 +106,9 @@ def auto_predefined_game(num_players, player_1, board, turn, deck):
     else:
         return (1, 0)    
 
+class OM_engine:
+    def __init__(self):
+        self.tables = {}
+        self.patition_prob_dict = {}
+        self.opponent_prob_dict = {}
+        

@@ -164,8 +164,9 @@ def table_record(tables, history, checkout, players):
         tmp = []
         hand = player.hand.cards
         for card in hand:
-            tmp.append(RANK[card.rank]+SUIT[card.SUIT])
-        hands[player] = ' '.join(list(sorted(tmp)))
+            tmp.append(RANK[card.rank]+SUIT[card.suit])
+        hands[player.name] = ' '.join(list(sorted(tmp)))
+        print(hands)
     for i in range(len(history)):
         action = ACTION_TABLE[history[i][2]]
         _checkout = checkout[i]
