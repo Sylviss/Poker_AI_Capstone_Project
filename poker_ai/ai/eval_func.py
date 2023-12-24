@@ -199,6 +199,8 @@ def update_weighted_dict(player, board, turn, gamelogger):
             preturn=3
         case 3:
             preturn=0
+        case 0:
+            return 
         case _:
             raise ValueError("update_weighted_dict error")
     deck=Deck()

@@ -26,11 +26,9 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
     else:
         state = 3
     win, draw = 0, 0
-    print(1)
     if state!=3:
         with multiprocessing.Pool() as pool:
             for k in range(num_players):
-                print(k)
                 tempwin = 0
                 tempdraw = 0
                 result = pool.starmap(singly_function, [(player, num_players-k, board, state) for _ in range(deepness)])
@@ -39,7 +37,6 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
                     tempdraw += result[x][1]
                 win += tempwin * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
                 draw += tempdraw * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
-            print(2)
         return (win/deepness, draw/deepness)
     else:
         with multiprocessing.Pool() as pool:

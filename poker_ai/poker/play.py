@@ -420,19 +420,19 @@ def fast_testing(num_players, init_money, model_list):
     for x in range(num_players):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
-        tables[players[-1].name] = Data_table()
     try:
         f = open("poker_ai/ai/ml/bruh.json")
     except:
-        pass
+        tables = Data_table()
     else:
         datas = json.load(f)
-        for player in players:
-            tables[player.name].counting_table = datas.copy()
-            tables[player.name].count = table_counting(tables[player.name].counting_table)
-            tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
+        tables = Data_table()
+        tables.counting_table = datas
+        tables.count = table_counting(tables.counting_table)
+        tables.data_observation, tables.data_action = preprocess_table(tables)
         f.close()
     while table_condition:
+        players = refresh(players)
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
         if count % TURN_TO_RAISE_POT == 1:

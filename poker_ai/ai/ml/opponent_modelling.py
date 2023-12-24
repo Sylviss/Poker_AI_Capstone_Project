@@ -8,17 +8,17 @@ class Data_table():
         self.counting_table = {i: {j: {k: {l:1 for l in ['fold', 'check', 'call', 'raise', 'all in']}
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}
-                        for i in ['1', '2', '3', '4', '5']}
+                        for i in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
         self.data_observation = {'so': {a: {j: {k: 0
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}
-                        for a in ['1', '2', '3', '4', '5']},\
+                        for a in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']},\
                         'so_hi': {i: {j: {k: {l:0 for l in ['fold', 'check', 'call', 'raise', 'all in']}
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}
-                        for i in ['1', '2', '3', '4', '5']}}
+                        for i in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}}
         self.data_action = {'fold':0, 'check':0, 'call':0, 'raise':0, 'all in':0} # shf, shch, shc, shr and sha respectively in modelling
-        self.count = 5*4*3*5
+        self.count = 10*4*3*5
     def refresh_table(self):
         self.__init__()
 
@@ -41,8 +41,7 @@ def table_building(history, tables, hs, check_flag):
 def recording(tables, history, checkout, player_hand, board, num_players):
     if history == []:
         return '????'
-    # TODO Add hs in range(1, 5)
-    hs = enumurate(player_hand, board, num_players)
+    hs = str(enumurate(player_hand, board, num_players))
 
     if 2 in checkout and 3 not in checkout:
         check_flag = 'can only check'
@@ -64,7 +63,6 @@ def magical_four(tables, turn, checkout):
             'po_hi':[0,0,0,0,0,0],\
             } for i in tables}
     bruh={}
-    
     for player in tables:
         table = tables[player]
         count = table.count
@@ -140,15 +138,16 @@ def preprocess_table(tables):
                             data_observation['so_hi'][_hs][_turn][_check][_action] += table[_hs][_turn][_check]['all in']
     return (data_observation, data_action)
 
-def table_record(tables, history, checkout, players):
+def table_record(tables, history, checkout, players, num_players, board):
     # record the game at the end of every game
     ACTION_TABLE = [None, 'check', 'call', 'call', 'raise', 'raise', 'raise', 'fold', 'all in']
     TURN_TABLE = ['preflop','flop','turn','river']
 
-    # TODO add hs eval
-    hs = '?'
-
     for i in range(len(history)):
+        for player in players:
+            if player.name == history[i][0]:
+                _player = player
+        hs = enumurate(_player.hand, board[:history[i][1]], num_players)
         action = ACTION_TABLE[history[i][2]]
         _checkout = checkout[i]
         turn = TURN_TABLE[history[i][1]]
@@ -178,47 +177,37 @@ def table_record(tables, history, checkout, players):
         # update count
         tables[player].count += 1
 
+        # update num_players
+        if history[i][2] == 7:
+            num_players -= 1
+
 def enumurate(player_hand, board, num_players):
     player = Player(Hand(), 'test', 100)
-    hands = Deck().cards
-    starting_hands = []
-    d = []
-    for i in range(len(hands)):
-        for j in range(i+1,len(hands)):
-            starting_hands.append([hands[i],hands[j]])
-    n = 0
-    for i in range(len(starting_hands)):
-        st = time.time()
-        hand = starting_hands[i]
-        player.hand.cards = hand
-        tmp = player.hand.printhandsimple()
-        print(111111,time.time()-st)
-        win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board, 10)[0]
-        print(222222,time.time()-st)
-        d.append((win,tmp))
-        print(n)
-        n += 1
-        print(33333,time.time()-st)
-    d.sort()
-    tmp = ''
-    for _card in sorted(player_hand.cards):
-        tmp += _card.printcardsimple()
-    for win, hand in d:
-        if hand == tmp:
-            _index = d.index((win, hand))
-    if _index<0:
-        raise Exception('wait wot <0?')
-    elif _index<=265:
+    player.hand = player_hand
+    st = time.time()
+    win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board, 1000)[0]
+    print(time.time()-st)
+    if win <= 0.1:
         hs = 1
-    elif _index<=530:
+    elif win <= 0.2:
         hs = 2
-    elif _index<=795:
+    elif win <= 0.3:
         hs = 3
-    elif _index<=1060:
+    elif win <= 0.4:
         hs = 4
-    elif _index<=1326:
+    elif win <= 0.5:
         hs = 5
+    elif win <= 0.6:
+        hs = 6
+    elif win <= 0.7:
+        hs = 7
+    elif win <= 0.8:
+        hs = 8
+    elif win <= 0.9:
+        hs = 9
+    elif win <= 1:
+        hs = 10
     else:
         raise Exception('wait wot?')
-    return _index
+    return hs
 
