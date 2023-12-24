@@ -1,9 +1,8 @@
 import bext,json
-from copy import deepcopy
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
-from poker_ai.constant import INIT_MONEY, STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
+from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
 
@@ -87,14 +86,14 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         print("Choose between:")
         print(", ".join(word))
         try:
-            action = int(input('>>> '))
+            _action = int(input('>>> '))
         except ValueError:
             continue
         if action not in checkout:
             continue
         break
 
-    if action == 1:
+    if _action == 1:
         gamelogger.keylogging(self, [1],checkout)
         if self.money <= cur_call-self.pot:
             ans = self.all_in_1(cur_call, last_raised,
@@ -103,15 +102,15 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
             ans = self.all_in_2(cur_call, last_raised,
                                 board_pot, cur_raise)
             
-    elif action == 2:
+    elif _action == 2:
         gamelogger.keylogging(self, [2],checkout)
         ans = self.check(cur_call, last_raised, board_pot, cur_raise)
 
-    elif action == 3:
+    elif _action == 3:
         gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money],checkout)
         ans = self.call(cur_call, last_raised, board_pot, cur_raise)
 
-    elif action == 4:
+    elif _action == 4:
         while True:
             print(
                 f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
@@ -126,10 +125,10 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
             gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b],checkout)
             break
 
-    elif action == 5:
+    elif _action == 5:
         gamelogger.keylogging(self, [5],checkout)
         ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
-    elif action == 6:
+    elif _action == 6:
         gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
@@ -603,6 +602,10 @@ def game_loop(num_players, init_money):
     players, engine = game_init(num_players, init_money)
     tables = engine.tables
     while play_flag:
+        players = []
+        for x in range(num_players):
+            players.append(poker_component.Player(
+                None, f"Player {x+1}", init_money))
         bext.clear()
         bext.title("Bruh poker game")
         indicator = INDICATOR
@@ -613,7 +616,6 @@ def game_loop(num_players, init_money):
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
-            players = refresh(players)
             print(f"""*** *** ***\nGame {count}\n*** *** ***""")
             gamelogger=poker_component.Gamelogger(players)
             if count % TURN_TO_RAISE_POT == 1:
@@ -812,10 +814,4 @@ def game_init(num_players, init_money):
             tables[player.name].count = table_counting(tables[player.name].counting_table)
             tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
-    return players, engine
-
-def refresh(players):
-    for player in players:
-        player.weight_dict = dict()
-        player.mcts_tree = None
-    return players
+    return players,engine
