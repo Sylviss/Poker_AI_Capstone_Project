@@ -819,5 +819,5 @@ def game_init(num_players, init_money):
 
 def refresh(players):
     for player in players:
-        player.weight_dict = {}
+        player.weighted_dict = {}
     return players
