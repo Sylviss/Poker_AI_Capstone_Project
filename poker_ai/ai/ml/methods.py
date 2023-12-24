@@ -2,7 +2,7 @@ import math, multiprocessing, json
 from poker_ai.constant import CONFIDENT_RATE
 from poker_ai.poker.poker_component import Player, Hand, Deck
 
-def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, board):
+def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, board, deepness=1000):
     """Return the winning/tie chance of a hand, using Monte-Carlo simulations. AND it's multiprocess
 
     Args:
@@ -13,7 +13,6 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
         tuple(float,float): the winning and tie chance of the hand.
     """
     CALL_CONFIDENT = CONFIDENT_RATE**math.log(num_players-1, 1.5)
-    DEEPNESS = 1000
     # I tried many functions for the call_confident, and this is the best I can get. I don't know but simply ln(num_players-1) doesn't work
     a = len(board.hand.cards)
     player = Player(player_temp.hand, player_temp.name, player_temp.money, player_temp.state)
@@ -27,25 +26,28 @@ def multi_process_eval_func_but_in_opponent_modelling(player_temp, num_players, 
     else:
         state = 3
     win, draw = 0, 0
+    print(1)
     if state!=3:
         with multiprocessing.Pool() as pool:
             for k in range(num_players):
+                print(k)
                 tempwin = 0
                 tempdraw = 0
-                result = pool.starmap(singly_function, [(player, num_players-k, board, state) for _ in range(DEEPNESS)])
-                for x in range(DEEPNESS):
+                result = pool.starmap(singly_function, [(player, num_players-k, board, state) for _ in range(deepness)])
+                for x in range(deepness):
                     tempwin += result[x][0]
                     tempdraw += result[x][1]
                 win += tempwin * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
                 draw += tempdraw * (CALL_CONFIDENT**(num_players-1-k)) * ((1-CALL_CONFIDENT)**k) * math.comb(num_players-1, k)
-        return (win/DEEPNESS, draw/DEEPNESS)
+            print(2)
+        return (win/deepness, draw/deepness)
     else:
         with multiprocessing.Pool() as pool:
-            result = pool.starmap(singly_function, [(player, num_players, board, state) for _ in range(DEEPNESS)])
-            for x in range(DEEPNESS):
+            result = pool.starmap(singly_function, [(player, num_players, board, state) for _ in range(deepness)])
+            for x in range(deepness):
                 win += result[x][0]
                 draw += result[x][1]
-        return (win/DEEPNESS, draw/DEEPNESS)
+        return (win/deepness, draw/deepness)
 
 
 def singly_function(player, num_players, board, state):

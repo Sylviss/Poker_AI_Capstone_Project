@@ -1,10 +1,11 @@
 from poker_ai.ai.ml.methods import multi_process_eval_func_but_in_opponent_modelling
 from poker_ai.constant import PLAYER
 from poker_ai.poker.poker_component import Player, Hand, Deck
+import time
 
 class Data_table():
     def __init__(self):
-        self.counting_table = {i: {j: {k: {l:0 for l in ['fold', 'check', 'call', 'raise', 'all in']}
+        self.counting_table = {i: {j: {k: {l:1 for l in ['fold', 'check', 'call', 'raise', 'all in']}
                         for k in ['can only check', 'can only call', "can't check or call"]}
                         for j in ['preflop', 'flop', 'turn', 'river']}
                         for i in ['1', '2', '3', '4', '5']}
@@ -17,7 +18,7 @@ class Data_table():
                         for j in ['preflop', 'flop', 'turn', 'river']}
                         for i in ['1', '2', '3', '4', '5']}}
         self.data_action = {'fold':0, 'check':0, 'call':0, 'raise':0, 'all in':0} # shf, shch, shc, shr and sha respectively in modelling
-        self.count = 0
+        self.count = 5*4*3*5
     def refresh_table(self):
         self.__init__()
 
@@ -37,11 +38,11 @@ def table_building(history, tables, hs, check_flag):
     tables.count += 1
     return tables
 
-def recording(tables, history, checkout, player_hand, board):
+def recording(tables, history, checkout, player_hand, board, num_players):
     if history == []:
         return '????'
     # TODO Add hs in range(1, 5)
-    hs = '?'
+    hs = enumurate(player_hand, board, num_players)
 
     if 2 in checkout and 3 not in checkout:
         check_flag = 'can only check'
@@ -178,18 +179,46 @@ def table_record(tables, history, checkout, players):
         tables[player].count += 1
 
 def enumurate(player_hand, board, num_players):
-    player = Player(player_hand, 'test', 100)
+    player = Player(Hand(), 'test', 100)
     hands = Deck().cards
-    card = []
+    starting_hands = []
     d = []
     for i in range(len(hands)):
-        for j in range(len(hands)):
-            card.append([hands[i],hands[j]])
-    for hand in card:
+        for j in range(i+1,len(hands)):
+            starting_hands.append([hands[i],hands[j]])
+    n = 0
+    for i in range(len(starting_hands)):
+        st = time.time()
+        hand = starting_hands[i]
         player.hand.cards = hand
-        win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board)[0]
-        d.append((win,hand))
+        tmp = player.hand.printhandsimple()
+        print(111111,time.time()-st)
+        win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board, 10)[0]
+        print(222222,time.time()-st)
+        d.append((win,tmp))
+        print(n)
+        n += 1
+        print(33333,time.time()-st)
     d.sort()
+    tmp = ''
+    for _card in sorted(player_hand.cards):
+        tmp += _card.printcardsimple()
     for win, hand in d:
-        pass
+        if hand == tmp:
+            _index = d.index((win, hand))
+    if _index<0:
+        raise Exception('wait wot <0?')
+    elif _index<=265:
+        hs = 1
+    elif _index<=530:
+        hs = 2
+    elif _index<=795:
+        hs = 3
+    elif _index<=1060:
+        hs = 4
+    elif _index<=1326:
+        hs = 5
+    else:
+        raise Exception('wait wot?')
+    return _index
 
