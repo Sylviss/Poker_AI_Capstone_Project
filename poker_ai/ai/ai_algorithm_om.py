@@ -5,7 +5,7 @@ from poker_ai.ai.eval_func_om import eval_func, multi_process_eval_func, create_
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
-from poker_ai.ai.ml.opponent_modelling import magical_four
+from poker_ai.ai.ml.opponent_modelling import magical_four, recording
 
 BLUFF_INDICATOR={}
 
@@ -461,6 +461,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
+    tables = recording(tables, gamelogger.history, checkout, players[0].hand, board)
     return ans
 
 

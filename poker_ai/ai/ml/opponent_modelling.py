@@ -1,3 +1,6 @@
+from poker_ai.ai.ml.methods import multi_process_eval_func_but_in_opponent_modelling
+from poker_ai.constant import PLAYER
+from poker_ai.poker.poker_component import Player, Hand, Deck
 
 class Data_table():
     def __init__(self):
@@ -34,7 +37,7 @@ def table_building(history, tables, hs, check_flag):
     tables.count += 1
     return tables
 
-def recording(tables, history, checkout, player_hand):
+def recording(tables, history, checkout, player_hand, board):
     if history == []:
         return '????'
     # TODO Add hs in range(1, 5)
@@ -173,3 +176,20 @@ def table_record(tables, history, checkout, players):
 
         # update count
         tables[player].count += 1
+
+def enumurate(player_hand, board, num_players):
+    player = Player(player_hand, 'test', 100)
+    hands = Deck().cards
+    card = []
+    d = []
+    for i in range(len(hands)):
+        for j in range(len(hands)):
+            card.append([hands[i],hands[j]])
+    for hand in card:
+        player.hand.cards = hand
+        win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board)[0]
+        d.append((win,hand))
+    d.sort()
+    for win, hand in d:
+        pass
+

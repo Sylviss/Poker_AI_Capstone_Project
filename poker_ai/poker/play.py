@@ -3,7 +3,7 @@ from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
-from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, table_counting, table_record
+from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
 
 def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
@@ -132,6 +132,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
+    tables = recording(tables, gamelogger.history, checkout, players[0].hand, board)
     return ans
 
 
@@ -616,6 +617,7 @@ def game_loop(num_players, init_money):
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
+            players = refresh(players)
             print(f"""*** *** ***\nGame {count}\n*** *** ***""")
             gamelogger=poker_component.Gamelogger(players)
             if count % TURN_TO_RAISE_POT == 1:
@@ -815,3 +817,8 @@ def game_init(num_players, init_money):
             tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
     return players,engine
+
+def refresh(players):
+    for player in players:
+        player.weight_dict = {}
+    return players
