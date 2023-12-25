@@ -1,5 +1,6 @@
 import random
-from poker_ai.constant import MODEL, color
+from poker_ai.constant import MODEL
+from colorama import Fore, Back, Style 
 
 class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone in development team who see this embarrasing of themself
@@ -23,20 +24,19 @@ class Card:
                       '7', '8', '9', '10', 'J', 'Q', 'K', "A"]
         suit_names = [chr(9827), chr(9830), chr(9829), chr(9824)]
         
-        color_dict = {i: 'Green' if i in {chr(9827), chr(9824)} else 'Red' for i in suit_names}
+        color_dict = {i: Fore.BLACK if i in {chr(9827), chr(9824)} else Fore.RED for i in suit_names}
         
-        ceiling = f"{color['Hidden']} ___ {color['ResetAll']}"
-        row2 = f"{color['BackgroundWhite']}  {color[color_dict[suit_names[self.suit]]]}{suit_names[self.suit]}{color['Hidden']} |{color['ResetAll']}"
+        row2 = Back.WHITE + color_dict[suit_names[self.suit]] + f'  {suit_names[self.suit]}  ' + Style.RESET_ALL
         
         if self.rank == 9:
-            row1 = f"{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{'10'}{color['Hidden']}  |{color['ResetAll']}"
-            row3 = f"{color['BackgroundWhite']}  {color['Hidden']}|{color['ResetAll']}{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{'10'}{color['ResetAll']}"
+            row1 = Back.WHITE + color_dict[suit_names[self.suit]] + f'{"10"}   ' + Style.RESET_ALL
+            row3 = Back.WHITE + color_dict[suit_names[self.suit]] + f'   {"10"}' + Style.RESET_ALL 
         
         else:
-            row1 = f"{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]}{color['Hidden']}   |{color['ResetAll']}"
-            row3 = f"{color['BackgroundWhite']}   {color['Hidden']}|{color['ResetAll']}{color['BackgroundWhite']}{color[color_dict[suit_names[self.suit]]]}{rank_names[self.rank]}{color['ResetAll']}"
+            row1 = Back.WHITE + color_dict[suit_names[self.suit]] + f'{rank_names[self.rank]}    ' + Style.RESET_ALL
+            row3 = Back.WHITE + color_dict[suit_names[self.suit]] + f'    {rank_names[self.rank]}' + Style.RESET_ALL 
         
-        return [ceiling, row1, row2, row3]
+        return [row1, row2, row3]
 
     def printcardsimple(self):
         rank_names = [None, '2', '3', '4', '5', '6',
@@ -64,7 +64,7 @@ class Deck:
     def __str__(self):
         res = []
         for card in self.cards:
-            res.append(str(card))
+            res.append(str(card) +'\n')
         return '\n'.join(res)
 
     def add_card(self, card):
@@ -211,8 +211,8 @@ class Hand(Deck):
         res = ['', '', '', '']
         for card in self.cards:
             tmp = card.printcard()
-            for i in range(4):
-                res[i] += tmp[i] + ' '
+            for i in range(3):
+                res[i] += tmp[i] + " "
         return '\n'.join(res)
     
     def printhandsimple(self):
