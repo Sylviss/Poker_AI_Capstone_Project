@@ -22,7 +22,7 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
-            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
         else:
             if OM_IND==1 and self.model in [0,1,2]:
                 return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
@@ -34,7 +34,7 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         else:
             return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
 
-def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players):
+def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players):
     """
         types of number:
         1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
@@ -81,7 +81,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    magical_four(engine.tables, turn, checkout)
+    magical_four(engine.tables, turn, checkout, players, index)
     while True:
         print("Choose between:")
         print(", ".join(word))

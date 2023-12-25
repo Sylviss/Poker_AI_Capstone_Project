@@ -65,9 +65,11 @@ def magical_four(tables, turn, checkout, players, index):
     for player in tables:
         if player == players[index].name:
             continue
+        print(players[index].opponent_ingame)
         if not players[index].opponent_ingame[player]:
             continue
-        prob_dict = players[index].partition_prob_dict[player][turn]
+        cur_turn = max(players[index].partition_prob_dict[player])
+        prob_dict = players[index].partition_prob_dict[player][cur_turn]
         table = tables[player]
         count = table.count
         counting_table = table.counting_table
@@ -97,7 +99,7 @@ def magical_four(tables, turn, checkout, players, index):
             tmp[player]['po_hi'][5] = data_observation['so_hi'][hs][_turn][check_flag]['all in']/data_action['all in']
             for i in range(1,6):
                 bruh = tmp[player]['phi'][i]*tmp[player]['po_hi'][i]/tmp[player]['po']
-                res[ACTION[i]] += bruh/10
+                res[ACTION[i]] += bruh*prob_dict[int(hs)]
         return_dict[player] = res.copy()
     return return_dict
 

@@ -330,7 +330,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
     print(self.partition_prob_dict)
-    print(magical_four(engine.tables, turn, checkout, self))
+    print(magical_four(engine.tables, turn, checkout, players, index))
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
