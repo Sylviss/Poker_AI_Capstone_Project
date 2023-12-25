@@ -53,7 +53,7 @@ def recording(tables, history, checkout, player_hand, board, num_players):
     tables = table_building(history, tables, hs, check_flag)
     return tables
 
-def magical_four(tables, turn, checkout):
+def magical_four(tables, turn, checkout, players, index):
     # the constants here are just to translate from a format to another
     ACTION = {1: 'fold', 2:'check', 3:'call', 4:'raise', 5:'all in'}
     TURN_TABLE = ['preflop','flop','turn','river']
@@ -63,6 +63,11 @@ def magical_four(tables, turn, checkout):
             } for i in tables}
     return_dict={}
     for player in tables:
+        if player == players[index].name:
+            continue
+        if not players[index].opponent_ingame[player]:
+            continue
+        prob_dict = players[index].partition_prob_dict[player][turn]
         table = tables[player]
         count = table.count
         counting_table = table.counting_table
