@@ -1,13 +1,13 @@
 import bext,json
 from poker_ai.poker import poker_component
-from poker_ai.ai.ai_algorithm import action_ai_model, action_ai_model_but_training
-from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model, action_ai_with_om_model_but_training
-from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, OM_IND
+from poker_ai.ai.ai_algorithm import action_ai_model
+from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
+from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
 from colorama import Back, Style
 
-def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training=0):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -25,32 +25,15 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         if self.name == "Player 1":
             return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
         else:
-            if OM_IND==1 and self.model in [0,1,2]:
-                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+            if self.model in [5,6,7]:
+                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
             else:
-                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
     else:
-        if OM_IND==1 and self.model in [0,1,2]:
-            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+        if self.model in [5,6,7]:
+            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
         else:
-            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
-
-def action_but_training(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
-    """Choose who will do the actions base on the indicator.
-
-    Args:
-        indicator (int): Decide if who shoud do the action, human or AI.
-        all the others args are just there to pass to the functions
-
-    Returns:
-        action_function: return the function of the one who should do the actions
-    """
-    self=players[index]
-    
-    if OM_IND==1 and self.model in [0,1,2]:
-        return action_ai_with_om_model_but_training(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
-    else:
-        return action_ai_model_but_training(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
 
 def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players):
     """
@@ -317,7 +300,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value,tables,k)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value,tables,k,training=1)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1

@@ -290,7 +290,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
             else:
                 return [5]
 
-def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
+def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training):
     """
     Make the AI act in the game using the basic AI model. Also using opponent modeling
 
@@ -330,13 +330,13 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
     print(magical_four(engine.tables, turn, checkout, players, index))
-    if model == 0:
+    if model == 5:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
-    elif model == 1:
+    elif model == 6:
         agent = second_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
-    elif model == 2:
+    elif model == 7:
         agent = mcts_ai_agent(index, players, min_money, board, 
                               checkout, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value)
     else:
@@ -365,85 +365,11 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
+    if training==1:
+        engine = recording(engine, gamelogger.history, checkout, players[index].hand, board, num_players)
     return ans
     
-def action_ai_with_om_model_but_training(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
-    """
-    Make the AI act in the game using the basic AI model. Also using opponent modeling
 
-    Args:
-        index (int): The index of the current player.
-        players (list): A list of Player objects representing all the players in the game.
-        cur_call (int): The current call value of the phase.
-        last_raised (str): The name of the last player that raised the pot.
-        board_pot (int): The current pot of the board.
-        cur_raise (int): The current raise value of the phase.
-        num_players (int): The number of active players in the game.
-        board (poker_ai.poker.poker_component.Player()): The Player object of the board, which contains the community cards.
-        mul_indicator (int): Indicator to use multi-process evaluation function or not.
-        model (int): The AI model to use.
-        big_blind (int): The location of the big blind player.
-
-    Returns:
-        int: The action to be taken by the AI player.
-    Raises:
-        ValueError: If an invalid AI model is specified.
-
-    """
-    self=players[index]
-    min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
-    checkout = [1,5]
-    if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
-        checkout.append(6)
-    if cur_call == self.pot:
-        checkout.append(2)
-    elif cur_call > self.pot and self.money > cur_call-self.pot:
-        checkout.append(3)
-    if gamelogger.raised_time<=3:
-        if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
-            checkout.append(6)
-        if self.money > cur_call-self.pot+cur_raise:
-            checkout.append(4)
-    print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
-    # prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
-    # print(magical_four(engine.tables, turn, checkout, players, index))
-    if model == 0:
-        agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
-                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
-    elif model == 1:
-        agent = second_approach_mcs_ai_agent(index,players,min_money, num_players, board,
-                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
-    elif model == 2:
-        agent = mcts_ai_agent(index, players, min_money, board, 
-                              checkout, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value)
-    else:
-        raise ValueError("Invalid AI model specified.")
-    a = agent[0]
-    ans = 0
-    if a == 1:
-        gamelogger.keylogging(self,[1],checkout)
-        if self.money <= cur_call-self.pot:
-            ans = self.all_in_1(cur_call, last_raised, board_pot, cur_raise)
-        else:
-            ans = self.all_in_2(cur_call, last_raised, board_pot, cur_raise)
-    elif a == 2:
-        gamelogger.keylogging(self,[2],checkout)
-        ans = self.check(cur_call, last_raised, board_pot, cur_raise)
-    elif a == 3:
-        gamelogger.keylogging(self,[3,(cur_call-self.pot)/self.money],checkout)
-        ans = self.call(cur_call, last_raised, board_pot, cur_raise)
-    elif a == 4:
-        b = agent[1]
-        gamelogger.keylogging(self,[4,(b+cur_call-self.pot)/self.money,b],checkout)
-        ans = self.raise_money(b, cur_call, last_raised, board_pot, cur_raise)
-    elif a == 5:
-        gamelogger.keylogging(self,[5],checkout)
-        ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
-    elif a==6:
-        gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
-        ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    engine = recording(engine, gamelogger.history, checkout, players[index].hand, board, num_players)
-    return ans
 
 
 
