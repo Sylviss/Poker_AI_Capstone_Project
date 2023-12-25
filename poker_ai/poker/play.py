@@ -155,7 +155,7 @@ def print_blind_board(players, board, indicator=INDICATOR):
                 print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
                 print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
                 print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
-                
+                print()
                 print()
             elif player.state != 6:
                 print(f"{player.name}: {player.money}$")
