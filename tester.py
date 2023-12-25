@@ -50,4 +50,4 @@ def training(n):
 
 
 if __name__=="__main__":
-    training(4)
+    training(2)

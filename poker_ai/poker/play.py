@@ -421,7 +421,7 @@ def fast_testing(num_players, init_money, model_list):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
     try:
-        f = open("poker_ai/ai/ml/bruh_4.json")
+        f = open("poker_ai/ai/ml/bruh.json")
     except:
         tables = Data_table()
     else:
@@ -429,7 +429,6 @@ def fast_testing(num_players, init_money, model_list):
         tables = Data_table()
         tables.counting_table = datas
         tables.count = table_counting(tables.counting_table)
-        tables.data_observation, tables.data_action = preprocess_table(tables)
         f.close()
     while table_condition:
         players,engine = refresh(players,engine)

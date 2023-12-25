@@ -328,21 +328,14 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
         if self.money > cur_call-self.pot+cur_raise:
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
-    prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
-    print(magical_four(engine.tables, turn, checkout, players, index))
+    # prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
+    # print(magical_four(engine.tables, turn, checkout, players, index))
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
     elif model == 1:
         agent = second_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
-    elif model == -1:
-        agent = enumeration_ai_agent(index, players, min_money, num_players, board, 
-                                                   checkout, cur_call, cur_raise, big_blind, last_raised,big_blind_value, gamelogger)
-    elif model == 4:
-        agent = super_random_ai_agent(self, checkout, cur_call, cur_raise)
-    elif model == 3:
-        agent = all_in_ai_agent(checkout)
     elif model == 2:
         agent = mcts_ai_agent(index, players, min_money, board, 
                               checkout, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value)
@@ -372,7 +365,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    # tables = recording(tables, gamelogger.history, checkout, players[index].hand, board, num_players)
+    engine = recording(engine, gamelogger.history, checkout, players[index].hand, board, num_players)
     return ans
 
 
