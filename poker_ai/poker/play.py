@@ -1,8 +1,9 @@
 import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
-from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color
+from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
 from poker_ai.ai.ml.opponent_modelling import Data_table, modelling, recording, table_counting, table_rescaling
+from colorama import Back, Style 
 
 
 
@@ -153,9 +154,9 @@ def print_blind_board(players, board, indicator=INDICATOR):
                 print(f"{player.name}: {player.money}$")
                 '''print(f'\n'.join([' ___   ___ ', '|## | |## |',
                       '|###| |###|', '|_##| |_##|']))'''
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
                 
                 print()
             elif player.state != 6:
