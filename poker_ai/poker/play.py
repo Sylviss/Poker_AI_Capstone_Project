@@ -24,15 +24,15 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
         if self.name == "Player 1":
             return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
         else:
-            if OM_IND==0:
-                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
-            else:
+            if OM_IND==1 and self.model in [0,1,2]:
                 return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+            else:
+                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
     else:
-        if OM_IND==0:
-            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
-        else:
+        if OM_IND==1 and self.model in [0,1,2]:
             return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+        else:
+            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
 
 def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players):
     """
@@ -800,7 +800,6 @@ def game_loop(num_players, init_money):
 def game_init(num_players, init_money):
     players = []
     engine = OM_engine()
-    engine.weighted_dict={}
     tables = engine.tables
     for x in range(num_players):
         players.append(poker_component.Player(
@@ -817,11 +816,9 @@ def game_init(num_players, init_money):
             tables[player.name].count = table_counting(tables[player.name].counting_table)
             tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
-    engine.player_prob_dict={player.name:{} for player in players}
     return players,engine
 
 def refresh(players,engine):
     for player in players:
         player.weighted_dict = {}
-        engine.weighted_dict = {}
     return players, engine

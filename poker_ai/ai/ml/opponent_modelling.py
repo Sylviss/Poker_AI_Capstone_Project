@@ -209,4 +209,3 @@ def enumurate(player_hand, board, num_players):
     else:
         raise Exception('wait wot?')
     return str(hs)
-

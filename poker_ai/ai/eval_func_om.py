@@ -211,6 +211,7 @@ def update_weighted_dict(player, board, turn, gamelogger):
     for opponent_name in player.opponent_can_act:
         if turn not in player.opponent_prob_dict[opponent_name]:
             player.opponent_prob_dict[opponent_name][turn]={}
+            player.partition_prob_dict[opponent_name][turn]={}
     with multiprocessing.Pool() as pool:
         result=pool.starmap(single_solo_game,[(player, card1, card2, board, deck, turn) for card1 in range(0,50-turn) for card2 in range(card1+1,50-turn) for _ in range(deepness)])
         for hand,value in result:
@@ -275,10 +276,10 @@ def update_prob_dict(player, turn, gamelogger):
                     if total!=1:
                         for key in player.opponent_prob_dict[opponent_name][turn]:
                             player.opponent_prob_dict[opponent_name][turn][key]*=total
-                    a=len(player.partition)-1
+                    a=10
                     for partition in range(a):
-                        bot=int(len_dict*player.partition[partition])
-                        top=int(len_dict*player.partition[partition])
+                        bot=int(len_dict*partition*0.1)
+                        top=int(len_dict*(partition+1)*0.1)
                         total_prob=0
                         for item in temp_dict[bot:top]:
                             total_prob+=player.opponent_prob_dict[opponent_name][turn][item[0]]
@@ -337,10 +338,10 @@ def update_prob_dict(player, turn, gamelogger):
                     if total!=1:
                         for key in player.opponent_prob_dict[opponent_name][temp_turn]:
                             player.opponent_prob_dict[opponent_name][temp_turn][key]*=total
-                    a=len(player.partition)-1
+                    a=10
                     for partition in range(a):
-                        bot=int(len_dict*player.partition[partition])
-                        top=int(len_dict*player.partition[partition])
+                        bot=int(len_dict*partition*0.1)
+                        top=int(len_dict*(partition+1)*0.1)
                         total_prob=0
                         for item in temp_dict[bot:top]:
                             total_prob+=player.opponent_prob_dict[opponent_name][temp_turn][item[0]]
