@@ -126,8 +126,8 @@ def prob_table_update(index, players, min_money, num_players, board, actions, cu
         player.weighted_dict={}
         player.partition_prob_dict={opponent.name:{0:{a: 0.1 for a in range(1,11)}} for opponent in players if opponent.name!=player.name and opponent.state!=6}
         player.opponent_prob_dict={opponent.name:{} for opponent in players if opponent.name!=player.name and opponent.state!=6}
-        player.opponent_can_act={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
-        player.opponent_ingame={opponent.name:True for opponent in players if opponent.name!=player.name and opponent.state!=6}
+        player.opponent_can_act={opponent.name:True if opponent.name!=player.name and opponent.state!=6 else False for opponent in players}
+        player.opponent_ingame={opponent.name:True if opponent.name!=player.name and opponent.state!=6 else False for opponent in players}
         player.weighted_dict[turn],prob_dict=create_enumerate_dict(player, board, turn)
         for opponent in players:
             if opponent.state!=6 and opponent.name!=player.name:
