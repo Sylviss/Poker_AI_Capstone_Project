@@ -3,7 +3,7 @@ from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE
-from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
+from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record, table_rescaling
 from poker_ai.ai.ml.methods import OM_engine
 from colorama import Back, Style
 
@@ -792,7 +792,11 @@ def game_loop_model_test(num_players, init_money, n, model_list):
                 if winner[x]:
                     players[x].money += money_win
             print(hehe+" win the game!")
-            table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
+            tables = table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
+            for player in players:
+                tables[player.name] = table_rescaling(tables[player.name], len(gamelogger.history))
+            for player in players:
+                tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
             for player in players:
                 if player.money < 0:
                     raise poker_component.WTF
@@ -988,6 +992,7 @@ def game_loop(num_players, init_money):
                     players[x].money += money_win
             print(hehe+" win the game!")
             table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
+            tables = table_rescaling(tables, len(gamelogger.history))
             for player in players:
                 if player.money < 0:
                     raise poker_component.WTF
@@ -1042,6 +1047,7 @@ def game_init(num_players, init_money):
                 raise Exception('too many players')
         for player in players:
             tables[player.name].counting_table = datas.copy()
+            table_rescaling(tables[player.name], 0)
             tables[player.name].count = table_counting(tables[player.name].counting_table)
             tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()

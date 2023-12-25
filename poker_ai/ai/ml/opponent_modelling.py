@@ -209,6 +209,8 @@ def table_record(tables, history, checkout, players, num_players, board):
         if history[i][2] == 7:
             num_players -= 1
 
+    return tables
+
 def enumurate(player_hand, board, num_players):
     player = Player(Hand(), 'test', 100)
     player.hand = player_hand
