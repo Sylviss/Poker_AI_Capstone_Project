@@ -1,4 +1,5 @@
 from poker_ai.ai.ml.methods import multi_process_eval_func_but_in_opponent_modelling
+from poker_ai.constant import RESCALING_SIZE
 from poker_ai.poker.poker_component import Player, Hand, Deck
 import time
 
@@ -67,7 +68,11 @@ def magical_four(tables, turn, checkout, players, index):
             continue
         if not players[index].opponent_ingame[player]:
             continue
-        cur_turn = max(players[index].partition_prob_dict[player])
+        cur_turn = 0
+        for k in [5,4,3,0]:
+            if k in players[index].partition_prob_dict[player] and len(players[index].partition_prob_dict[player][k]):
+                cur_turn = k
+                break
         prob_dict = players[index].partition_prob_dict[player][cur_turn]
         table = tables[player]
         count = table.count
@@ -148,6 +153,12 @@ def table_record(tables, history, checkout, players, num_players, board):
     ACTION_TABLE = [None, 'check', 'call', 'call', 'raise', 'raise', 'raise', 'fold', 'all in']
     TURN_TABLE = ['preflop', None, None, 'flop', 'turn', 'river']
 
+    if len(history) != len(checkout):
+        raise Exception('record error')
+
+    for player in tables:
+        tables[player] = table_rescaling(tables[player], len(history))
+
     for i in range(len(history)):
         for player in players:
             if player.name == history[i][0]:
@@ -161,10 +172,19 @@ def table_record(tables, history, checkout, players, num_players, board):
         player =  history[i][0]
         if 2 in _checkout and 3 not in _checkout:
             check_flag = 'can only check'
+            if ACTION_TABLE[history[i][2]] == 'call':
+                print(ACTION_TABLE[history[i][2]], _checkout)
+                raise Exception('record error')
         elif 2 not in _checkout and 3 in _checkout:
             check_flag = "can only call"
+            if ACTION_TABLE[history[i][2]] == 'check':
+                print(ACTION_TABLE[history[i][2]], _checkout)
+                raise Exception('record error')
         elif 2 not in _checkout and 3 not in _checkout:
             check_flag = "can't check or call"
+            if ACTION_TABLE[history[i][2]] == 'call' or ACTION_TABLE[history[i][2]] == 'check':
+                print(ACTION_TABLE[history[i][2]], _checkout)
+                raise Exception('record error')
         else:
             raise Exception('wait wot???')
         
@@ -215,3 +235,17 @@ def enumurate(player_hand, board, num_players):
     else:
         raise Exception('wait wot?')
     return str(hs)
+
+def table_rescaling(data_table, num_action):
+    counting_table = data_table.counting_table
+    data_table.count = table_counting(data_table.counting_table)
+    for hs in counting_table:
+        for turn in counting_table[hs]:
+            for check in counting_table[hs][turn]:
+                for action in counting_table[hs][turn][check]:
+                    if RESCALING_SIZE <= num_action:
+                        counting_table[hs][turn][check][action] = counting_table[hs][turn][check][action]*(RESCALING_SIZE)/data_table.count
+                    else:
+                        counting_table[hs][turn][check][action] = counting_table[hs][turn][check][action]*(RESCALING_SIZE-num_action)/data_table.count
+    data_table.count = table_counting(data_table.counting_table)
+    return data_table

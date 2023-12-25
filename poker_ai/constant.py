@@ -4,7 +4,7 @@
 DEBUG_MODE=1
 # Turn on for better visibility
 
-MODEL=2
+MODEL=1
 # Choose AI module for all bot in a normal game for main.py:
 # -1: enumeration ai agent
 # 0: first  approach mcs ai agent
@@ -17,7 +17,7 @@ STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
 # Value of the big blind pre-bet.
-INDICATOR = 1
+INDICATOR = 2
 # 0 is for testing against all human-controlled
 # 1 is for bot: Player 1 will be human, all others will be bot
 # 2 is all bot for testing purpose
@@ -108,7 +108,7 @@ color = {
 }
 
 # constants for opponent modelling
-RESCALING_SIZE = 10
+RESCALING_SIZE = 50
 
 ################################################
 
