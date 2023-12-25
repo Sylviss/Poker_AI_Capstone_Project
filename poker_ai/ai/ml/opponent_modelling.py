@@ -65,7 +65,6 @@ def magical_four(tables, turn, checkout, players, index):
     for player in tables:
         if player == players[index].name:
             continue
-        print(players[index].opponent_ingame)
         if not players[index].opponent_ingame[player]:
             continue
         cur_turn = max(players[index].partition_prob_dict[player])

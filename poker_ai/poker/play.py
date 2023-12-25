@@ -81,7 +81,6 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    magical_four(engine.tables, turn, checkout, players, index)
     while True:
         print("Choose between:")
         print(", ".join(word))

@@ -210,7 +210,7 @@ def update_weighted_dict(player, board, turn, gamelogger):
         deck.remove_card(card)
     player.weighted_dict[turn]={}
     deepness=DEEPNESS//333
-    for opponent_name in player.opponent_can_act:
+    for opponent_name in player.opponent_prob_dict:
         if turn not in player.opponent_prob_dict[opponent_name]:
             player.opponent_prob_dict[opponent_name][turn]={}
             player.partition_prob_dict[opponent_name][turn]={}
@@ -223,7 +223,7 @@ def update_weighted_dict(player, board, turn, gamelogger):
                     player.weighted_dict[turn][hand][1]+=value[1]/deepness
                 else:
                     player.weighted_dict[turn][hand]=[value[0]/deepness,value[1]/deepness]
-                for opponent_name in player.opponent_can_act:
+                for opponent_name in player.opponent_prob_dict:
                     player.opponent_prob_dict[opponent_name][turn][hand]=player.opponent_prob_dict[opponent_name][preturn][hand]
                     
 def update_prob_dict(player, turn, gamelogger):
