@@ -152,9 +152,9 @@ def print_blind_board(players, board, indicator=INDICATOR):
                 print(f"{player.name}: {player.money}$")
                 '''print(f'\n'.join([' ___   ___ ', '|## | |## |',
                       '|###| |###|', '|_##| |_##|']))'''
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']}   {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
                 
                 print()
             elif player.state != 6:
@@ -432,7 +432,7 @@ def fast_testing(num_players, init_money, model_list):
         tables.data_observation, tables.data_action = preprocess_table(tables)
         f.close()
     while table_condition:
-        players = refresh(players)
+        players,engine = refresh(players,engine)
         print(f"""*** *** ***\nGame {count}\n*** *** ***""")
         gamelogger=poker_component.Gamelogger(players)
         if count % TURN_TO_RAISE_POT == 1:
@@ -617,7 +617,7 @@ def game_loop(num_players, init_money):
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
-            players = refresh(players)
+            players,engine = refresh(players,engine)
             print(f"""*** *** ***\nGame {count}\n*** *** ***""")
             gamelogger=poker_component.Gamelogger(players)
             if count % TURN_TO_RAISE_POT == 1:
@@ -800,6 +800,7 @@ def game_loop(num_players, init_money):
 def game_init(num_players, init_money):
     players = []
     engine = OM_engine()
+    engine.weighted_dict={}
     tables = engine.tables
     for x in range(num_players):
         players.append(poker_component.Player(
@@ -816,9 +817,11 @@ def game_init(num_players, init_money):
             tables[player.name].count = table_counting(tables[player.name].counting_table)
             tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
         f.close()
+    engine.player_prob_dict={player.name:{} for player in players}
     return players,engine
 
-def refresh(players):
+def refresh(players,engine):
     for player in players:
         player.weighted_dict = {}
-    return players
+        engine.weighted_dict = {}
+    return players, engine
