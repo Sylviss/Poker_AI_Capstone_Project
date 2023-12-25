@@ -6,7 +6,7 @@ from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
 
-def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
+def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
     """Choose who will do the actions base on the indicator.
 
     Args:
@@ -19,22 +19,22 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
     self=players[index]
     
     if indicator == 0:
-        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
+        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
-            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players)
+            return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
         else:
             if OM_IND==0:
-                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
             else:
-                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
     else:
         if OM_IND==0:
-            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
         else:
-            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn)
+            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
 
-def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, tables, turn, board, num_players):
+def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players):
     """
         types of number:
         1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
@@ -81,7 +81,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         checkout.append(6)
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    magical_four(players[0].data_table, turn, checkout)
+    magical_four(engine.tables, turn, checkout)
     while True:
         print("Choose between:")
         print(", ".join(word))
@@ -89,7 +89,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
             _action = int(input('>>> '))
         except ValueError:
             continue
-        if action not in checkout:
+        if _action not in checkout:
             continue
         break
 
@@ -132,7 +132,7 @@ def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gam
         gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
-    tables = recording(tables, gamelogger.history, checkout, players[0].hand, board, num_players)
+    # tables = recording(tables, gamelogger.history, checkout, players[0].hand, board, num_players)
     return ans
 
 
@@ -608,6 +608,7 @@ def game_loop(num_players, init_money):
                 None, f"Player {x+1}", init_money))
         bext.clear()
         bext.title("Bruh poker game")
+        print(tables[players[0].name].count)
         indicator = INDICATOR
         count = 1
         playing = num_players
@@ -691,7 +692,7 @@ def game_loop(num_players, init_money):
                         break
                     if players[index].state in [-1, 1, 2]:
                         cur_call, last_raised, board.money, cur_raise = action(
-                            index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k)
+                            index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, k)
                     if players[index].state == 4:
                         players[index].state = 5
                         folded += 1
@@ -740,7 +741,7 @@ def game_loop(num_players, init_money):
                 bext.clear()
                 continue
             print("Post-game")
-            table_record(tables, gamelogger.history, gamelogger.checkout, players)
+            table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
             print_board(players, board)
             checker = []
             for player in players:

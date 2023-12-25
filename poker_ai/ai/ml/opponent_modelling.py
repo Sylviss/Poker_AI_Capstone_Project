@@ -62,7 +62,7 @@ def magical_four(tables, turn, checkout):
             'po':0,\
             'po_hi':[0,0,0,0,0,0],\
             } for i in tables}
-    bruh={}
+    return_dict={}
     for player in tables:
         table = tables[player]
         count = table.count
@@ -93,9 +93,9 @@ def magical_four(tables, turn, checkout):
             tmp[player]['po_hi'][5] = data_observation['so_hi'][hs][_turn][check_flag]['all in']/data_action['all in']
             for i in range(1,6):
                 bruh = tmp[player]['phi'][i]*tmp[player]['po_hi'][i]/tmp[player]['po']
-                res[ACTION[i]] += bruh
-        bruh[player]=res.copy()
-    return bruh
+                res[ACTION[i]] += bruh/10
+        return_dict[player] = res.copy()
+    return return_dict
 
 
 def table_counting(counting_table):
@@ -147,7 +147,9 @@ def table_record(tables, history, checkout, players, num_players, board):
         for player in players:
             if player.name == history[i][0]:
                 _player = player
-        hs = enumurate(_player.hand, board[:history[i][1]], num_players)
+        temp_hand = Hand()
+        temp_hand.cards = board.hand.cards[:int(history[i][1])]
+        hs = enumurate(_player.hand, Player(temp_hand, 'b', 0), num_players)
         action = ACTION_TABLE[history[i][2]]
         _checkout = checkout[i]
         turn = TURN_TABLE[history[i][1]]
@@ -184,9 +186,7 @@ def table_record(tables, history, checkout, players, num_players, board):
 def enumurate(player_hand, board, num_players):
     player = Player(Hand(), 'test', 100)
     player.hand = player_hand
-    st = time.time()
     win = multi_process_eval_func_but_in_opponent_modelling(player, num_players, board, 1000)[0]
-    print(time.time()-st)
     if win <= 0.1:
         hs = 1
     elif win <= 0.2:
@@ -209,5 +209,5 @@ def enumurate(player_hand, board, num_players):
         hs = 10
     else:
         raise Exception('wait wot?')
-    return hs
+    return str(hs)
 

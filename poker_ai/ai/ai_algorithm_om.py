@@ -380,7 +380,7 @@ def rule_based_ai_agent(player, board, decide, draw_rate, win_rate, actions, pot
             else:
                 return [5]
     
-def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, turn):
+def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, mul_indicator, model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
     """
     Make the AI act in the game using the basic AI model. Also using opponent modeling
 
@@ -418,7 +418,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
         if self.money > cur_call-self.pot+cur_raise:
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
-    print(magical_four(players[index].data_table, turn, checkout))
+    print(magical_four(engine.tables, turn, checkout))
     if model == 0:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
@@ -461,7 +461,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    tables = recording(tables, gamelogger.history, checkout, players[index].hand, board, num_players)
+    # tables = recording(tables, gamelogger.history, checkout, players[index].hand, board, num_players)
     return ans
 
 

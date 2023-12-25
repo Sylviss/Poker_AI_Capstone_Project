@@ -437,7 +437,6 @@ def action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise,
     elif a==6:
         gamelogger.keylogging(self,[6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(min_money, cur_call, last_raised, board_pot, cur_raise)
-    tables = recording(tables, gamelogger.history, checkout, players[index].hand, board, num_players)
     return ans
 
 
