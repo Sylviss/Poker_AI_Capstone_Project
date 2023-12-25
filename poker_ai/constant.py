@@ -4,20 +4,23 @@
 DEBUG_MODE=1
 # Turn on for better visibility
 
-MODEL=1
+MODEL=7
 # Choose AI module for all bot in a normal game for main.py:
 # -1: enumeration ai agent
-# 0: first  approach mcs ai agent
+# 0: first approach mcs ai agent
 # 1: second approach mcs ai agent
 # 2: mcts ai agent
 # 3: all in ai agent 
 # 4: super random ai agent 
+# 5: first approach mcs ai agent with opponent modeling
+# 6: second approach mcs ai agent with opponent modeling
+# 7: mcts ai agent with opponent modeling
 
 STOP = 0
 # 0 for stop after every game, 1 to skip stop
 PREFLOP_BIG_BLIND = 10
 # Value of the big blind pre-bet.
-INDICATOR = 2
+INDICATOR = 1
 # 0 is for testing against all human-controlled
 # 1 is for bot: Player 1 will be human, all others will be bot
 # 2 is all bot for testing purpose
@@ -42,7 +45,7 @@ OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.
 UPDATE_WEIGHT=0.5
 UBC1_CONSTANT=1.3
 
-PLAYER = 3
+PLAYER = 2
 INIT_MONEY = 50 * PREFLOP_BIG_BLIND
 
 DEEPNESS = 5000

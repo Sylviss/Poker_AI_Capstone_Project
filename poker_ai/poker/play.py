@@ -300,7 +300,7 @@ def game_but_cheaty(num_players, init_money, cards):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value,tables,k,training=1)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value,tables,k)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -534,7 +534,7 @@ def fast_testing(num_players, init_money, model_list):
                     break
                 if players[index].state in [-1, 1, 2]:
                     cur_call, last_raised, board.money, cur_raise = action(
-                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k, 1)
+                        index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, tables, k, training=1)
                 if players[index].state == 4:
                     players[index].state = 5
                     folded += 1
@@ -767,7 +767,6 @@ def game_loop(num_players, init_money):
                 bext.clear()
                 continue
             print("Post-game")
-            table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
             print_board(players, board)
             checker = []
             for player in players:
@@ -790,6 +789,7 @@ def game_loop(num_players, init_money):
                 if winner[x]:
                     players[x].money += money_win
             print(hehe+" win the game!")
+            table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
             for player in players:
                 if player.money < 0:
                     raise poker_component.WTF

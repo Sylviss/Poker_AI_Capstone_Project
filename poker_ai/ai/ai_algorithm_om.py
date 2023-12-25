@@ -1,7 +1,7 @@
 import random
 import math
 from copy import deepcopy
-from poker_ai.ai.eval_func_om import eval_func, multi_process_eval_func, create_enumerate_dict, enumerate_func, update_prob_dict, update_weighted_dict
+from poker_ai.ai.eval_func_om import eval_func, multi_process_eval_func, create_enumerate_dict, update_prob_dict, update_weighted_dict
 from poker_ai.constant import CONFIDENT_RANGE,RISK_RANGE,DRAW,WIN,CALL_RANGE,BLUFF_RANGE, RULE_DICT, BETTED, UBC1_CONSTANT
 from poker_ai.poker.poker_component import Player,Deck,Hand
 from poker_ai.tools import blockPrint,enablePrint
@@ -9,7 +9,7 @@ from poker_ai.ai.ml.opponent_modelling import magical_four, recording
 
 BLUFF_INDICATOR={}
 
-def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised,big_blind_value):
+def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised,big_blind_value, op_model):
     """
     This function implements the second approach Monte Carlo Simulation (MCS) AI agent for playing poker.
     
@@ -43,10 +43,17 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
     else:
         raise_multipler={0:1,3:1,4:1,5:1}
+    call_conf_dict={}
+    for player_name in op_model:
+        opponent=[op for op in players if op.name==player_name][0]
+        if opponent.state==0:
+            call_conf_dict[player_name]=1
+        else:
+            call_conf_dict[player_name]=1-op_model[player_name]["fold"]
     if mul_indicator == 0:
-        win, draw = eval_func(player, num_players, board)
+        win, draw = eval_func(player, num_players, board, call_conf_dict)
     else:
-        win, draw = multi_process_eval_func(player, num_players, board)
+        win, draw = multi_process_eval_func(player, num_players, board, call_conf_dict)
     draw += win
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     decide = 1 - (win * 0.75 + draw * 0.1 + random.random() * 0.15)
@@ -75,7 +82,7 @@ def second_approach_mcs_ai_agent(index, players, min_money, num_players, board, 
             decide = 0.29
     return rule_based_ai_agent(player,board,decide,draw_rate,win_rate,actions,pot_odd,cur_call,cur_raise,min_money,turn,raise_multipler,big_blind_value)
     
-def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised,big_blind_value):
+def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, actions, cur_call, cur_raise, mul_indicator, big_blind, last_raised,big_blind_value, op_model):
     """
     This function implements the first approach of the Monte Carlo Simulation (MCS) AI agent in a poker game.
 
@@ -97,7 +104,6 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
     - The result of the rule-based AI agent's decision-making process.
 
     """
-
     player=players[index]
     if last_raised is None:
         betted=1
@@ -108,10 +114,17 @@ def first_approach_mcs_ai_agent(index, players, min_money, num_players, board, a
         raise_multipler={0:1,3:1.5,4:2,5:2.5}
     else:
         raise_multipler={0:1,3:1,4:1,5:1}
+    call_conf_dict={}
+    for player_name in op_model:
+        opponent=[op for op in players if op.name==player_name][0]
+        if opponent.state==0:
+            call_conf_dict[player_name]=1
+        else:
+            call_conf_dict[player_name]=1-op_model[player_name]["fold"]
     if mul_indicator == 0:
-        win, draw = eval_func(player, num_players, board)
+        win, draw = eval_func(player, num_players, board, call_conf_dict)
     else:
-        win, draw = multi_process_eval_func(player, num_players, board)
+        win, draw = multi_process_eval_func(player, num_players, board, call_conf_dict)
     draw += win
     draw_rate = (1-(1-draw)*RULE_DICT[turn])*betted
     win_rate = (1-(1-win)*RULE_DICT[turn])*betted
@@ -329,16 +342,17 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
             checkout.append(4)
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
-    print(magical_four(engine.tables, turn, checkout, players, index))
+    op_model=magical_four(engine.tables, turn, checkout, players, index)
+    print(op_model)
     if model == 5:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
-                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
+                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value, op_model)
     elif model == 6:
         agent = second_approach_mcs_ai_agent(index,players,min_money, num_players, board,
-                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value)
+                                checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value, op_model)
     elif model == 7:
         agent = mcts_ai_agent(index, players, min_money, board, 
-                              checkout, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value)
+                              checkout, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value, op_model)
     else:
         raise ValueError("Invalid AI model specified.")
     a = agent[0]
@@ -407,7 +421,7 @@ class MCTS_Node:
         self.children = {}
         self.parent = parent
         
-def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value):
+def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise, big_blind, last_raised, gamelogger, small_blind, preflop_big_blind_value, op_model):
     if cur_raise==preflop_big_blind_value:
         raise_multipler=[1,1.5,2,2.5]
     else:
@@ -420,7 +434,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     player.mcts_tree=create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn)
     cur_node=player.mcts_tree
     for k in range(10000):
-        selected_node=selection(cur_node,k)
+        selected_node=selection(cur_node, k, op_model)
         if selected_node.next_player_name!="Terminal":
             next_list=[]
             for action in [1,2,3,4,5]:
@@ -538,21 +552,43 @@ def create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_ra
     mcts_tree=MCTS_Node("Initiator", turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history), player.name, gamelogger.raised_time)
     return mcts_tree
 
-def selection(root, cur_iteration):
-    if cur_iteration<500:
-        if len(root.children)==0:
-            return root
+def selection(root, cur_iteration, op_model):
+    if len(root.children)==0:
+        return root
+    elif root.next_player_name in op_model:
+        name=root.next_player_name
+        actions_list={a for a in root.children.keys()}
+        if 4 in actions_list and 3 in actions_list:
+            prob_dict=[op_model[name]["fold"],op_model[name]["call"]+op_model[name]["check"],
+                       op_model[name]["raise"]/2,op_model[name]["raise"]/2,op_model[name]["all in"]]            
+        elif 4 in actions_list and 3 not in actions_list:
+            prob_dict=[op_model[name]["fold"],op_model[name]["call"]+op_model[name]["check"],0,
+                       op_model[name]["raise"],op_model[name]["all in"]]  
+        elif 3 in actions_list and 4 not in actions_list:
+            prob_dict=[op_model[name]["fold"],op_model[name]["call"]+op_model[name]["check"],
+                       op_model[name]["raise"],0,op_model[name]["all in"]]   
+        elif 2 in actions_list:
+            ratio=1/(op_model[name]["fold"]+op_model[name]["call"]+op_model[name]["check"]+op_model[name]["all in"])
+            prob_dict=[ratio*op_model[name]["fold"],ratio*(op_model[name]["call"]+op_model[name]["check"]),
+                       0,0,ratio*op_model[name]["all in"]]   
         else:
-            choices=list(root.children.keys())
-            next_node=random.choice(choices)
-            return selection(root.children[next_node],cur_iteration)
+            ratio=1/(op_model[name]["fold"]+op_model[name]["all in"])
+            prob_dict=[ratio*op_model[name]["fold"],0,
+                       0,0,ratio*op_model[name]["all in"]]
+        a=random.random()
+        for k in range(5):
+            a=a-prob_dict[k]
+            if a<0:
+                return selection(root.children[k+1],cur_iteration, op_model)
+        raise Exception("MCTS WTF")
+    elif cur_iteration<500:
+        choices=list(root.children.keys())
+        next_node=random.choice(choices)
+        return selection(root.children[next_node],cur_iteration, op_model)
     else:
-        if len(root.children)==0:
-            return root
-        else:
-            ev_list=expected_value_gen(root,cur_iteration)
-            next_node=max(ev_list,key=lambda a:a[1])[0]
-            return selection(root.children[next_node],cur_iteration)
+        ev_list=expected_value_gen(root,cur_iteration)
+        next_node=max(ev_list,key=lambda a:a[1])[0]
+        return selection(root.children[next_node],cur_iteration, op_model)
 
 def expected_value_gen(root,k):
     res=[]
