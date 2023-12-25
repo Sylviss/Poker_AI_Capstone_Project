@@ -19,7 +19,7 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
     self=players[index]
     
     if indicator == 0:
-        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, board, num_players)
+        return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
     elif indicator == 1:
         if self.name == "Player 1":
             return action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
