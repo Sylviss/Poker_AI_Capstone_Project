@@ -1,5 +1,5 @@
 from collections import defaultdict
-from poker_ai.poker.play import fast_testing,game_but_cheaty
+from poker_ai.poker.play import fast_testing,game_but_cheaty, game_loop_model_test
 import sys,os
 
 # Disable print
@@ -9,19 +9,6 @@ def blockPrint():
 # Restore print
 def enablePrint():
     sys.stdout = sys.__stdout__
-
-def test_win_rate(n):
-    try:
-        d = defaultdict(lambda: 0)
-        for t in range(n):
-            # blockPrint()
-            d[fast_testing(2,1000,[1,2])] += 1
-            # enablePrint()
-            print(t)
-        for key in d:
-            print(f'{key}: {d[key]}')
-    except KeyboardInterrupt:
-        sys.exit()
         
 def test_hacker():
     try:
@@ -59,4 +46,4 @@ def training_all():
         fast_testing(6, 1000, [1,0,-1,1,-1,0])
 
 if __name__=="__main__":
-    training_all()
+    game_loop_model_test(2,1000,100,[3,6])
