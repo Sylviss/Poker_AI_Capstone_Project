@@ -2,9 +2,10 @@ import bext,json
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
-from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, color, OM_IND
+from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, OM_IND
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
+from colorama import Back, Style
 
 def action(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
     """Choose who will do the actions base on the indicator.
@@ -151,9 +152,9 @@ def print_blind_board(players, board, indicator=INDICATOR):
                 print(f"{player.name}: {player.money}$")
                 '''print(f'\n'.join([' ___   ___ ', '|## | |## |',
                       '|###| |###|', '|_##| |_##|']))'''
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
-                print(f"{color['BackgroundWhite']}|###|{color['ResetAll']} {color['BackgroundWhite']}|###|{color['ResetAll']}")
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
+                print(Back.WHITE + "|###|"+ Style.RESET_ALL +" "+Back.WHITE + "|###|" + Style.RESET_ALL)
                 
                 print()
             elif player.state != 6:
