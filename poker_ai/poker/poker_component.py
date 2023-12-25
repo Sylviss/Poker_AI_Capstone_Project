@@ -6,7 +6,7 @@ class UAreStupidIfThisShowsUp(Exception):
     """A Exception class to make anyone in development team who see this embarrasing of themself
     """
     
-class WTF(Exception):
+class UnexpectedError(Exception):
     """To catch negative money glitch.
     """
 class Card:
@@ -518,7 +518,7 @@ class Gamelogger:
             case 4:
                 self.cur_turn=5
             case _:
-                raise WTF
+                raise UnexpectedError
         self.raise_number=0
         self.raised_time=0
         
@@ -585,7 +585,7 @@ class Gamelogger:
                 self.raise_number+=1
                 self.raised_time+=1
             case _:
-                raise WTF
+                raise UnexpectedError
         self.history.append((player.name,self.cur_turn,action_logged))
         self.money_history.append(money)
         self.checkout.append((player.name, checkout.copy()))

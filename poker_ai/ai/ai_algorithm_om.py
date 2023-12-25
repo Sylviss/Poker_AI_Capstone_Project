@@ -343,7 +343,7 @@ def action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cu
     print(f"{self.name} needs to put in at least {cur_call-self.pot}$")
     prob_table_update(index, players, min_money, num_players, board, checkout, cur_call, cur_raise, big_blind, last_raised, big_blind_value, gamelogger)
     op_model=magical_four(engine.tables, turn, checkout, players, index)
-    print(op_model)
+    # print(op_model)
     if model == 5:
         agent = first_approach_mcs_ai_agent(index,players,min_money, num_players, board,
                                 checkout, cur_call, cur_raise, mul_indicator, big_blind,last_raised,big_blind_value, op_model)
@@ -426,7 +426,7 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
         raise_multipler=[1,1.5,2,2.5]
     else:
         raise_multipler=[1,1,1,1]
-    total_money=board.money+sum([p.money for p in players])
+    total_money=board.money + sum([p.money for p in players])
     player=players[index]
     turn_dict={0:0,3:1,4:2,5:3}
     turn = turn_dict[len(board.hand.cards)]
@@ -434,7 +434,8 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     player.mcts_tree=create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_raised, turn)
     cur_node=player.mcts_tree
     for k in range(10000):
-        selected_node=selection(cur_node, k, op_model)
+        op_model_ind={player_name:False for player_name in op_model}
+        selected_node=selection(cur_node, k, op_model, op_model_ind)
         if selected_node.next_player_name!="Terminal":
             next_list=[]
             for action in [1,2,3,4,5]:
@@ -455,8 +456,8 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     #         hehehe=hehe.children[key]
     #         print(key,hehehe.player_name,hehehe.next_player_name,hehehe.visits,hehehe.values,hehehe.turn,hehehe.action_turn)
     #         a.append(hehehe)
-    print(action_list)
-    print()
+    # print(action_list)
+    # print()
     action=max(action_list,key=lambda a: a[1])[0]
     # Rule-based starts here
     match action:
@@ -552,10 +553,11 @@ def create_tree(player, gamelogger, players, cur_call, cur_raise, board, last_ra
     mcts_tree=MCTS_Node("Initiator", turn, players, cur_call, cur_raise, board, last_raised, len(gamelogger.history), player.name, gamelogger.raised_time)
     return mcts_tree
 
-def selection(root, cur_iteration, op_model):
+def selection(root, cur_iteration, op_model, op_model_ind):
     if len(root.children)==0:
         return root
-    elif root.next_player_name in op_model:
+    elif root.next_player_name in op_model and not op_model_ind[root.next_player_name]:
+        op_model_ind[root.next_player_name]=True
         name=root.next_player_name
         actions_list={a for a in root.children.keys()}
         if 4 in actions_list and 3 in actions_list:
@@ -568,27 +570,25 @@ def selection(root, cur_iteration, op_model):
             prob_dict=[op_model[name]["fold"],op_model[name]["call"]+op_model[name]["check"],
                        op_model[name]["raise"],0,op_model[name]["all in"]]   
         elif 2 in actions_list:
-            ratio=1/(op_model[name]["fold"]+op_model[name]["call"]+op_model[name]["check"]+op_model[name]["all in"])
-            prob_dict=[ratio*op_model[name]["fold"],ratio*(op_model[name]["call"]+op_model[name]["check"]),
-                       0,0,ratio*op_model[name]["all in"]]   
+            prob_dict=[op_model[name]["fold"],(op_model[name]["call"]+op_model[name]["check"]+op_model[name]["raise"]*0.5),
+                       0,0,op_model[name]["all in"]+op_model[name]["raise"]*0.5]   
         else:
-            ratio=1/(op_model[name]["fold"]+op_model[name]["all in"])
-            prob_dict=[ratio*op_model[name]["fold"],0,
-                       0,0,ratio*op_model[name]["all in"]]
+            prob_dict=[(op_model[name]["fold"]+op_model[name]["raise"]*0.5),0,
+                       0,0,(op_model[name]["all in"]+op_model[name]["call"]+op_model[name]["check"]+op_model[name]["raise"]*0.5)]
         a=random.random()
-        for k in range(5):
+        for k in range(4,-1,-1):
             a=a-prob_dict[k]
             if a<0:
-                return selection(root.children[k+1],cur_iteration, op_model)
-        raise Exception("MCTS WTF")
+                return selection(root.children[k+1],cur_iteration, op_model, op_model_ind)
+        raise Exception("MCTS problem")
     elif cur_iteration<500:
         choices=list(root.children.keys())
         next_node=random.choice(choices)
-        return selection(root.children[next_node],cur_iteration, op_model)
+        return selection(root.children[next_node],cur_iteration, op_model, op_model_ind)
     else:
         ev_list=expected_value_gen(root,cur_iteration)
         next_node=max(ev_list,key=lambda a:a[1])[0]
-        return selection(root.children[next_node],cur_iteration, op_model)
+        return selection(root.children[next_node],cur_iteration, op_model, op_model_ind)
 
 def expected_value_gen(root,k):
     res=[]

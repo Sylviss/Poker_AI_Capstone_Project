@@ -507,8 +507,8 @@ def mcts_ai_agent(index, players, min_money, board, actions, cur_call, cur_raise
     #         hehehe=hehe.children[key]
     #         print(key,hehehe.player_name,hehehe.next_player_name,hehehe.visits,hehehe.values,hehehe.turn,hehehe.action_turn)
     #         a.append(hehehe)
-    print(action_list)
-    print()
+    # print(action_list)
+    # print()
     action=max(action_list,key=lambda a: a[1])[0]
     # Rule-based starts here
     match action:

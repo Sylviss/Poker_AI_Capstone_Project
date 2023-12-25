@@ -168,7 +168,7 @@ def table_record(tables, history, checkout, players, num_players, board):
         hs = enumurate(_player.hand, Player(temp_hand, 'b', 0), num_players)
         action = ACTION_TABLE[history[i][2]]
         _checkout = checkout[i][1]
-        print(_checkout)
+        # print(_checkout)
         turn = TURN_TABLE[history[i][1]]
         player =  history[i][0]
         if 2 in _checkout and 3 not in _checkout:
