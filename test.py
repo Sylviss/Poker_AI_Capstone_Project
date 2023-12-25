@@ -11,10 +11,9 @@ def check_validity(data):
 
 def main():
     try:
-        with open("poker_ai/ai/ml/bruh.json") as f:
+        with open("poker_ai/ai/ml/default_data.json") as f:
             data = json.load(f)
-            print(data)
-            return check_validity(data)
+            print(list(data.keys()))
     except:
         print('No file exist!')
 if __name__ == '__main__':

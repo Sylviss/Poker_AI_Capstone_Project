@@ -1,7 +1,7 @@
 import bext,json
 from poker_ai.poker import poker_component
-from poker_ai.ai.ai_algorithm import action_ai_model
-from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
+from poker_ai.ai.ai_algorithm import action_ai_model, action_ai_model_but_training
+from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model, action_ai_with_om_model_but_training
 from poker_ai.constant import STOP,PREFLOP_BIG_BLIND,INDICATOR,MULTIPROCESS,TURN_TO_RAISE_POT,DEBUG_MODE, OM_IND
 from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record
 from poker_ai.ai.ml.methods import OM_engine
@@ -34,6 +34,23 @@ def action(index, players, indicator, cur_call, last_raised, board_pot, cur_rais
             return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
         else:
             return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+
+def action_but_training(index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn):
+    """Choose who will do the actions base on the indicator.
+
+    Args:
+        indicator (int): Decide if who shoud do the action, human or AI.
+        all the others args are just there to pass to the functions
+
+    Returns:
+        action_function: return the function of the one who should do the actions
+    """
+    self=players[index]
+    
+    if OM_IND==1 and self.model in [0,1,2]:
+        return action_ai_with_om_model_but_training(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
+    else:
+        return action_ai_model_but_training(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn)
 
 def action_human(self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players):
     """
@@ -421,11 +438,39 @@ def fast_testing(num_players, init_money, model_list):
         players.append(poker_component.Player(
             None, f"Player {x+1}", init_money,model=model_list[x]))
     try:
-        f = open("poker_ai/ai/ml/bruh.json")
+        f = open("poker_ai/ai/ml/default_data.json")
     except:
+        datas_all = {'2':{}, '4':{}, '6':{}}
         tables = Data_table()
+        match num_players:
+            case 2:
+                datas_all['2'] = tables.counting_table
+            case 3:
+                datas_all['4'] = tables.counting_table
+            case 4:
+                datas_all['4'] = tables.counting_table
+            case 5:
+                datas_all['6'] = tables.counting_table
+            case 6:
+                datas_all['6'] = tables.counting_table
+            case _:
+                raise Exception('too many players')
+        tables.count = table_counting(tables.counting_table)
     else:
-        datas = json.load(f)
+        datas_all = json.load(f)
+        match num_players:
+            case 2:
+                datas = datas_all['2']
+            case 3:
+                datas = datas_all['4']
+            case 4:
+                datas = datas_all['4']
+            case 5:
+                datas = datas_all['6']
+            case 6:
+                datas = datas_all['6']
+            case _:
+                raise Exception('too many players')
         tables = Data_table()
         tables.counting_table = datas
         tables.count = table_counting(tables.counting_table)
@@ -590,9 +635,8 @@ def fast_testing(num_players, init_money, model_list):
     for player in players:
         if player.state != 6:
             print(f"{player.name} wins the table! All others are just some random bots")
-            datas = tables.counting_table
-            with open("poker_ai/ai/ml/bruh.json", 'w') as file:
-                json.dump(datas, file)
+            with open("poker_ai/ai/ml/default_data.json", 'w') as file:
+                json.dump(datas_all, file)
                 file.close()
             return player.name
         
@@ -805,11 +849,24 @@ def game_init(num_players, init_money):
             None, f"Player {x+1}", init_money))
         tables[players[-1].name] = Data_table()
     try:
-        f = open("poker_ai/ai/ml/bruh.json")
+        f = open("poker_ai/ai/ml/default_data.json")
     except:
         raise Exception('no default data')
     else:
-        datas = json.load(f)
+        datas_all = json.load(f)
+        match num_players:
+            case 2:
+                datas = datas_all['2']
+            case 3:
+                datas = datas_all['4']
+            case 4:
+                datas = datas_all['4']
+            case 5:
+                datas = datas_all['6']
+            case 6:
+                datas = datas_all['6']
+            case _:
+                raise Exception('too many players')
         for player in players:
             tables[player.name].counting_table = datas.copy()
             tables[player.name].count = table_counting(tables[player.name].counting_table)

@@ -1,12 +1,16 @@
 import json
-with open('poker_ai/ai/ml/play_data_vu_4.json') as f:
-    data = json.load(f)
-    for hand in data:
-        for turn in data[hand]:
-            for check in data[hand][turn]:
-                for action in data[hand][turn][check]:
-                    data[hand][turn][check][action] = round(data[hand][turn][check][action]) + 0.0000001
-    f.close()
-with open('poker_ai/ai/ml/play_data_vu_4.json','w') as f:
-    json.dump(data, f)
-    f.close()
+files = ['bruh.json', 'bruh_4.json', 'bruh_6.json']
+datas = {2:{}, 4:{}, 6:{}}
+for i in range(len(files)):
+    with open('poker_ai/ai/ml/'+files[i]) as file:
+        data = json.load(file)
+        if i == 0:
+            datas[2] = data
+        elif i == 1:
+            datas[4] = data
+        elif i == 2:
+            datas[6] = data
+        file.close()
+with open('poker_ai/ai/ml/default_data.json', 'w') as file:
+    json.dump(datas, file)
+    file.close()

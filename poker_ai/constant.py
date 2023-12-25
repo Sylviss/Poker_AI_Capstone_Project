@@ -26,7 +26,7 @@ MULTIPROCESS = 1
 # 1 is for multi-processing, faster and recommended
 TURN_TO_RAISE_POT = 5
 # Number of turns to increase the big blind pre-bet
-OM_IND=1
+OM_IND=0
 
 CONFIDENT_RANGE = 0.25
 # should be < 0.5

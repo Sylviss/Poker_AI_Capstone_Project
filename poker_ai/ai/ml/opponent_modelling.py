@@ -18,7 +18,7 @@ class Data_table():
                         for j in ['preflop', 'flop', 'turn', 'river']}
                         for i in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}}
         self.data_action = {'fold':0, 'check':0, 'call':0, 'raise':0, 'all in':0} # shf, shch, shc, shr and sha respectively in modelling
-        self.count = 0
+        self.count = 0.0
     def refresh_table(self):
         self.__init__()
 
