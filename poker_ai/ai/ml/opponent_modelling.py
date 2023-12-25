@@ -1,5 +1,4 @@
 from poker_ai.ai.ml.methods import multi_process_eval_func_but_in_opponent_modelling
-from poker_ai.constant import PLAYER
 from poker_ai.poker.poker_component import Player, Hand, Deck
 import time
 
@@ -141,7 +140,7 @@ def preprocess_table(tables):
 def table_record(tables, history, checkout, players, num_players, board):
     # record the game at the end of every game
     ACTION_TABLE = [None, 'check', 'call', 'call', 'raise', 'raise', 'raise', 'fold', 'all in']
-    TURN_TABLE = ['preflop','flop','turn','river']
+    TURN_TABLE = ['preflop', None, None, 'flop', 'turn', 'river']
 
     for i in range(len(history)):
         for player in players:
