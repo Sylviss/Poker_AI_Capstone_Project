@@ -46,4 +46,4 @@ def training_all():
         fast_testing(6, 1000, [1,0,-1,1,-1,0])
 
 if __name__=="__main__":
-    game_loop_model_test(2,1000,20,[7,2])
+    game_loop_model_test(2,1000,20,[3,6])

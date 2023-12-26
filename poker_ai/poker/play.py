@@ -779,8 +779,11 @@ def game_loop(num_players, init_money):
                 if winner[x]:
                     players[x].money += money_win
             print(hehe+" win the game!")
-            table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
-            tables = table_rescaling(tables, len(gamelogger.history))
+            tables = table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
+            for player in players:
+                tables[player.name] = table_rescaling(tables[player.name], len(gamelogger.history))
+            for player in players:
+                tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
             for player in players:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
