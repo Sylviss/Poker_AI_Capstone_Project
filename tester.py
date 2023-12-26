@@ -1,5 +1,5 @@
 from collections import defaultdict
-from poker_ai.poker.play import fast_testing,game_but_cheaty, game_loop_model_test
+from poker_ai.poker.play import fast_testing, game_loop_model_test
 import sys,os
 
 # Disable print
@@ -10,16 +10,6 @@ def blockPrint():
 def enablePrint():
     sys.stdout = sys.__stdout__
         
-def test_hacker():
-    try:
-        game_but_cheaty(2,2000,["4s","4d","Ad","As","10s","10d","Ac","4h","4c"])
-        # game_but_cheaty(2,500,["Ad","As","4s","4d","10s","10d","Ac","4h","4c"])
-    except KeyboardInterrupt:
-        sys.exit()
-        
-def test_single_game():
-    test_hacker()
-    
 def test_module():
     fast_testing(2,100,[1,1])
     
