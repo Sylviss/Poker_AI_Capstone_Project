@@ -369,7 +369,7 @@ class Control:
 
 class Movement:
     def __init__(self, target_x, target_y):
-        chip = pygame.image.load('pkchip.png')
+        chip = pygame.image.load('res/img/pkchip.png')
         self.chip = pygame.transform.scale(chip, (CHIP_SIZE[0], CHIP_SIZE[0]))
         self.target = (target_x, target_y)
         self.distance = 0
