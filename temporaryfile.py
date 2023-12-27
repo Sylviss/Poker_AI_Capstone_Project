@@ -1,4 +1,5 @@
 import bext, json
+import math
 from poker_ai.poker import poker_component
 from poker_ai.ai.ai_algorithm import action_ai_model
 from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
@@ -18,6 +19,9 @@ from poker_ai.poker.play import *
 HEIGHT = 720
 WIDTH = 1280
 
+# HEIGHT = 1080
+# WIDTH = 1920
+
 SCALE = 0.35
 CARD_SIZE = (WIDTH / 7, WIDTH / 5)
 
@@ -27,6 +31,8 @@ GREY  = (50, 50, 50)
 RED  = (207, 0, 0)
 
 
+def player_pos(max_players: int, player: int) -> tuple[int, int]:
+    return int(0.425*WIDTH - 0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.45*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
 
 
 def card_to_img_path(r: int, s: int) -> str:
@@ -45,7 +51,7 @@ class Control:
         
         self.background = pygame.image.load('res\\img\\background.jpg')
         
-        self
+        # self
     
     def main(self) -> None:
         for event in pygame.event.get():
@@ -54,8 +60,14 @@ class Control:
                 sys.exit()
 
         SCREEN.blit(self.background, (0, 0))
-        SCREEN.blit(self.card_imgs[(11, 2)], (WIDTH//2, HEIGHT//2))
-        SCREEN.blit(self.card_back, (WIDTH//2 + CARD_SIZE[0]*SCALE, HEIGHT//2))
+        num_players = 50
+        for player in range(num_players):
+            x, y = player_pos(num_players, player)
+            SCREEN.blit(self.card_imgs[(11, 2)], (x - CARD_SIZE[0]*SCALE, y - CARD_SIZE[1]*SCALE))
+            SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]*SCALE))
+            
+        # line
+        pygame.draw.line(SCREEN, BLACK, (0.85*WIDTH, 0), (0.85*WIDTH, HEIGHT), 5)
         pygame.display.flip()
 
 
