@@ -36,7 +36,7 @@ RED  = (207, 0, 0)
 
 
 def player_pos(max_players: int, player: int) -> tuple[int, int]:
-    return int(0.425*WIDTH - 1.5*0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.45*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
+    return int(0.425*WIDTH - 1.6*0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.5*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
 
 
 def card_to_img_path(r: int, s: int) -> str:
@@ -57,7 +57,8 @@ class Control:
         
         self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(CARD_SIZE[0]), int(CARD_SIZE[1])))
         
-        self.background = pygame.image.load('res/img/background2.png')
+        self.background = pygame.image.load('res/img/background3.jpg')
+        self.background = pygame.transform.scale(self.background, (WIDTH*1.3, HEIGHT*1.5))
         
         self.icon = pygame.image.load('res/img/poker.png')
         pygame.display.set_icon(self.icon)
@@ -280,12 +281,12 @@ class Control:
 
 
     def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
-        SCREEN.blit(self.background, (0, 0))
+        SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
             x, y = player_pos(self.num_players, player)
             if players[player].state not in [4, 5, 6] and players[player].name == 'Player 1':
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]))
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
             elif players[player].state not in [4, 5, 6] and players[player].name != 'Player 1':
                 SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]))
                 SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]))
@@ -307,14 +308,14 @@ class Control:
 
 
     def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
-        SCREEN.blit(self.background, (0, 0))
+        SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
             x, y = player_pos(self.num_players, player)
             if players[player].state not in [4, 5, 6]:
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]))
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
             elif players[player].state != 6:
-                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y))
+                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y - self.font.size(f'Folded')[1] / 2))
 
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
@@ -334,13 +335,13 @@ class Control:
 
 
 if __name__ == "__main__":
-    # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
-    os.environ['SDL_VIDEO_WINDOW_POS'] = '960, 0'
+    os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
+    # os.environ['SDL_VIDEO_WINDOW_POS'] = '960, 0'
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(2, 1000)
+    Runit = Control(5, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(2, 1000)
+        Runit.main2(5, 1000)
         Myclock.tick(60)
