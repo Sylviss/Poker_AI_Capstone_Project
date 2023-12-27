@@ -28,6 +28,8 @@ WIDTH = 1280
 
 SCALE = 0.35
 CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
+CHIP_SIZE = (int(WIDTH / 12 * SCALE), int(WIDTH / 10 * SCALE))
+
 SPACER = int(HEIGHT + 0.005)
 
 WHITE = (255, 255, 255)
@@ -365,9 +367,47 @@ class Control:
     
         pygame.display.flip()
 
+class Movement:
+    def __init__(self, target_x, target_y):
+        chip = pygame.image.load('pkchip.png')
+        self.chip = pygame.transform.scale(chip, (CHIP_SIZE[0], CHIP_SIZE[0]))
+        self.target = (target_x, target_y)
+        self.distance = 0
+        self.N = 1000
+        
+    def move(self, chip_x, chip_y):
+        S = math.sqrt((chip_x - self.target[0]) ** 2 + (chip_y - self.target[1]) ** 2)
+        tmp1, tmp2 = chip_x, chip_y
+        a, b = S / self.N, 2 * math.pi / self.N
+        
+    
+        alpha = math.atan((chip_x - self.target[0]) / (chip_y - self.target[1]))
+        
+        
+        running = True 
+        while running:
+            
+            Myclock.tick(self.N)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
+            for i in range(1, self.N + 1):
+                if self.distance < S:
+                    self.distance += velocity(i, a, b) 
+                    chip_x = tmp1 + math.sin(alpha) * self.distance
+                    chip_y = tmp2 + math.cos(alpha) * self.distance 
 
+                    SCREEN.fill((0, 0, 0))
+                    SCREEN.blit(self.chip, (chip_x, chip_y))
+                    
+                    pygame.display.flip()
+                    
+                
+        pygame.quit()
 
+def velocity(x, a, b):
+    return a * (1 - math.cos(b * x))
 
 if __name__ == "__main__":
     # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
