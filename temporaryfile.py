@@ -28,6 +28,7 @@ WIDTH = 1280
 
 SCALE = 0.35
 CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
+SPACER = int(HEIGHT + 0.005)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -283,6 +284,36 @@ class Control:
                 print(f"{player.name} wins the table!")
 
 
+    def display_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+        name_rect = self.font2.render(p.name, True, GREY, ORANGE)
+        p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
+        # name_rect.set_alpha(170)
+        SCREEN.blit(self.card_imgs[p.hand.cards[0].rank, p.hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
+        SCREEN.blit(self.card_imgs[p.hand.cards[1].rank, p.hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
+        pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
+        SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
+        SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+
+    def display_blind_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+        name_rect = self.font2.render(p.name, True, GREY, ORANGE)
+        p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
+        # name_rect.set_alpha(170)
+        SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
+        SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]//2))
+        pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
+        SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
+        SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+    
+    def display_folded_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+        name_rect = self.font2.render(p.name, True, GREY, ORANGE)
+        p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
+        # name_rect.set_alpha(170)
+        SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), int(y - self.font.size(f'Folded')[1] / 2)))
+        pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
+        SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
+        SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+
+
 
     def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
@@ -292,22 +323,11 @@ class Control:
             # name_rect.set_alpha(170)
             x, y = player_pos(self.num_players, player)
             if players[player].state not in [4, 5, 6] and players[player].name == 'Player 1':
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
-                pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
-                SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+                self.display_hand(players[player], x, y)
             elif players[player].state not in [4, 5, 6] and players[player].name != 'Player 1':
-                SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]//2))
-                pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
-                SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+                self.display_blind_hand(players[player], x, y)
             elif players[player].state != 6:
-                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), int(y - self.font.size(f'Folded')[1] / 2)))
-                pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
-                SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+                self.display_folded_hand(players[player], x, y)
 
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
@@ -330,16 +350,9 @@ class Control:
             p_money_rect = self.font2.render(f'${players[player].money}', True, GREY, ORANGE)
             x, y = player_pos(self.num_players, player)
             if players[player].state not in [4, 5, 6]:
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
-                pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
-                SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+                self.display_hand(players[player], x, y)
             elif players[player].state != 6:
-                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), int(y - self.font.size(f'Folded')[1] / 2)))
-                pygame.draw.rect(SCREEN, ORANGE, pygame.Rect(x + CARD_SIZE[0], y - CARD_SIZE[1]//2, name_rect.get_size()[0], name_rect.get_size()[1] + p_money_rect.get_size()[1]))
-                SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
-                SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
+                self.display_folded_hand(players[player], x, y)
 
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
