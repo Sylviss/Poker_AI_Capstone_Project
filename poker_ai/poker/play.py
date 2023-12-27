@@ -809,7 +809,7 @@ def game_loop(num_players, init_money):
             if player.state != 6:
                 print(f"{player.name} wins the table!")        
 
-def game_init(num_players, init_money):
+def game_init(num_players, init_money) -> tuple[list[poker_component.Player], OM_engine]:
     players = []
     engine = OM_engine()
     tables = engine.tables

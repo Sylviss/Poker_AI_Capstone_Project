@@ -8,22 +8,26 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-# blockPrint()
+blockPrint()
+
 
 import pygame
+pygame.init()
 import os, sys
 from poker_ai.poker.poker_component import reverse_suit_dicts
 from poker_ai.poker.play import *
+
+NUM_COMMUNITY = {0: 0, 1: 3, 2: 4, 3: 5}
 
 
 HEIGHT = 720
 WIDTH = 1280
 
-#HEIGHT = 1080
-#WIDTH = 1920
+# HEIGHT = 1080
+# WIDTH = 1920
 
 SCALE = 0.35
-CARD_SIZE = (WIDTH / 7, WIDTH / 5)
+CARD_SIZE = (WIDTH / 7 * SCALE, WIDTH / 5 * SCALE)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -39,16 +43,19 @@ def card_to_img_path(r: int, s: int) -> str:
     return f'res/img/{r + 1}{reverse_suit_dicts[s].upper()}.png'
 
 class Control:
-    def __init__(self) -> None:
+    def __init__(self, num_players: int, init_money: int) -> None:
+
+        self.num_players = num_players
+        self.init_money = init_money
 
         # cards
         self.card_imgs = {}
         for r in range(1, 14):
             for s in range(4):
                 self.card_imgs[(r, s)] = pygame.image.load(card_to_img_path(r, s)).convert_alpha()
-                self.card_imgs[(r, s)] = pygame.transform.scale(self.card_imgs[(r, s)], (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
+                self.card_imgs[(r, s)] = pygame.transform.scale(self.card_imgs[(r, s)], (int(CARD_SIZE[0]), int(CARD_SIZE[1])))
         
-        self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
+        self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(CARD_SIZE[0]), int(CARD_SIZE[1])))
         
         self.background = pygame.image.load('res/img/background2.png')
         
@@ -59,7 +66,11 @@ class Control:
         self.font.set_bold(True)
         
         self.k = 10
-        self.T = self.font.render(f'GAME {self.k}', True, (255, 0, 0))
+
+        self.folded_state = self.font.render(f'Folded', True, GREY)
+
+        self.players, self.engine = game_init(num_players, init_money)
+        self.tables = self.engine.tables
         
         
     
@@ -69,38 +80,13 @@ class Control:
                 pygame.quit()
                 sys.exit()
                 
-        SCREEN.blit(self.background, (0, 0))
-        num_players = 50
-        for player in range(num_players):
-            x, y = player_pos(num_players, player)
-            SCREEN.blit(self.card_imgs[(11, 2)], (x - CARD_SIZE[0]*SCALE, y - CARD_SIZE[1]*SCALE))
-            SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]*SCALE))
+        self.display_blind_board(1,1,1,1)
 
-        # line
-        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
-        SCREEN.blit(self.T, (int(0.925 * WIDTH - self.font.size(f'GAME {self.k}')[0] / 2), int(0.03 * HEIGHT)))
-        
-        pygame.display.flip()
-
-
-
-    def display_preflop(players: 'list[poker_component.Player]', ):
-        pass
-
-
-
-
-def game2_loop(num_players, init_money):
-    play_flag = True
-    players, engine = game_init(num_players, init_money)
-    tables = engine.tables
-    while play_flag:
+    def main2(self, num_players, init_money) -> None:
         players = []
         for x in range(num_players):
             players.append(poker_component.Player(
                 None, f"Player {x+1}", init_money))
-        # bext.clear()
-        # bext.title("Bruh poker game")
         indicator = INDICATOR
         count = 1
         playing = num_players
@@ -109,8 +95,7 @@ def game2_loop(num_players, init_money):
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
-            players,engine = refresh(players,engine)
-            print(f"""*** *** ***\nGame {count}\n*** *** ***""")
+            players,self.engine = refresh(players,self.engine)
             gamelogger=poker_component.Gamelogger(players)
             if count % TURN_TO_RAISE_POT == 1:
                 preflop_big_blind_value = PREFLOP_BIG_BLIND * \
@@ -125,7 +110,10 @@ def game2_loop(num_players, init_money):
                 if players[x].state != 6:
                     players[x].hand = hands.pop()
                     players[x].state = -1
+            k = 0
             print_blind_board(players, board)
+            self.display_blind_board(players, board, count, k)
+
             turn = ["Preflop", "Flop", "Turn", "River"]
             folded = 0
             for k in range(4):
@@ -171,11 +159,13 @@ def game2_loop(num_players, init_money):
                 if k >= 2:
                     board.hand.add_card(a.deal_cards())
                     print_blind_board(players, board)
+                    self.display_blind_board(players, board, count, k)
                 elif k == 1:
                     board.hand.add_card(a.deal_cards())
                     board.hand.add_card(a.deal_cards())
                     board.hand.add_card(a.deal_cards())
                     print_blind_board(players, board)
+                    self.display_blind_board(players, board, count, k)
                 conditioner = True
                 index = (big_blind+1) % num_players
                 while conditioner:
@@ -184,7 +174,7 @@ def game2_loop(num_players, init_money):
                         break
                     if players[index].state in [-1, 1, 2]:
                         cur_call, last_raised, board.money, cur_raise = action(
-                            index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, k)
+                            index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
                     if players[index].state == 4:
                         players[index].state = 5
                         folded += 1
@@ -203,6 +193,7 @@ def game2_loop(num_players, init_money):
                 if DEBUG_MODE==1:
                     print("Post-game")
                     print_board(players, board)
+                    self.display_board(players, board, count, k)
                 for player in players:
                     if player.state not in [3, 4, 5, 6]:
                         print(f"{player.name} win the game!")
@@ -234,6 +225,7 @@ def game2_loop(num_players, init_money):
                 continue
             print("Post-game")
             print_board(players, board)
+            self.display_board(players, board, count, k)
             checker = []
             for player in players:
                 if player.state in [0, 1, 2]:
@@ -255,11 +247,11 @@ def game2_loop(num_players, init_money):
                 if winner[x]:
                     players[x].money += money_win
             print(hehe+" win the game!")
-            tables = table_record(tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
+            self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
             for player in players:
-                tables[player.name] = table_rescaling(tables[player.name], len(gamelogger.history))
+                self.tables[player.name] = table_rescaling(self.tables[player.name], len(gamelogger.history))
             for player in players:
-                tables[player.name].data_observation, tables[player.name].data_action = preprocess_table(tables[player.name])
+                self.tables[player.name].data_observation, self.tables[player.name].data_action = preprocess_table(self.tables[player.name])
             for player in players:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
@@ -286,14 +278,69 @@ def game2_loop(num_players, init_money):
                 print(f"{player.name} wins the table!")
 
 
+
+    def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
+        SCREEN.blit(self.background, (0, 0))
+        for player in range(self.num_players):
+            x, y = player_pos(self.num_players, player)
+            if players[player].state not in [4, 5, 6] and players[player].name == 'Player 1':
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]))
+            elif players[player].state not in [4, 5, 6] and players[player].name != 'Player 1':
+                SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]))
+            elif players[player].state != 6:
+                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y))
+
+        # line
+        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
+        count_rect = self.font.render(f'GAME {count}', True, (255, 0, 0))
+        SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
+
+        num_comm = NUM_COMMUNITY[k]
+        comm_card_pos = 0.425*WIDTH, 0.45*HEIGHT
+        for i in range(num_comm):
+            x, y = comm_card_pos[0] - (2.5 - i)*CARD_SIZE[0], comm_card_pos[1] - 0.5*CARD_SIZE[1]
+            SCREEN.blit(self.card_imgs[board.hand.cards[i].rank, board.hand.cards[i].suit], (int(x), int(y)))
+    
+        pygame.display.flip()
+
+
+    def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
+        SCREEN.blit(self.background, (0, 0))
+        for player in range(self.num_players):
+            x, y = player_pos(self.num_players, player)
+            if players[player].state not in [4, 5, 6]:
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]))
+            elif players[player].state != 6:
+                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y))
+
+        # line
+        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
+        count_rect = self.font.render(f'GAME {count}', True, (255, 0, 0))
+        SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
+
+        num_comm = NUM_COMMUNITY[k]
+        comm_card_pos = 0.425*WIDTH, 0.45*HEIGHT
+        for i in range(num_comm):
+            x, y = comm_card_pos[0] - (2.5 - i)*CARD_SIZE[0], comm_card_pos[1] - 0.5*CARD_SIZE[1]
+            SCREEN.blit(self.card_imgs[board.hand.cards[i].rank, board.hand.cards[i].suit], (int(x), int(y)))
+    
+        pygame.display.flip()
+
+
+
+
+
 if __name__ == "__main__":
-	os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
-	pygame.init()
-	pygame.display.set_caption("Poker")
-	SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-	
-	Runit = Control()
-	Myclock = pygame.time.Clock()
-	while 1:
-		Runit.main()
-		Myclock.tick(600)
+    # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
+    os.environ['SDL_VIDEO_WINDOW_POS'] = '960, 0'
+    pygame.display.set_caption("Poker")
+    SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+    
+    Runit = Control(2, 1000)
+    Myclock = pygame.time.Clock()
+    while True:
+        Runit.main2(2, 1000)
+        Myclock.tick(60)

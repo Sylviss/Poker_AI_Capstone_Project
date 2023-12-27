@@ -5,7 +5,7 @@ from poker_ai.constant import PLAYER,INIT_MONEY
 
 def main():
     try:
-        game_loop(PLAYER,INIT_MONEY)
+        game_loop(5,INIT_MONEY)
     except KeyboardInterrupt:
         sys.exit()
         
