@@ -1,11 +1,11 @@
 import bext, json
 import math
 from poker_ai.poker import poker_component
-from poker_ai.ai.ai_algorithm import action_ai_model
-from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
-from poker_ai.constant import STOP, PREFLOP_BIG_BLIND, INDICATOR, MULTIPROCESS, TURN_TO_RAISE_POT, DEBUG_MODE
-from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record, table_rescaling
-from poker_ai.ai.ml.methods import OM_engine
+# from poker_ai.ai.ai_algorithm import action_ai_model
+# from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
+# from poker_ai.constant import STOP, PREFLOP_BIG_BLIND, INDICATOR, MULTIPROCESS, TURN_TO_RAISE_POT, DEBUG_MODE
+# from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record, table_rescaling
+# from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
 # blockPrint()
@@ -65,12 +65,15 @@ class Control:
             x, y = player_pos(num_players, player)
             SCREEN.blit(self.card_imgs[(11, 2)], (x - CARD_SIZE[0]*SCALE, y - CARD_SIZE[1]*SCALE))
             SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]*SCALE))
-            
+
         # line
         pygame.draw.line(SCREEN, BLACK, (0.85*WIDTH, 0), (0.85*WIDTH, HEIGHT), 5)
         pygame.display.flip()
 
 
+
+    def display_preflop(players: 'list[poker_component.Player]', ):
+        pass
 
 
 
