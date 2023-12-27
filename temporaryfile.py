@@ -32,7 +32,7 @@ RED  = (207, 0, 0)
 
 
 def player_pos(max_players: int, player: int) -> tuple[int, int]:
-    return int(0.425*WIDTH - 0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.45*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
+    return int(0.425*WIDTH - 1.5*0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.45*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
 
 
 def card_to_img_path(r: int, s: int) -> str:
@@ -47,18 +47,27 @@ class Control:
             for s in range(4):
                 self.card_imgs[(r, s)] = pygame.image.load(card_to_img_path(r, s)).convert_alpha()
                 self.card_imgs[(r, s)] = pygame.transform.scale(self.card_imgs[(r, s)], (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
+        
         self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
         
-        self.background = pygame.image.load('res\\img\\background.jpg')
+        self.background = pygame.image.load('res/img/background.jpg')
         
-        # self
+        self.icon = pygame.image.load('res/img/poker.png')
+        pygame.display.set_icon(self.icon)
+        
+        self.font = pygame.font.Font('res/font/JQKWild.ttf', 30)
+        self.font.set_bold(True)
+        
+        self.T = self.font.render('Preflop', True, (255, 0, 0))
+        
+        
     
     def main(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
+                
         SCREEN.blit(self.background, (0, 0))
         num_players = 50
         for player in range(num_players):
@@ -66,8 +75,11 @@ class Control:
             SCREEN.blit(self.card_imgs[(11, 2)], (x - CARD_SIZE[0]*SCALE, y - CARD_SIZE[1]*SCALE))
             SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]*SCALE))
 
+        SCREEN.blit(self.T, (1140, 20))
         # line
-        pygame.draw.line(SCREEN, BLACK, (0.85*WIDTH, 0), (0.85*WIDTH, HEIGHT), 5)
+        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, HEIGHT, 0.85*WIDTH), 0)
+        SCREEN.blit(self.T, (1140, 20))
+        
         pygame.display.flip()
 
 
