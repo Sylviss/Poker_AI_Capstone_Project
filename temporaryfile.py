@@ -19,8 +19,8 @@ from poker_ai.poker.play import *
 HEIGHT = 720
 WIDTH = 1280
 
-# HEIGHT = 1080
-# WIDTH = 1920
+#HEIGHT = 1080
+#WIDTH = 1920
 
 SCALE = 0.35
 CARD_SIZE = (WIDTH / 7, WIDTH / 5)
@@ -50,15 +50,16 @@ class Control:
         
         self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
         
-        self.background = pygame.image.load('res/img/background.jpg')
+        self.background = pygame.image.load('res/img/background2.png')
         
         self.icon = pygame.image.load('res/img/poker.png')
         pygame.display.set_icon(self.icon)
         
-        self.font = pygame.font.Font('res/font/JQKWild.ttf', 30)
+        self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
         self.font.set_bold(True)
         
-        self.T = self.font.render('Preflop', True, (255, 0, 0))
+        self.k = 10
+        self.T = self.font.render(f'GAME {self.k}', True, (255, 0, 0))
         
         
     
@@ -75,10 +76,9 @@ class Control:
             SCREEN.blit(self.card_imgs[(11, 2)], (x - CARD_SIZE[0]*SCALE, y - CARD_SIZE[1]*SCALE))
             SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]*SCALE))
 
-        SCREEN.blit(self.T, (1140, 20))
         # line
-        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, HEIGHT, 0.85*WIDTH), 0)
-        SCREEN.blit(self.T, (1140, 20))
+        pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
+        SCREEN.blit(self.T, (int(0.925 * WIDTH - self.font.size(f'GAME {self.k}')[0] / 2), int(0.03 * HEIGHT)))
         
         pygame.display.flip()
 
