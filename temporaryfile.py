@@ -27,7 +27,7 @@ WIDTH = 1280
 # WIDTH = 1920
 
 SCALE = 0.35
-CARD_SIZE = (WIDTH / 7 * SCALE, WIDTH / 5 * SCALE)
+CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -66,6 +66,8 @@ class Control:
         self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
         self.font.set_bold(True)
         
+        self.font2 = pygame.font.Font('res/font/JQKWild.ttf', int(0.035 * HEIGHT))
+
         self.k = 10
 
         self.folded_state = self.font.render(f'Folded', True, GREY)
@@ -288,8 +290,8 @@ class Control:
                 SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
                 SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
             elif players[player].state not in [4, 5, 6] and players[player].name != 'Player 1':
-                SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]))
-                SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]))
+                SCREEN.blit(self.card_back, (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
+                SCREEN.blit(self.card_back, (x, y - CARD_SIZE[1]//2))
             elif players[player].state != 6:
                 SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y))
 
@@ -315,7 +317,7 @@ class Control:
                 SCREEN.blit(self.card_imgs[players[player].hand.cards[0].rank, players[player].hand.cards[0].suit], (x - CARD_SIZE[0], y - CARD_SIZE[1]//2))
                 SCREEN.blit(self.card_imgs[players[player].hand.cards[1].rank, players[player].hand.cards[1].suit], (x, y - CARD_SIZE[1]//2))
             elif players[player].state != 6:
-                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), y - self.font.size(f'Folded')[1] / 2))
+                SCREEN.blit(self.folded_state, (int(x - self.font.size(f'Folded')[0] / 2), int(y - self.font.size(f'Folded')[1] / 2)))
 
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
@@ -335,13 +337,13 @@ class Control:
 
 
 if __name__ == "__main__":
-    os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
-    # os.environ['SDL_VIDEO_WINDOW_POS'] = '960, 0'
+    # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
+    os.environ['SDL_VIDEO_WINDOW_POS'] = '960, 0'
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(5, 1000)
+    Runit = Control(6, 500)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(5, 1000)
+        Runit.main2(6, 500)
         Myclock.tick(60)
