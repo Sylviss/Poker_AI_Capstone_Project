@@ -43,6 +43,9 @@ class Control:
                 self.card_imgs[(r, s)] = pygame.transform.scale(self.card_imgs[(r, s)], (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
         self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
         
+        self.background = pygame.image.load('res\\img\\background.jpg')
+        
+        self
     
     def main(self) -> None:
         for event in pygame.event.get():
@@ -50,7 +53,7 @@ class Control:
                 pygame.quit()
                 sys.exit()
 
-        SCREEN.fill(WHITE)
+        SCREEN.blit(self.background, (0, 0))
         SCREEN.blit(self.card_imgs[(11, 2)], (WIDTH//2, HEIGHT//2))
         SCREEN.blit(self.card_back, (WIDTH//2 + CARD_SIZE[0]*SCALE, HEIGHT//2))
         pygame.display.flip()
