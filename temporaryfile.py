@@ -18,7 +18,10 @@ from poker_ai.poker.play import *
 HEIGHT = 720
 WIDTH = 1280
 
-BLACK = (255, 255, 255)
+SCALE = 0.35
+CARD_SIZE = (WIDTH / 7, WIDTH / 5)
+
+WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY  = (50, 50, 50)
 RED  = (207, 0, 0)
@@ -26,14 +29,38 @@ RED  = (207, 0, 0)
 
 
 
-def card_to_img_path(card: 'poker_component.Card') -> str:
-    return f'res/img/{card.rank + 1}{reverse_suit_dicts[card.suit].upper()}.png'
+def card_to_img_path(r: int, s: int) -> str:
+    return f'res/img/{r + 1}{reverse_suit_dicts[s].upper()}.png'
+
+class Control:
+    def __init__(self) -> None:
+
+        # cards
+        self.card_imgs = {}
+        for r in range(1, 14):
+            for s in range(4):
+                self.card_imgs[(r, s)] = pygame.image.load(card_to_img_path(r, s)).convert_alpha()
+                self.card_imgs[(r, s)] = pygame.transform.scale(self.card_imgs[(r, s)], (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
+        self.card_back = pygame.transform.scale(pygame.image.load('res/img/back.png'), (int(SCALE * CARD_SIZE[0]), int(SCALE * CARD_SIZE[1])))
+        
+    
+    def main(self) -> None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        SCREEN.fill(WHITE)
+        SCREEN.blit(self.card_imgs[(11, 2)], (WIDTH//2, HEIGHT//2))
+        SCREEN.blit(self.card_back, (WIDTH//2 + CARD_SIZE[0]*SCALE, HEIGHT//2))
+        pygame.display.flip()
 
 
 
 
 
-def game_loop(num_players, init_money):
+
+def game2_loop(num_players, init_money):
     play_flag = True
     players, engine = game_init(num_players, init_money)
     tables = engine.tables
@@ -228,3 +255,15 @@ def game_loop(num_players, init_money):
             if player.state != 6:
                 print(f"{player.name} wins the table!")
 
+
+if __name__ == "__main__":
+	os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
+	pygame.init()
+	pygame.display.set_caption("Poker")
+	SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+	
+	Runit = Control()
+	Myclock = pygame.time.Clock()
+	while 1:
+		Runit.main()
+		Myclock.tick(600)
