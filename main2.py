@@ -1,7 +1,7 @@
-import bext, json
+# import bext, json
 from time import sleep
 import math
-from poker_ai.constant import MODEL
+from poker_ai.constant import MODEL, PLAYER, INIT_MONEY
 from poker_ai.poker import poker_component
 # from poker_ai.ai.ai_algorithm import action_ai_model
 # from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
@@ -54,7 +54,7 @@ COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
 
 class Player2(Player):
-    def __init__(self, id, hand, name, money, state=-1, model=2 ):
+    def __init__(self, id, hand, name, money, state=-1, model=MODEL):
         super().__init__(hand, name, money, state, model)
         self.id = id 
     
@@ -75,7 +75,7 @@ class Player2(Player):
         return super().call(cur_call, last_raised, board_pot, cur_raise)
     
     def raise_money(self, money_raised, cur_call, last_raised, board_pot, cur_raise):
-        Runit.display_action(self.id, 4, self.money, cur_raise)
+        Runit.display_action(self.id, 4, self.money, money_raised)
         return super().raise_money(money_raised, cur_call, last_raised, board_pot, cur_raise)
     
     def fold(self, cur_call, last_raised, board_pot, cur_raise):
@@ -825,8 +825,8 @@ if __name__ == "__main__":
     #os.environ['SDL_VIDEO_WINDOW_POS'] = '900, 0'
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-    
-    Runit = Control(3, 1000)
+    # Runit = Control(3, 1000)
+    Runit = Control(PLAYER, INIT_MONEY)
     Myclock = pygame.time.Clock()
     while True:
         Runit.main2()
