@@ -72,8 +72,9 @@ class InputBox:
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
-                    print(self.text)
-                    self.text = ''
+                    # print(self.text)
+                    # self.text = ''
+                    return self.text
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
@@ -248,8 +249,11 @@ class Control:
                         conditioner = False
                         break
                     if self.players[index].state in [-1, 1, 2]:
+                        init_m = self.board.money
                         cur_call, last_raised, self.board.money, cur_raise = action2(
                             self, index, self.players, indicator, cur_call, last_raised, self.board.money, cur_raise, playing-folded, self.board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
+                        if self.board.money - init_m > 0:
+                            self.anim_chip(player_pos(self.num_players, index), CHIP_DEST)
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                     if self.players[index].state == 4:
                         self.players[index].state = 5
@@ -414,14 +418,17 @@ class Control:
         a, b = S / chip_rate, 2 * math.pi / chip_rate
         distance = 0
         
-    
+        if e_pos[0] - s_pos[0] < 0:
+            inverse = -1
+        else:
+            inverse = 1
         alpha = math.atan((s_pos[1] - e_pos[1]) / (s_pos[0] - e_pos[0]))
 
         for i in range(1, chip_rate + 1):
             if distance < S:
                 distance += velocity(i, a, b) 
-                s_pos[0] = tmp1 + math.cos(alpha) * distance
-                s_pos[1] = tmp2 + math.sin(alpha) * distance 
+                s_pos[0] = tmp1 + math.cos(alpha) * distance * inverse
+                s_pos[1] = tmp2 + math.sin(alpha) * distance * inverse 
 
                 SCREEN.blit(self.current_img, (0, 0))
                 SCREEN.blit(self.chip, (s_pos[0], s_pos[1]))
@@ -467,12 +474,7 @@ class Control:
                         pos = event.pos
                         for button in button_list:
                             if button.b.colliderect(mouseRect):
-                                #return button.on_click()
-                                ans = button.on_click()
-                                if ans == 4:
-                                    self.display_box(int(0.925 * WIDTH - SCALE * (WIDTH) / 6), int(0.8 * HEIGHT), int(SCALE * (WIDTH) / 3), int(SCALE * (WIDTH) / 5))
-                                
-                                return ans 
+                                return button.on_click()
 
 
     def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
@@ -502,8 +504,9 @@ class Control:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False 
-                
-                box.handle_event(event)
+                a = box.handle_event(event)
+                if a:
+                    return a
             SCREEN.blit(temp, (0, 0))
             box.draw_box(SCREEN)
             
@@ -692,8 +695,10 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
             print(
                 f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
             try:
-                b = int(input('>>> '))
+                b = int(control.display_box(int(0.925 * WIDTH - SCALE * (WIDTH) / 6), int(0.8 * HEIGHT), int(SCALE * (WIDTH) / 3), int(SCALE * (WIDTH) / 5)))
             except ValueError:
+                continue
+            except TypeError:
                 continue
             if b < cur_raise or b > self.money-1-(cur_call-self.pot):
                 continue
@@ -720,8 +725,8 @@ if __name__ == "__main__":
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(3, 1000)
+    Runit = Control(4, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(3, 1000)
+        Runit.main2(4, 1000)
         Myclock.tick(FRAMERATE)
