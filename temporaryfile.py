@@ -80,6 +80,8 @@ class Control:
 
         self.players, self.engine = game_init(num_players, init_money)
         self.tables = self.engine.tables
+        self.count = 1
+        self.board = None
         
         self.mul = 0.2
     
@@ -89,42 +91,42 @@ class Control:
                 pygame.quit()
                 sys.exit()
                 
-        self.display_blind_board(1,1,1,1)
+        self.display_blind_board(1,1,1,1,[])
 
     def main2(self, num_players, init_money) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        players = []
+        self.players2 = []
         for x in range(num_players):
-            players.append(poker_component.Player(
+            self.players2.append(poker_component.Player(
                 None, f"Player {x+1}", init_money))
         indicator = INDICATOR
-        count = 1
+        self.count = 1
         playing = num_players
         table_condition = True
         big_blind = num_players-1
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
-            players,self.engine = refresh(players,self.engine)
-            gamelogger=poker_component.Gamelogger(players)
-            if count % TURN_TO_RAISE_POT == 1:
+            self.players2,self.engine = refresh(self.players2,self.engine)
+            gamelogger=poker_component.Gamelogger(self.players2)
+            if self.count % TURN_TO_RAISE_POT == 1:
                 preflop_big_blind_value = PREFLOP_BIG_BLIND * \
-                    int((2**(count//TURN_TO_RAISE_POT)))
+                    int((2**(self.count//TURN_TO_RAISE_POT)))
                 preflop_small_blind_value = preflop_big_blind_value//2
             a = poker_component.Deck()
             hands = a.deal_hands(playing, 2)
-            board = poker_component.Player(
+            self.board = poker_component.Player(
                 poker_component.Hand(), "Board", temp_board_money)
             for x in range(num_players):
-                players[x].pot = 0
-                if players[x].state != 6:
-                    players[x].hand = hands.pop()
-                    players[x].state = -1
+                self.players2[x].pot = 0
+                if self.players2[x].state != 6:
+                    self.players2[x].hand = hands.pop()
+                    self.players2[x].state = -1
             k = 0
-            print_blind_board(players, board)
-            self.display_blind_board(players, board, count, k)
+            print_blind_board(self.players2, self.board)
+            self.display_blind_board(self.players2, self.board, self.count, k, [])
 
             turn = ["Preflop", "Flop", "Turn", "River"]
             folded = 0
@@ -132,69 +134,69 @@ class Control:
                 gamelogger.next_turn()
                 if k != 0:
                     last_raised, cur_raise = None, preflop_big_blind_value
-                    for player in players:
+                    for player in self.players2:
                         if player.state not in [0, 3, 4, 5, 6]:
                             player.state = -1
                 match = 0
                 print(turn[k])
                 if k == 0:
-                    if players[big_blind].money <= preflop_big_blind_value:
-                        players[big_blind].pot = players[big_blind].money
-                        players[big_blind].money = 0
-                        players[big_blind].state = 0
+                    if self.players2[big_blind].money <= preflop_big_blind_value:
+                        self.players2[big_blind].pot = self.players2[big_blind].money
+                        self.players2[big_blind].money = 0
+                        self.players2[big_blind].state = 0
                         print(
-                            f"{players[big_blind].name} is big blind and put in {players[big_blind].pot}$")
-                        cur_call, last_raised, cur_raise = players[big_blind].pot, None, players[big_blind].pot
-                        board.money += players[big_blind].pot
+                            f"{self.players2[big_blind].name} is big blind and put in {self.players2[big_blind].pot}$")
+                        cur_call, last_raised, cur_raise = self.players2[big_blind].pot, None, self.players2[big_blind].pot
+                        self.board.money += self.players2[big_blind].pot
                     else:
-                        players[big_blind].money -= preflop_big_blind_value
-                        players[big_blind].pot = preflop_big_blind_value
+                        self.players2[big_blind].money -= preflop_big_blind_value
+                        self.players2[big_blind].pot = preflop_big_blind_value
                         print(
-                            f"{players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                            f"{self.players2[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
-                        board.money += preflop_big_blind_value
-                    if players[small_blind].money <= preflop_small_blind_value:
-                        players[small_blind].pot = players[small_blind].money
-                        players[small_blind].money = 0
-                        players[small_blind].state = 0
+                        self.board.money += preflop_big_blind_value
+                    if self.players2[small_blind].money <= preflop_small_blind_value:
+                        self.players2[small_blind].pot = self.players2[small_blind].money
+                        self.players2[small_blind].money = 0
+                        self.players2[small_blind].state = 0
                         print(
-                            f"{players[small_blind].name} is small and put in {players[small_blind].pot}$")
-                        board.money += players[small_blind].pot
+                            f"{self.players2[small_blind].name} is small and put in {self.players2[small_blind].pot}$")
+                        self.board.money += self.players2[small_blind].pot
                     else:
-                        players[small_blind].money -= preflop_small_blind_value
-                        players[small_blind].pot = preflop_small_blind_value
+                        self.players2[small_blind].money -= preflop_small_blind_value
+                        self.players2[small_blind].pot = preflop_small_blind_value
                         print(
-                            f"{players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
-                        board.money += preflop_small_blind_value
-                    if players[big_blind].pot < players[small_blind].pot:
+                            f"{self.players2[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                        self.board.money += preflop_small_blind_value
+                    if self.players2[big_blind].pot < self.players2[small_blind].pot:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
                 if k >= 2:
-                    board.hand.add_card(a.deal_cards())
-                    print_blind_board(players, board)
-                    self.display_blind_board(players, board, count, k)
+                    self.board.hand.add_card(a.deal_cards())
+                    print_blind_board(self.players2, self.board)
+                    self.display_blind_board(self.players2, self.board, self.count, k, [])
                 elif k == 1:
-                    board.hand.add_card(a.deal_cards())
-                    board.hand.add_card(a.deal_cards())
-                    board.hand.add_card(a.deal_cards())
-                    print_blind_board(players, board)
-                    self.display_blind_board(players, board, count, k)
+                    self.board.hand.add_card(a.deal_cards())
+                    self.board.hand.add_card(a.deal_cards())
+                    self.board.hand.add_card(a.deal_cards())
+                    print_blind_board(self.players2, self.board)
+                    self.display_blind_board(self.players2, self.board, self.count, k, [])
                 conditioner = True
                 index = (big_blind+1) % num_players
                 while conditioner:
-                    if last_raised == players[index].name and (players[index].state == 2 or players[index].state == 0):
+                    if last_raised == self.players2[index].name and (self.players2[index].state == 2 or self.players2[index].state == 0):
                         conditioner = False
                         break
-                    if players[index].state in [-1, 1, 2]:
-                        cur_call, last_raised, board.money, cur_raise = action(
-                            index, players, indicator, cur_call, last_raised, board.money, cur_raise, playing-folded, board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
-                        self.display_blind_board(players, board, count, k)
-                    if players[index].state == 4:
-                        players[index].state = 5
+                    if self.players2[index].state in [-1, 1, 2]:
+                        cur_call, last_raised, self.board.money, cur_raise = action2(
+                            self, index, self.players2, indicator, cur_call, last_raised, self.board.money, cur_raise, playing-folded, self.board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
+                        self.display_blind_board(self.players2, self.board, self.count, k, [])
+                    if self.players2[index].state == 4:
+                        self.players2[index].state = 5
                         folded += 1
                         if folded >= playing-1:
                             conditioner = False
                             break
-                    if players[index].state != 6:
+                    if self.players2[index].state != 6:
                         match += 1
                     if (match == playing and last_raised is None):
                         conditioner = False
@@ -205,44 +207,44 @@ class Control:
             if folded == playing-1:
                 if DEBUG_MODE==1:
                     print("Post-game")
-                    print_board(players, board)
-                    self.display_board(players, board, count, k)
-                for player in players:
+                    print_board(self.players2, self.board)
+                    self.display_board(self.players2, self.board, self.count, k)
+                for player in self.players2:
                     if player.state not in [3, 4, 5, 6]:
                         print(f"{player.name} win the game!")
-                        player.money += board.money
-                        board.money = 0
+                        player.money += self.board.money
+                        self.board.money = 0
                         break
-                for player in players:
+                for player in self.players2:
                     if player.money < 0:
                         raise poker_component.UnexpectedError
                     if player.money == 0 and player.state != 6:
                         print(f"{player.name} broke!")
                         player.state = 6
                         playing -= 1
-                count += 1
+                self.count += 1
                 big_blind = (big_blind+1) % num_players
-                while players[big_blind].state == 6:
+                while self.players2[big_blind].state == 6:
                     big_blind = (big_blind+1) % num_players
                 small_blind = (small_blind+1) % num_players
-                while players[small_blind].state == 6 or big_blind == small_blind:
+                while self.players2[small_blind].state == 6 or big_blind == small_blind:
                     small_blind = (small_blind+1) % num_players
                 if playing == 1:
                     table_condition = False
                     break
                 temp_board_money = 0
-                if STOP == 0:
-                    print("Press any key for the next game")
-                    input()
+                # if STOP == 0:
+                #     print("Press any key for the next game")
+                #     input()
                 # bext.clear()
                 continue
             print("Post-game")
-            print_board(players, board)
-            self.display_board(players, board, count, k)
+            print_board(self.players2, self.board)
+            self.display_board(self.players2, self.board, self.count, k)
             checker = []
-            for player in players:
+            for player in self.players2:
                 if player.state in [0, 1, 2]:
-                    checker.append(player.hand.create_poker(board.hand).check())
+                    checker.append(player.hand.create_poker(self.board.hand).check())
                 else:
                     checker.append((0, 0))
             win = max(checker)
@@ -253,19 +255,19 @@ class Control:
                 else:
                     winner.append(0)
             hehe = ", ".join(
-                [players[x].name for x in range(len(winner)) if winner[x]])
-            money_win = board.money//sum(winner)
-            temp_board_money = board.money-money_win*sum(winner)
+                [self.players2[x].name for x in range(len(winner)) if winner[x]])
+            money_win = self.board.money//sum(winner)
+            temp_board_money = self.board.money-money_win*sum(winner)
             for x in range(len(winner)):
                 if winner[x]:
-                    players[x].money += money_win
+                    self.players2[x].money += money_win
             print(hehe+" win the game!")
-            self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, players, num_players, board)
-            for player in players:
+            self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players2, num_players, self.board)
+            for player in self.players2:
                 self.tables[player.name] = table_rescaling(self.tables[player.name], len(gamelogger.history))
-            for player in players:
+            for player in self.players2:
                 self.tables[player.name].data_observation, self.tables[player.name].data_action = preprocess_table(self.tables[player.name])
-            for player in players:
+            for player in self.players2:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
                 if player.money == 0 and player.state != 6:
@@ -275,18 +277,18 @@ class Control:
             if playing == 1:
                 table_condition = False
                 break
-            count += 1
+            self.count += 1
             big_blind = (big_blind+1) % num_players
-            while players[big_blind].state == 6:
+            while self.players2[big_blind].state == 6:
                 big_blind = (big_blind+1) % num_players
             small_blind = (small_blind+1) % num_players
-            while players[small_blind].state == 6 or big_blind == small_blind:
+            while self.players2[small_blind].state == 6 or big_blind == small_blind:
                 small_blind = (small_blind+1) % num_players
-            if STOP == 0:
-                print("Press any key for the next game")
-                input()
+            # if STOP == 0:
+            #     print("Press any key for the next game")
+            #     input()
             # bext.clear()
-        for player in players:
+        for player in self.players2:
             if player.state != 6:
                 print(f"{player.name} wins the table!")
 
@@ -332,7 +334,7 @@ class Control:
         SCREEN.blit(comm_money_rect, (comm_card_pos[0] - comm_money_rect.get_size()[0]//2, int(comm_card_pos[1] + 0.5*CARD_SIZE[1])))
 
 
-    def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
+    def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int, checkout: 'list[int]') -> None:
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
             x, y = player_pos(self.num_players, player)
@@ -349,7 +351,7 @@ class Control:
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
 
         self.draw_comm_info(k, board)
-        self.draw_button([1, 3, 4, 5])
+        self.draw_button(checkout)
         pygame.display.flip()
 
 
@@ -457,6 +459,142 @@ class BUTTON:
         #SCREEN.blit(text, button)
         SCREEN.blit(text, (self.x, self.y))
         
+
+
+
+
+def action2(control: Control, index, players, indicator, cur_call, last_raised, board_pot, cur_raise, num_players, board, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training=0):
+    """Choose who will do the actions base on the indicator.
+
+    Args:
+        indicator (int): Decide if who shoud do the action, human or AI.
+        all the others args are just there to pass to the functions
+
+    Returns:
+        action_function: return the function of the one who should do the actions
+    """
+    self=players[index]
+    
+    if indicator == 0:
+        return action_human2(control, self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
+    elif indicator == 1:
+        if self.name == "Player 1":
+            return action_human2(control, self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players)
+        else:
+            if self.model in [5,6,7]:
+                return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
+            else:
+                return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
+    else:
+        if self.model in [5,6,7]:
+            return action_ai_with_om_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
+        else:
+            return action_ai_model(index, players, cur_call, last_raised, board_pot, cur_raise, num_players, board, MULTIPROCESS, self.model, big_blind, big_blind_value, gamelogger, small_blind, preflop_big_blind_value, engine, turn, training)
+
+def action_human2(control: Control, self, players, cur_call, last_raised, board_pot, cur_raise, gamelogger, engine, turn, index, board, num_players):
+    """
+        types of number:
+        1.1: All-in 1: Avalable if self.money <= cur_call-self.pot
+        1.2. All-in 2: Avalable if self.money > cur_call-self.pot
+        2. Check: Avalable if cur_call == self.pot
+        3. Call: Avalable if cur_call > self.pot
+        4. Raise: Avalable if self.money > cur_call-self.pot+cur_raise. Must raise at least cur_raise and max almost all in.
+        5. Fold: whenever you want it
+        6. Raise max: This is a new one.
+
+    Allow a human to act ingame
+
+    Args:
+        cur_call (int): current call value of the phase.
+        last_raised (string): the player.name of the last player that raise the pot.
+        board_pot (int): current pot of the board.
+        cur_raise (int): current raise value of the phase.
+
+    Returns:
+        tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
+    """
+    checkout = [1, 5]
+    stack = ["fold", "all in"]
+    word = ["1: all in", "5: fold"]
+
+
+    if cur_call == self.pot:
+        stack.append("check")
+        checkout.append(2)
+        word.append("2: check")
+
+    elif cur_call > self.pot and self.money > cur_call-self.pot:
+        stack.append("call")
+        checkout.append(3)
+        word.append("3: call")
+
+    if self.money > cur_call-self.pot+cur_raise:
+        stack.append("raise")
+        checkout.append(4)
+        word.append("4: raise")
+    min_money=min([(player.money+player.pot)-cur_call if player.state not in [4,5,6] and (player.money+player.pot)-cur_call>0 else 0 if player.state not in [4,5,6] else 2**31-1 for player in players])
+    if min_money!=0 and (self.money+self.pot)-cur_call>min_money:
+        stack.append("raise max")
+        checkout.append(6)
+        word.append("6: raise max")
+        
+    control.display_blind_board(control.players2, control.board, control.count, turn, checkout)
+        
+    print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+    while True:
+        print("Choose between:")
+        print(", ".join(word))
+        try:
+            _action = int(input('>>> '))
+        except ValueError:
+            continue
+        if _action not in checkout:
+            continue
+        break
+
+    if _action == 1:
+        gamelogger.keylogging(self, [1],checkout)
+        if self.money <= cur_call-self.pot:
+            ans = self.all_in_1(cur_call, last_raised,
+                                board_pot, cur_raise)
+        else:
+            ans = self.all_in_2(cur_call, last_raised,
+                                board_pot, cur_raise)
+            
+    elif _action == 2:
+        gamelogger.keylogging(self, [2],checkout)
+        ans = self.check(cur_call, last_raised, board_pot, cur_raise)
+
+    elif _action == 3:
+        gamelogger.keylogging(self, [3,(cur_call-self.pot)/self.money],checkout)
+        ans = self.call(cur_call, last_raised, board_pot, cur_raise)
+
+    elif _action == 4:
+        while True:
+            print(
+                f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
+            try:
+                b = int(input('>>> '))
+            except ValueError:
+                continue
+            if b < cur_raise or b > self.money-1-(cur_call-self.pot):
+                continue
+            ans = self.raise_money(
+                b, cur_call, last_raised, board_pot, cur_raise)
+            gamelogger.keylogging(self, [4,(b+cur_call-self.pot)/self.money,b],checkout)
+            break
+
+    elif _action == 5:
+        gamelogger.keylogging(self, [5],checkout)
+        ans = self.fold(cur_call, last_raised, board_pot, cur_raise)
+    elif _action == 6:
+        gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
+        ans = self.raise_money(
+                min_money, cur_call, last_raised, board_pot, cur_raise)
+    # tables = recording(tables, gamelogger.history, checkout, players[0].hand, board, num_players)
+    return ans
+
+
 
 if __name__ == "__main__":
     os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
