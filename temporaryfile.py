@@ -1,4 +1,5 @@
 import bext, json
+from time import sleep
 import math
 from poker_ai.constant import MODEL
 from poker_ai.poker import poker_component
@@ -9,7 +10,7 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-#blockPrint()
+blockPrint()
 
 
 import pygame
@@ -21,13 +22,13 @@ from poker_ai.poker.play import *
 NUM_COMMUNITY = {0: 0, 1: 3, 2: 4, 3: 5}
 
 ACTIONS_DICT = {1: 'ALL-IN', 2:'CHECK', 3: 'CALL', 4: 'RAISE', 5:'FOLD', 6:'RAISE MAX'}
-TURN = ['PReFLOP', 'FLOP', 'TURN', 'RIVER', 'Post-game']
+TURN = ['PREFLOP', 'FLOP', 'TURN', 'RIVER', 'POST-GAME']
 
 HEIGHT = 720
 WIDTH = 1280
 
-# HEIGHT = 1080
-# WIDTH = 1920
+HEIGHT = 1080
+WIDTH = 1920
 
 SCALE = 0.35
 CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
@@ -52,7 +53,34 @@ COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
 
 
-
+class Player2(Player):
+    def __init__(self, id, hand, name, money, state=-1, model=2 ):
+        super().__init__(hand, name, money, state, model)
+        self.id = id 
+    
+    def all_in_1(self, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 0, self.money, cur_raise)
+        return super().all_in_1(cur_call, last_raised, board_pot, cur_raise)
+    
+    def all_in_2(self, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 1, self.money, cur_raise)
+        return super().all_in_2(cur_call, last_raised, board_pot, cur_raise)
+    
+    def check(self, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 2, self.money, cur_raise)
+        return super().check(cur_call, last_raised, board_pot, cur_raise)
+    
+    def call(self, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 3, self.money, cur_raise)
+        return super().call(cur_call, last_raised, board_pot, cur_raise)
+    
+    def raise_money(self, money_raised, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 4, self.money, cur_raise)
+        return super().raise_money(money_raised, cur_call, last_raised, board_pot, cur_raise)
+    
+    def fold(self, cur_call, last_raised, board_pot, cur_raise):
+        Runit.display_action(self.id, 5, self.money, cur_raise)
+        return super().fold(cur_call, last_raised, board_pot, cur_raise)
 
 
 
@@ -174,14 +202,16 @@ class Control:
                 
         self.display_blind_board(1,1,1,1,[])
 
-    def main2(self, num_players, init_money) -> None:
+    def main2(self) -> None:
+        num_players = self.num_players
+        init_money = self.init_money
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
         self.players = []
         for x in range(num_players):
-            self.players.append(poker_component.Player(
-                None, f"Player {x+1}", init_money))
+            self.players.append(Player2(
+                x, None, f"Player {x+1}", init_money))
         indicator = INDICATOR
         self.count = 1
         playing = num_players
@@ -198,15 +228,15 @@ class Control:
                 preflop_small_blind_value = preflop_big_blind_value//2
             a = poker_component.Deck()
             hands = a.deal_hands(playing, 2)
-            self.board = poker_component.Player(
-                poker_component.Hand(), "Board", temp_board_money)
+            self.board = Player2(
+                -1, poker_component.Hand(), "Board", temp_board_money)
             for x in range(num_players):
                 self.players[x].pot = 0
                 if self.players[x].state != 6:
                     self.players[x].hand = hands.pop()
                     self.players[x].state = -1
             k = 0
-            print_blind_board(self.players, self.board)
+            # print_blind_board(self.players, self.board)
             self.display_blind_board(self.players, self.board, self.count, k, [])
 
             turn = ["Preflop", "Flop", "Turn", "River"]
@@ -219,15 +249,16 @@ class Control:
                         if player.state not in [0, 3, 4, 5, 6]:
                             player.state = -1
                 match = 0
-                print(turn[k])
+                # print(turn[k])
                 if k == 0:
                     if self.players[big_blind].money <= preflop_big_blind_value:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].pot = self.players[big_blind].money
                         self.players[big_blind].money = 0
                         self.players[big_blind].state = 0
-                        print(
-                            f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
+                        # print(
+                        #     f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
+                        self.display_action(big_blind, -2, self.players[big_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = self.players[big_blind].pot, None, self.players[big_blind].pot
                         self.board.money += self.players[big_blind].pot
@@ -235,8 +266,9 @@ class Control:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].money -= preflop_big_blind_value
                         self.players[big_blind].pot = preflop_big_blind_value
-                        print(
-                            f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                        # print(
+                        #     f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                        self.display_action(big_blind, -2, self.players[big_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
                         self.board.money += preflop_big_blind_value
@@ -245,29 +277,31 @@ class Control:
                         self.players[small_blind].pot = self.players[small_blind].money
                         self.players[small_blind].money = 0
                         self.players[small_blind].state = 0
-                        print(
-                            f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
+                        # print(
+                        #     f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
+                        self.display_action(small_blind, -1, self.players[big_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += self.players[small_blind].pot
                     else:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].money -= preflop_small_blind_value
                         self.players[small_blind].pot = preflop_small_blind_value
-                        print(
-                            f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                        # print(
+                        #     f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                        self.display_action(small_blind, -1, self.players[big_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += preflop_small_blind_value
                     if self.players[big_blind].pot < self.players[small_blind].pot:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
                 if k >= 2:
                     self.board.hand.add_card(a.deal_cards())
-                    print_blind_board(self.players, self.board)
+                    # print_blind_board(self.players, self.board)
                     self.display_blind_board(self.players, self.board, self.count, k, [])
                 elif k == 1:
                     self.board.hand.add_card(a.deal_cards())
                     self.board.hand.add_card(a.deal_cards())
                     self.board.hand.add_card(a.deal_cards())
-                    print_blind_board(self.players, self.board)
+                    # print_blind_board(self.players, self.board)
                     self.display_blind_board(self.players, self.board, self.count, k, [])
                 conditioner = True
                 index = (big_blind+1) % num_players
@@ -298,12 +332,12 @@ class Control:
                     break
             if folded == playing-1:
                 if DEBUG_MODE==1:
-                    print("Post-game")
-                    print_board(self.players, self.board)
+                    # print("Post-game")
+                    # print_board(self.players, self.board)
                     self.display_board(self.players, self.board, self.count, k + 0.5)
                 for player in self.players:
                     if player.state not in [3, 4, 5, 6]:
-                        print(f"{player.name} win the game!")
+                        # print(f"{player.name} win the game!")
                         player.money += self.board.money
                         self.board.money = 0
                         break
@@ -311,7 +345,7 @@ class Control:
                     if player.money < 0:
                         raise poker_component.UnexpectedError
                     if player.money == 0 and player.state != 6:
-                        print(f"{player.name} broke!")
+                        # print(f"{player.name} broke!")
                         player.state = 6
                         playing -= 1
                 self.count += 1
@@ -330,8 +364,8 @@ class Control:
                 #     input()
                 # bext.clear()
                 continue
-            print("Post-game")
-            print_board(self.players, self.board)
+            # print("Post-game")
+            # print_board(self.players, self.board)
             self.display_board(self.players, self.board, self.count, k + 0.5)
             checker = []
             for player in self.players:
@@ -353,8 +387,9 @@ class Control:
             for x in range(len(winner)):
                 if winner[x]:
                     self.players[x].money += money_win
+                    self.display_action(x, -3, money_win, -1)
                     self.anim_chip(CHIP_DEST, player_pos(self.num_players, x))
-            print(hehe+" win the game!")
+            # print(hehe+" win the game!")
             self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players, num_players, self.board)
             for player in self.players:
                 self.tables[player.name] = table_rescaling(self.tables[player.name], len(gamelogger.history))
@@ -364,7 +399,7 @@ class Control:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
                 if player.money == 0 and player.state != 6:
-                    print(f"{player.name} broke!")
+                    # print(f"{player.name} broke!")
                     player.state = 6
                     playing -= 1
             if playing == 1:
@@ -381,12 +416,13 @@ class Control:
             #     print("Press any key for the next game")
             #     input()
             # bext.clear()
-        for player in self.players:
-            if player.state != 6:
-                print(f"{player.name} wins the table!")
+        # for player in self.players:
+        #     if player.state != 6:
+        #         print(f"{player.name} wins the table!")
+        #         pass
 
 
-    def draw_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+    def draw_hand(self, p: Player2, x: int, y: int) -> None:
         name_rect = self.font2.render(p.name, True, GREY, ORANGE)
         p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
         # name_rect.set_alpha(170)
@@ -396,7 +432,7 @@ class Control:
         SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
         SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
 
-    def draw_blind_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+    def draw_blind_hand(self, p: Player2, x: int, y: int) -> None:
         name_rect = self.font2.render(p.name, True, GREY, ORANGE)
         p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
         # name_rect.set_alpha(170)
@@ -406,7 +442,7 @@ class Control:
         SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
         SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
     
-    def draw_folded_hand(self, p: poker_component.Player, x: int, y: int) -> None:
+    def draw_folded_hand(self, p: Player2, x: int, y: int) -> None:
         name_rect = self.font2.render(p.name, True, GREY, ORANGE)
         p_money_rect = self.font2.render(f'${p.money}', True, GREY, ORANGE)
         # name_rect.set_alpha(170)
@@ -415,7 +451,7 @@ class Control:
         SCREEN.blit(name_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2))
         SCREEN.blit(p_money_rect, (x + CARD_SIZE[0], y - CARD_SIZE[1]//2 + name_rect.get_size()[1]))
 
-    def draw_comm_info(self, k: int, board: poker_component.Player) -> None:
+    def draw_comm_info(self, k: int, board: Player2) -> None:
         num_comm = NUM_COMMUNITY[k]
         comm_card_pos = 0.425*WIDTH, 0.45*HEIGHT
         for i in range(num_comm):
@@ -438,7 +474,7 @@ class Control:
         return button_list
 
     def anim_chip(self, s_pos: 'tuple[int, int]', e_pos: 'tuple[int, int]') -> None:
-        chip_rate = FRAMERATE // 60 * 1000
+        chip_rate = FRAMERATE // 60 * 1000  * 720 // HEIGHT
         s_pos = [s_pos[0] - CHIP_SIZE[0]//2, s_pos[1] - CHIP_SIZE[0]//2]
         e_pos = [e_pos[0] - CHIP_SIZE[0]//2, e_pos[1] - CHIP_SIZE[0]//2]
         S = math.sqrt((s_pos[0] - e_pos[0]) ** 2 + (s_pos[1] - e_pos[1]) ** 2)
@@ -464,12 +500,13 @@ class Control:
                 pygame.display.flip()
 
         SCREEN.blit(self.current_img, (0, 0))
+        pygame.display.flip()
 
     # def capture(self) -> pygame.Surface:
     #     return SCREEN.copy()
 
 
-    def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int, checkout: 'list[int]') -> None:
+    def display_blind_board(self, players: 'list[Player2]', board: Player2, count: int, k: int, checkout: 'list[int]') -> None:
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
             x, y = player_pos(self.num_players, player)
@@ -509,7 +546,7 @@ class Control:
                                 return button.on_click()
 
 
-    def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
+    def display_board(self, players: 'list[Player2]', board: Player2, count: int, k: int) -> None:
         if isinstance(k, float):
             state = 4
             k = int(k)
@@ -552,39 +589,71 @@ class Control:
             
             pygame.display.flip()
             
-    def display_actions(self, id, _action, money, cur_raise):
+    def display_action(self, id, _action, money, cur_raise):
         action_dict = [
             f'All in for ${money}',
             f'All in for ${money}',
             'Check',
             'Call',
             f'Raise for ${cur_raise}',
-            'Fold'
+            'Fold',
+            f'Win ${money}',
+            f'Big blind for ${money}',
+            f'Small blind for ${money}'
         ]
         
         text_surf = self.font2.render(action_dict[_action], True, BLACK)
         text_box = pygame.transform.scale(self.text_box, (text_surf.get_size()[0] + text_surf.get_size()[1] * 0.2, 1.2*text_surf.get_size()[1]))
         
         x, y = player_pos(self.num_players, id)
-        
-        SCREEN.blit(text_box, (x - text_box.get_size()[0] // 2, y - text_box.get_size()[1] // 2))
-        SCREEN.blit(text_surf, (x - text_surf.get_size()[0] // 2, y - text_surf.get_size()[1] // 2))
+
+        SCREEN.blit(self.current_img, [0, 0])
+        SCREEN.blit(text_box, (x - text_box.get_size()[0] // 2, y - text_box.get_size()[1] // 2 + CARD_SIZE[1] // 1.3))
+        SCREEN.blit(text_surf, (x - text_surf.get_size()[0] // 2, y - text_surf.get_size()[1] // 2 + CARD_SIZE[1] // 1.3))
+        pygame.display.flip()
+
+        sleep(1)
+        SCREEN.blit(self.current_img, [0, 0])
+        pygame.display.flip()
+
+
         
         
         
         
 
 
-class Player2(Player):
-    def __init__(self, control: Control, id, hand, name, money, state=-1, model=...):
-        super().__init__(hand, name, money, state, model)
-        self.control = control
-        self.id = id 
+# class Player2(Player):
+#     def __init__(self, control: Control, id, hand, name, money, state=-1, model=...):
+#         super().__init__(hand, name, money, state, model)
+#         self.control = control
+#         self.id = id 
     
-    def all_in_1(self, id, cur_call, last_raised, board_pot, cur_raise):
-        a = super().all_in_1(cur_call, last_raised, board_pot, cur_raise)
-        self.control.display_actions()
-        return a 
+#     def all_in_1(self, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 0, self.money, cur_raise)
+#         return super().all_in_1(cur_call, last_raised, board_pot, cur_raise)
+    
+#     def all_in_2(self, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 1, self.money, cur_raise)
+#         return super().all_in_2(cur_call, last_raised, board_pot, cur_raise)
+    
+#     def check(self, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 2, self.money, cur_raise)
+#         return super().check(cur_call, last_raised, board_pot, cur_raise)
+    
+#     def call(self, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 3, self.money, cur_raise)
+#         return super().call(cur_call, last_raised, board_pot, cur_raise)
+    
+#     def raise_money(self, money_raised, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 4, self.money, cur_raise)
+#         return super().raise_money(money_raised, cur_call, last_raised, board_pot, cur_raise)
+    
+#     def fold(self, cur_call, last_raised, board_pot, cur_raise):
+#         self.control.display_action(self.id, 5, self.money, cur_raise)
+#         return super().fold(cur_call, last_raised, board_pot, cur_raise)
+        
+
 
 def velocity(x, a, b):
     return a * (1 - math.cos(b * x))
@@ -757,8 +826,8 @@ if __name__ == "__main__":
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(5, 1000)
+    Runit = Control(3, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(5, 1000)
+        Runit.main2()
         Myclock.tick(FRAMERATE)
