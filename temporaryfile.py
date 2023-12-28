@@ -19,6 +19,7 @@ from poker_ai.poker.play import *
 
 NUM_COMMUNITY = {0: 0, 1: 3, 2: 4, 3: 5}
 
+ACTIONS_DICT = {1: 'ALL-IN', 2:'CHECK', 3: 'CALL', 4: 'RAISE', 5:'FOLD', 6:'RAISE MAX'}
 
 HEIGHT = 720
 WIDTH = 1280
@@ -403,6 +404,36 @@ class Movement:
                     
                     pygame.display.flip()
                     
+                
+        pygame.quit()
+        
+class Button:
+    def __init__(self, x, y, k):    
+        self.x = x
+        self.y = y 
+        self.k = k
+        self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
+                    
+    def implement(self):
+        
+        if self.k in ACTIONS_DICT:
+            text = self.font.render(ACTIONS_DICT[self.k], True, GREY, WHITE)
+            button = text.get_rect()
+            button.center = (self.x, self.y)
+            
+        SCREEN.blit(text, button) 
+        
+        running = True
+        while running: 
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False 
+                    
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if button.collidepoint(event.pos):
+                        print('clicked')
+                
+            pygame.display.flip()
                 
         pygame.quit()
 
