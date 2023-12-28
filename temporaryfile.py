@@ -81,7 +81,7 @@ class Control:
         self.players, self.engine = game_init(num_players, init_money)
         self.tables = self.engine.tables
         
-        
+        self.mul = 0.2
     
     def main(self) -> None:
         for event in pygame.event.get():
@@ -92,6 +92,9 @@ class Control:
         self.display_blind_board(1,1,1,1)
 
     def main2(self, num_players, init_money) -> None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
         players = []
         for x in range(num_players):
             players.append(poker_component.Player(
@@ -346,7 +349,7 @@ class Control:
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
 
         self.draw_comm_info(k, board)
-    
+        self.draw_button([1, 3, 4, 5])
         pygame.display.flip()
 
 
@@ -367,7 +370,14 @@ class Control:
         self.draw_comm_info(k, board)
     
         pygame.display.flip()
-
+        
+    def draw_button(self, lst):
+        for i in lst:
+            button = BUTTON(int(0.925 * WIDTH - self.font.size(f'{ACTIONS_DICT[i]}')[0] / 2), int(self.mul * HEIGHT), i)
+            button.implement()
+            self.mul += 0.1
+        self.mul = 0.2
+            
 class Movement:
     def __init__(self, target_x, target_y):
         chip = pygame.image.load('res/img/pkchip.png')
@@ -419,37 +429,43 @@ class BUTTON:
         
     def implement(self):
         
-        action = False 
         if self.k in ACTIONS_DICT:
             text = self.font.render(ACTIONS_DICT[self.k], True, GREY, WHITE)
             button = text.get_rect()
-            button.center = (self.x, self.y)
+            #button.center = (self.x, self.y)
         
         
         pos = pygame.mouse.get_pos()
-        
-        if button.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-                self.clicked = True 
-                action = True 
-        
-        if pygame.mouse.get_pressed()[0] == 0:
-            self.clicked = False 
-            
-        SCREEN.blit(text, button)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-        if action:
-            print(ACTIONS_DICT[self.k])
-
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    pos = event.pos
+                    if button.collidepoint(pos):
+                        print(self.k)
+                        
+        # if button.collidepoint(pos):
+        #     if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+        #         self.clicked = True 
+        #         print(self.k) 
+        
+        # if pygame.mouse.get_pressed()[0] == 0:
+        #     self.clicked = False 
+        
+        #SCREEN.blit(text, button)
+        SCREEN.blit(text, (self.x, self.y))
+        
 
 if __name__ == "__main__":
-    # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
-    os.environ['SDL_VIDEO_WINDOW_POS'] = '900, 0'
+    os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
+    #os.environ['SDL_VIDEO_WINDOW_POS'] = '900, 0'
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(6, 500)
+    Runit = Control(2, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(6, 500)
+        Runit.main2(2, 1000)
         Myclock.tick(60)
