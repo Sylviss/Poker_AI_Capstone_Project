@@ -39,6 +39,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY  = (50, 50, 50)
 RED  = (207, 0, 0)
+GREEN = (0, 128, 0)
 ORANGE = (255, 153, 51)
 YELLOW = (255, 255, 0)
 COLOR_INACTIVE = pygame.Color('lightskyblue3')
@@ -48,13 +49,15 @@ COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
 class InputBox:
 
-    def __init__(self, x, y, width, height, text=''):
+    def __init__(self, x, y, width, height, l, u, text=''):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = COLOR_INACTIVE
         self.text = text
         self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
         self.txt_surface = self.font.render(text, True, self.color)
         self.active = False
+        self.l = l
+        self.u = u
         
         
     def handle_event(self, event):
@@ -68,7 +71,17 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
-        
+            
+            # try:
+            #     b = int(self.text)
+            #     if b < self.l or b > self.u:
+            #         raise
+            #     self.color = GREEN
+            
+            # except:
+            #     self.color = RED
+
+                
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
@@ -79,6 +92,16 @@ class InputBox:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
+                
+                try:
+                    b = int(self.text)
+                    if b < self.l or b > self.u:
+                        raise
+                    self.color = GREEN
+                
+                except:
+                    self.color = RED
+                
                 # Re-render the text.
                 self.txt_surface = self.font.render(self.text, True, self.color)
         
@@ -456,6 +479,7 @@ class Control:
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
         count_rect = self.font.render(f'GAME {count}', True, (255, 0, 0))
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
+        
 
         self.draw_comm_info(k, board)
         button_list = self.draw_buttons(checkout)
@@ -496,9 +520,9 @@ class Control:
         pygame.display.flip()
         self.current_img = SCREEN.copy()
     
-    def display_box(self, x = 0, y = 0, width = int(SCALE * (WIDTH) / 3), height = int(SCALE * (WIDTH / 5))):
+    def display_box(self, l, u, x = 0, y = 0, width = int(SCALE * (WIDTH) / 3), height = int(SCALE * (WIDTH / 5))):
         temp = SCREEN.copy()
-        box = InputBox(x, y, width, height)
+        box = InputBox(x, y, width, height, l ,u)
         running = True 
         while running:
             for event in pygame.event.get():
@@ -695,7 +719,7 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
             print(
                 f"Please choose between {cur_raise}$ and {self.money-1-(cur_call-self.pot)}$")
             try:
-                b = int(control.display_box(int(0.925 * WIDTH - SCALE * (WIDTH) / 6), int(0.8 * HEIGHT), int(SCALE * (WIDTH) / 3), int(SCALE * (WIDTH) / 5)))
+                b = int(control.display_box(cur_raise, self.money - 1 - (cur_call - self.pot), int(0.925 * WIDTH - SCALE * (WIDTH) / 6), int(0.8 * HEIGHT), int(SCALE * (WIDTH) / 3), int(SCALE * (WIDTH) / 5)))
             except ValueError:
                 continue
             except TypeError:
