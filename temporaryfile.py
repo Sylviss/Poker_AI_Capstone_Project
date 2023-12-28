@@ -30,6 +30,8 @@ WIDTH = 1280
 SCALE = 0.35
 CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
 CHIP_SIZE = (int(WIDTH / 12 * SCALE), int(WIDTH / 10 * SCALE))
+CHIP_DEST = (0.425*WIDTH + 1, 0.60*HEIGHT + 1)
+FRAMERATE = 60
 
 SPACER = int(HEIGHT + 0.005)
 
@@ -115,6 +117,8 @@ class Control:
         self.background = pygame.transform.scale(self.background, (WIDTH*1.3, HEIGHT*1.5))
         
         self.icon = pygame.image.load('res/img/poker.png')
+        chip = pygame.image.load('res/img/pkchip.png')
+        self.chip = pygame.transform.scale(chip, (CHIP_SIZE[0], CHIP_SIZE[0]))
         pygame.display.set_icon(self.icon)
         
         self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
@@ -125,6 +129,7 @@ class Control:
         self.k = 10
 
         self.folded_state = self.font.render(f'Folded', True, GREY, WHITE)
+        self.current_img = None
 
         self.players, self.engine = game_init(num_players, init_money)
         self.tables = self.engine.tables
@@ -189,32 +194,40 @@ class Control:
                 print(turn[k])
                 if k == 0:
                     if self.players[big_blind].money <= preflop_big_blind_value:
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].pot = self.players[big_blind].money
                         self.players[big_blind].money = 0
                         self.players[big_blind].state = 0
                         print(
                             f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
+                        self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = self.players[big_blind].pot, None, self.players[big_blind].pot
                         self.board.money += self.players[big_blind].pot
                     else:
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].money -= preflop_big_blind_value
                         self.players[big_blind].pot = preflop_big_blind_value
                         print(
                             f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                        self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
                         self.board.money += preflop_big_blind_value
                     if self.players[small_blind].money <= preflop_small_blind_value:
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].pot = self.players[small_blind].money
                         self.players[small_blind].money = 0
                         self.players[small_blind].state = 0
                         print(
                             f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
+                        self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += self.players[small_blind].pot
                     else:
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].money -= preflop_small_blind_value
                         self.players[small_blind].pot = preflop_small_blind_value
                         print(
                             f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                        self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += preflop_small_blind_value
                     if self.players[big_blind].pot < self.players[small_blind].pot:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
@@ -392,6 +405,34 @@ class Control:
         self.mul = 0.2
         return button_list
 
+    def anim_chip(self, s_pos: 'tuple[int, int]', e_pos: 'tuple[int, int]') -> None:
+        chip_rate = FRAMERATE // 60 * 2000
+        s_pos = [s_pos[0] - CHIP_SIZE[0]//2, s_pos[1] - CHIP_SIZE[0]//2]
+        e_pos = [e_pos[0] - CHIP_SIZE[0]//2, e_pos[1] - CHIP_SIZE[0]//2]
+        S = math.sqrt((s_pos[0] - e_pos[0]) ** 2 + (s_pos[1] - e_pos[1]) ** 2)
+        tmp1, tmp2 = s_pos[0], s_pos[1]
+        a, b = S / chip_rate, 2 * math.pi / chip_rate
+        distance = 0
+        
+    
+        alpha = math.atan((s_pos[1] - e_pos[1]) / (s_pos[0] - e_pos[0]))
+
+        for i in range(1, chip_rate + 1):
+            if distance < S:
+                distance += velocity(i, a, b) 
+                s_pos[0] = tmp1 + math.cos(alpha) * distance
+                s_pos[1] = tmp2 + math.sin(alpha) * distance 
+
+                SCREEN.blit(self.current_img, (0, 0))
+                SCREEN.blit(self.chip, (s_pos[0], s_pos[1]))
+                
+                pygame.display.flip()
+
+        SCREEN.blit(self.current_img, (0, 0))
+
+    # def capture(self) -> pygame.Surface:
+    #     return SCREEN.copy()
+
 
     def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int, checkout: 'list[int]') -> None:
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
@@ -412,6 +453,8 @@ class Control:
         self.draw_comm_info(k, board)
         button_list = self.draw_buttons(checkout)
         pygame.display.flip()
+        self.current_img = SCREEN.copy()
+
         if button_list:
             while True:
                 for event in pygame.event.get():
@@ -449,6 +492,7 @@ class Control:
         self.draw_comm_info(k, board)
     
         pygame.display.flip()
+        self.current_img = SCREEN.copy()
     
     def display_box(self, x = 0, y = 0, width = int(SCALE * (WIDTH) / 3), height = int(SCALE * (WIDTH / 5))):
         temp = SCREEN.copy()
@@ -676,8 +720,8 @@ if __name__ == "__main__":
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(2, 1000)
+    Runit = Control(3, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(2, 1000)
-        Myclock.tick(60)
+        Runit.main2(3, 1000)
+        Myclock.tick(FRAMERATE)
