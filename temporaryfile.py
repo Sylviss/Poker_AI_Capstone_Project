@@ -1,5 +1,6 @@
 import bext, json
 import math
+from poker_ai.constant import MODEL
 from poker_ai.poker import poker_component
 # from poker_ai.ai.ai_algorithm import action_ai_model
 # from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
@@ -14,7 +15,7 @@ from poker_ai.tools import *
 import pygame
 pygame.init()
 import os, sys
-from poker_ai.poker.poker_component import reverse_suit_dicts
+from poker_ai.poker.poker_component import reverse_suit_dicts, Player
 from poker_ai.poker.play import *
 
 NUM_COMMUNITY = {0: 0, 1: 3, 2: 4, 3: 5}
@@ -48,6 +49,15 @@ COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
 
 
+
+
+
+
+
+
+
+
+
 class InputBox:
 
     def __init__(self, x, y, width, height, l, u, text=''):
@@ -72,17 +82,7 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
-            
-            # try:
-            #     b = int(self.text)
-            #     if b < self.l or b > self.u:
-            #         raise
-            #     self.color = GREEN
-            
-            # except:
-            #     self.color = RED
 
-                
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
@@ -162,7 +162,10 @@ class Control:
         self.board = None
         
         self.mul = 0.25
-    
+        
+        self.alpha = 25
+        self.text_box = pygame.image.load('res/img/text_box.png')
+        
     def main(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -548,10 +551,40 @@ class Control:
             box.draw_box(SCREEN)
             
             pygame.display.flip()
+            
+    def display_actions(self, id, _action, money, cur_raise):
+        action_dict = [
+            f'All in for ${money}',
+            f'All in for ${money}',
+            'Check',
+            'Call',
+            f'Raise for ${cur_raise}',
+            'Fold'
+        ]
+        
+        text_surf = self.font2.render(action_dict[_action], True, BLACK)
+        text_box = pygame.transform.scale(self.text_box, (text_surf.get_size()[0] + text_surf.get_size()[1] * 0.2, 1.2*text_surf.get_size()[1]))
+        
+        x, y = player_pos(self.num_players, id)
+        
+        SCREEN.blit(text_box, (x - text_box.get_size()[0] // 2, y - text_box.get_size()[1] // 2))
+        SCREEN.blit(text_surf, (x - text_surf.get_size()[0] // 2, y - text_surf.get_size()[1] // 2))
+        
+        
+        
+        
 
 
-
-
+class Player2(Player):
+    def __init__(self, control: Control, id, hand, name, money, state=-1, model=...):
+        super().__init__(hand, name, money, state, model)
+        self.control = control
+        self.id = id 
+    
+    def all_in_1(self, id, cur_call, last_raised, board_pot, cur_raise):
+        a = super().all_in_1(cur_call, last_raised, board_pot, cur_raise)
+        self.control.display_actions()
+        return a 
 
 def velocity(x, a, b):
     return a * (1 - math.cos(b * x))
