@@ -8,7 +8,7 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-blockPrint()
+# blockPrint()
 
 
 import pygame
@@ -351,8 +351,23 @@ class Control:
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
 
         self.draw_comm_info(k, board)
-        self.draw_button(checkout)
+        button_list = self.draw_buttons(checkout)
         pygame.display.flip()
+        if button_list:
+            breaked = False
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        mouseRect = pygame.Rect(event.pos, (1,1))
+                        pos = event.pos
+                        for button in button_list:
+                            if button.b.colliderect(mouseRect):
+                                return button.on_click()
+
 
 
     def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
@@ -373,12 +388,15 @@ class Control:
     
         pygame.display.flip()
         
-    def draw_button(self, lst):
-        for i in lst:
+    def draw_buttons(self, action_lst) -> 'list[BUTTON]':
+        button_list = []
+        for i in action_lst:
             button = BUTTON(int(0.925 * WIDTH - self.font.size(f'{ACTIONS_DICT[i]}')[0] / 2), int(self.mul * HEIGHT), i)
-            button.implement()
+            button.draw_button()
+            button_list.append(button)
             self.mul += 0.1
         self.mul = 0.2
+        return button_list
             
 class Movement:
     def __init__(self, target_x, target_y):
@@ -426,38 +444,18 @@ class BUTTON:
         self.x = x
         self.y = y 
         self.k = k
-        self.clicked = False 
+        # self.clicked = False
         self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
-        
-    def implement(self):
-        
-        if self.k in ACTIONS_DICT:
-            text = self.font.render(ACTIONS_DICT[self.k], True, GREY, WHITE)
-            button = text.get_rect()
-            #button.center = (self.x, self.y)
-        
-        
-        pos = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
+        self.text = self.font.render(ACTIONS_DICT[self.k], True, GREY, WHITE)
+        self.b = self.text.get_rect()
+        self.b.x = self.x
+        self.b.y = self.y
+    
+    def draw_button(self) -> None:
+        SCREEN.blit(self.text, (self.x, self.y))
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    pos = event.pos
-                    if button.collidepoint(pos):
-                        print(self.k)
-                        
-        # if button.collidepoint(pos):
-        #     if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-        #         self.clicked = True 
-        #         print(self.k) 
-        
-        # if pygame.mouse.get_pressed()[0] == 0:
-        #     self.clicked = False 
-        
-        #SCREEN.blit(text, button)
-        SCREEN.blit(text, (self.x, self.y))
+    def on_click(self) -> None:
+        return self.k
         
 
 
@@ -538,19 +536,21 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         checkout.append(6)
         word.append("6: raise max")
         
-    control.display_blind_board(control.players2, control.board, control.count, turn, checkout)
+    _action = control.display_blind_board(control.players2, control.board, control.count, turn, checkout)
         
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
-    while True:
-        print("Choose between:")
-        print(", ".join(word))
-        try:
-            _action = int(input('>>> '))
-        except ValueError:
-            continue
-        if _action not in checkout:
-            continue
-        break
+    # while True:
+    #     print("Choose between:")
+    #     print(", ".join(word))
+    #     try:
+    #         _action = int(input('>>> '))
+    #     except ValueError:
+    #         continue
+    #     if _action not in checkout:
+    #         continue
+    #     break
+
+
 
     if _action == 1:
         gamelogger.keylogging(self, [1],checkout)
