@@ -8,7 +8,7 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-# blockPrint()
+blockPrint()
 
 
 import pygame
@@ -97,9 +97,9 @@ class Control:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        self.players2 = []
+        self.players = []
         for x in range(num_players):
-            self.players2.append(poker_component.Player(
+            self.players.append(poker_component.Player(
                 None, f"Player {x+1}", init_money))
         indicator = INDICATOR
         self.count = 1
@@ -109,8 +109,8 @@ class Control:
         small_blind = num_players-2
         temp_board_money = 0
         while table_condition:
-            self.players2,self.engine = refresh(self.players2,self.engine)
-            gamelogger=poker_component.Gamelogger(self.players2)
+            self.players,self.engine = refresh(self.players,self.engine)
+            gamelogger=poker_component.Gamelogger(self.players)
             if self.count % TURN_TO_RAISE_POT == 1:
                 preflop_big_blind_value = PREFLOP_BIG_BLIND * \
                     int((2**(self.count//TURN_TO_RAISE_POT)))
@@ -120,13 +120,13 @@ class Control:
             self.board = poker_component.Player(
                 poker_component.Hand(), "Board", temp_board_money)
             for x in range(num_players):
-                self.players2[x].pot = 0
-                if self.players2[x].state != 6:
-                    self.players2[x].hand = hands.pop()
-                    self.players2[x].state = -1
+                self.players[x].pot = 0
+                if self.players[x].state != 6:
+                    self.players[x].hand = hands.pop()
+                    self.players[x].state = -1
             k = 0
-            print_blind_board(self.players2, self.board)
-            self.display_blind_board(self.players2, self.board, self.count, k, [])
+            print_blind_board(self.players, self.board)
+            self.display_blind_board(self.players, self.board, self.count, k, [])
 
             turn = ["Preflop", "Flop", "Turn", "River"]
             folded = 0
@@ -134,69 +134,69 @@ class Control:
                 gamelogger.next_turn()
                 if k != 0:
                     last_raised, cur_raise = None, preflop_big_blind_value
-                    for player in self.players2:
+                    for player in self.players:
                         if player.state not in [0, 3, 4, 5, 6]:
                             player.state = -1
                 match = 0
                 print(turn[k])
                 if k == 0:
-                    if self.players2[big_blind].money <= preflop_big_blind_value:
-                        self.players2[big_blind].pot = self.players2[big_blind].money
-                        self.players2[big_blind].money = 0
-                        self.players2[big_blind].state = 0
+                    if self.players[big_blind].money <= preflop_big_blind_value:
+                        self.players[big_blind].pot = self.players[big_blind].money
+                        self.players[big_blind].money = 0
+                        self.players[big_blind].state = 0
                         print(
-                            f"{self.players2[big_blind].name} is big blind and put in {self.players2[big_blind].pot}$")
-                        cur_call, last_raised, cur_raise = self.players2[big_blind].pot, None, self.players2[big_blind].pot
-                        self.board.money += self.players2[big_blind].pot
+                            f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
+                        cur_call, last_raised, cur_raise = self.players[big_blind].pot, None, self.players[big_blind].pot
+                        self.board.money += self.players[big_blind].pot
                     else:
-                        self.players2[big_blind].money -= preflop_big_blind_value
-                        self.players2[big_blind].pot = preflop_big_blind_value
+                        self.players[big_blind].money -= preflop_big_blind_value
+                        self.players[big_blind].pot = preflop_big_blind_value
                         print(
-                            f"{self.players2[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                            f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
                         self.board.money += preflop_big_blind_value
-                    if self.players2[small_blind].money <= preflop_small_blind_value:
-                        self.players2[small_blind].pot = self.players2[small_blind].money
-                        self.players2[small_blind].money = 0
-                        self.players2[small_blind].state = 0
+                    if self.players[small_blind].money <= preflop_small_blind_value:
+                        self.players[small_blind].pot = self.players[small_blind].money
+                        self.players[small_blind].money = 0
+                        self.players[small_blind].state = 0
                         print(
-                            f"{self.players2[small_blind].name} is small and put in {self.players2[small_blind].pot}$")
-                        self.board.money += self.players2[small_blind].pot
+                            f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
+                        self.board.money += self.players[small_blind].pot
                     else:
-                        self.players2[small_blind].money -= preflop_small_blind_value
-                        self.players2[small_blind].pot = preflop_small_blind_value
+                        self.players[small_blind].money -= preflop_small_blind_value
+                        self.players[small_blind].pot = preflop_small_blind_value
                         print(
-                            f"{self.players2[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                            f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
                         self.board.money += preflop_small_blind_value
-                    if self.players2[big_blind].pot < self.players2[small_blind].pot:
+                    if self.players[big_blind].pot < self.players[small_blind].pot:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
                 if k >= 2:
                     self.board.hand.add_card(a.deal_cards())
-                    print_blind_board(self.players2, self.board)
-                    self.display_blind_board(self.players2, self.board, self.count, k, [])
+                    print_blind_board(self.players, self.board)
+                    self.display_blind_board(self.players, self.board, self.count, k, [])
                 elif k == 1:
                     self.board.hand.add_card(a.deal_cards())
                     self.board.hand.add_card(a.deal_cards())
                     self.board.hand.add_card(a.deal_cards())
-                    print_blind_board(self.players2, self.board)
-                    self.display_blind_board(self.players2, self.board, self.count, k, [])
+                    print_blind_board(self.players, self.board)
+                    self.display_blind_board(self.players, self.board, self.count, k, [])
                 conditioner = True
                 index = (big_blind+1) % num_players
                 while conditioner:
-                    if last_raised == self.players2[index].name and (self.players2[index].state == 2 or self.players2[index].state == 0):
+                    if last_raised == self.players[index].name and (self.players[index].state == 2 or self.players[index].state == 0):
                         conditioner = False
                         break
-                    if self.players2[index].state in [-1, 1, 2]:
+                    if self.players[index].state in [-1, 1, 2]:
                         cur_call, last_raised, self.board.money, cur_raise = action2(
-                            self, index, self.players2, indicator, cur_call, last_raised, self.board.money, cur_raise, playing-folded, self.board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
-                        self.display_blind_board(self.players2, self.board, self.count, k, [])
-                    if self.players2[index].state == 4:
-                        self.players2[index].state = 5
+                            self, index, self.players, indicator, cur_call, last_raised, self.board.money, cur_raise, playing-folded, self.board, big_blind, preflop_big_blind_value, gamelogger, small_blind, preflop_big_blind_value, self.engine, k)
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
+                    if self.players[index].state == 4:
+                        self.players[index].state = 5
                         folded += 1
                         if folded >= playing-1:
                             conditioner = False
                             break
-                    if self.players2[index].state != 6:
+                    if self.players[index].state != 6:
                         match += 1
                     if (match == playing and last_raised is None):
                         conditioner = False
@@ -207,15 +207,15 @@ class Control:
             if folded == playing-1:
                 if DEBUG_MODE==1:
                     print("Post-game")
-                    print_board(self.players2, self.board)
-                    self.display_board(self.players2, self.board, self.count, k)
-                for player in self.players2:
+                    print_board(self.players, self.board)
+                    self.display_board(self.players, self.board, self.count, k)
+                for player in self.players:
                     if player.state not in [3, 4, 5, 6]:
                         print(f"{player.name} win the game!")
                         player.money += self.board.money
                         self.board.money = 0
                         break
-                for player in self.players2:
+                for player in self.players:
                     if player.money < 0:
                         raise poker_component.UnexpectedError
                     if player.money == 0 and player.state != 6:
@@ -224,10 +224,10 @@ class Control:
                         playing -= 1
                 self.count += 1
                 big_blind = (big_blind+1) % num_players
-                while self.players2[big_blind].state == 6:
+                while self.players[big_blind].state == 6:
                     big_blind = (big_blind+1) % num_players
                 small_blind = (small_blind+1) % num_players
-                while self.players2[small_blind].state == 6 or big_blind == small_blind:
+                while self.players[small_blind].state == 6 or big_blind == small_blind:
                     small_blind = (small_blind+1) % num_players
                 if playing == 1:
                     table_condition = False
@@ -239,10 +239,10 @@ class Control:
                 # bext.clear()
                 continue
             print("Post-game")
-            print_board(self.players2, self.board)
-            self.display_board(self.players2, self.board, self.count, k)
+            print_board(self.players, self.board)
+            self.display_board(self.players, self.board, self.count, k)
             checker = []
-            for player in self.players2:
+            for player in self.players:
                 if player.state in [0, 1, 2]:
                     checker.append(player.hand.create_poker(self.board.hand).check())
                 else:
@@ -255,19 +255,19 @@ class Control:
                 else:
                     winner.append(0)
             hehe = ", ".join(
-                [self.players2[x].name for x in range(len(winner)) if winner[x]])
+                [self.players[x].name for x in range(len(winner)) if winner[x]])
             money_win = self.board.money//sum(winner)
             temp_board_money = self.board.money-money_win*sum(winner)
             for x in range(len(winner)):
                 if winner[x]:
-                    self.players2[x].money += money_win
+                    self.players[x].money += money_win
             print(hehe+" win the game!")
-            self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players2, num_players, self.board)
-            for player in self.players2:
+            self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players, num_players, self.board)
+            for player in self.players:
                 self.tables[player.name] = table_rescaling(self.tables[player.name], len(gamelogger.history))
-            for player in self.players2:
+            for player in self.players:
                 self.tables[player.name].data_observation, self.tables[player.name].data_action = preprocess_table(self.tables[player.name])
-            for player in self.players2:
+            for player in self.players:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
                 if player.money == 0 and player.state != 6:
@@ -279,16 +279,16 @@ class Control:
                 break
             self.count += 1
             big_blind = (big_blind+1) % num_players
-            while self.players2[big_blind].state == 6:
+            while self.players[big_blind].state == 6:
                 big_blind = (big_blind+1) % num_players
             small_blind = (small_blind+1) % num_players
-            while self.players2[small_blind].state == 6 or big_blind == small_blind:
+            while self.players[small_blind].state == 6 or big_blind == small_blind:
                 small_blind = (small_blind+1) % num_players
             # if STOP == 0:
             #     print("Press any key for the next game")
             #     input()
             # bext.clear()
-        for player in self.players2:
+        for player in self.players:
             if player.state != 6:
                 print(f"{player.name} wins the table!")
 
@@ -334,6 +334,17 @@ class Control:
         SCREEN.blit(comm_money_rect, (comm_card_pos[0] - comm_money_rect.get_size()[0]//2, int(comm_card_pos[1] + 0.5*CARD_SIZE[1])))
 
 
+    def draw_buttons(self, action_lst) -> 'list[BUTTON]':
+        button_list = []
+        for i in action_lst:
+            button = BUTTON(int(0.925 * WIDTH - self.font.size(f'{ACTIONS_DICT[i]}')[0] / 2), int(self.mul * HEIGHT), i)
+            button.draw_button()
+            button_list.append(button)
+            self.mul += 0.1
+        self.mul = 0.2
+        return button_list
+
+
     def display_blind_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int, checkout: 'list[int]') -> None:
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
@@ -354,7 +365,6 @@ class Control:
         button_list = self.draw_buttons(checkout)
         pygame.display.flip()
         if button_list:
-            breaked = False
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -387,16 +397,9 @@ class Control:
         self.draw_comm_info(k, board)
     
         pygame.display.flip()
-        
-    def draw_buttons(self, action_lst) -> 'list[BUTTON]':
-        button_list = []
-        for i in action_lst:
-            button = BUTTON(int(0.925 * WIDTH - self.font.size(f'{ACTIONS_DICT[i]}')[0] / 2), int(self.mul * HEIGHT), i)
-            button.draw_button()
-            button_list.append(button)
-            self.mul += 0.1
-        self.mul = 0.2
-        return button_list
+
+
+
             
 class Movement:
     def __init__(self, target_x, target_y):
@@ -439,6 +442,10 @@ class Movement:
 
 def velocity(x, a, b):
     return a * (1 - math.cos(b * x))
+
+# m = Movement(1, 2)
+# m.move(3, 4)
+
 class BUTTON:
     def __init__(self, x, y, k):    
         self.x = x
@@ -536,7 +543,7 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         checkout.append(6)
         word.append("6: raise max")
         
-    _action = control.display_blind_board(control.players2, control.board, control.count, turn, checkout)
+    _action = control.display_blind_board(control.players, control.board, control.count, turn, checkout)
         
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
     # while True:
