@@ -20,6 +20,7 @@ from poker_ai.poker.play import *
 NUM_COMMUNITY = {0: 0, 1: 3, 2: 4, 3: 5}
 
 ACTIONS_DICT = {1: 'ALL-IN', 2:'CHECK', 3: 'CALL', 4: 'RAISE', 5:'FOLD', 6:'RAISE MAX'}
+TURN = ['PReFLOP', 'FLOP', 'TURN', 'RIVER', 'Post-game']
 
 HEIGHT = 720
 WIDTH = 1280
@@ -116,7 +117,7 @@ class InputBox:
 
 
 def player_pos(max_players: int, player: int) -> tuple[int, int]:
-    return int(0.425*WIDTH - 1.6*0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.5*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
+    return int(0.425*WIDTH - 1.5*0.35*HEIGHT*math.sin(2*math.pi*player/max_players)), HEIGHT - int(0.5*HEIGHT - 0.35*HEIGHT*math.cos(2*math.pi*player/max_players))
 
 
 def card_to_img_path(r: int, s: int) -> str:
@@ -160,7 +161,7 @@ class Control:
         self.count = 1
         self.board = None
         
-        self.mul = 0.2
+        self.mul = 0.25
     
     def main(self) -> None:
         for event in pygame.event.get():
@@ -296,7 +297,7 @@ class Control:
                 if DEBUG_MODE==1:
                     print("Post-game")
                     print_board(self.players, self.board)
-                    self.display_board(self.players, self.board, self.count, k)
+                    self.display_board(self.players, self.board, self.count, k + 0.5)
                 for player in self.players:
                     if player.state not in [3, 4, 5, 6]:
                         print(f"{player.name} win the game!")
@@ -328,7 +329,7 @@ class Control:
                 continue
             print("Post-game")
             print_board(self.players, self.board)
-            self.display_board(self.players, self.board, self.count, k)
+            self.display_board(self.players, self.board, self.count, k + 0.5)
             checker = []
             for player in self.players:
                 if player.state in [0, 1, 2]:
@@ -349,6 +350,7 @@ class Control:
             for x in range(len(winner)):
                 if winner[x]:
                     self.players[x].money += money_win
+                    self.anim_chip(CHIP_DEST, player_pos(self.num_players, x))
             print(hehe+" win the game!")
             self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players, num_players, self.board)
             for player in self.players:
@@ -429,11 +431,11 @@ class Control:
             button.draw_button()
             button_list.append(button)
             self.mul += 0.1
-        self.mul = 0.2
+        self.mul = 0.25
         return button_list
 
     def anim_chip(self, s_pos: 'tuple[int, int]', e_pos: 'tuple[int, int]') -> None:
-        chip_rate = FRAMERATE // 60 * 2000
+        chip_rate = FRAMERATE // 60 * 1000
         s_pos = [s_pos[0] - CHIP_SIZE[0]//2, s_pos[1] - CHIP_SIZE[0]//2]
         e_pos = [e_pos[0] - CHIP_SIZE[0]//2, e_pos[1] - CHIP_SIZE[0]//2]
         S = math.sqrt((s_pos[0] - e_pos[0]) ** 2 + (s_pos[1] - e_pos[1]) ** 2)
@@ -478,7 +480,10 @@ class Control:
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
         count_rect = self.font.render(f'GAME {count}', True, (255, 0, 0))
+        turn_rect = self.font.render(f'{TURN[k]}', True, (255, 0, 0))
+        
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
+        SCREEN.blit(turn_rect, (int(0.925 * WIDTH - self.font.size(f'{TURN[k]}')[0] / 2), int(0.1 * HEIGHT)))
         
 
         self.draw_comm_info(k, board)
@@ -502,6 +507,11 @@ class Control:
 
 
     def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
+        if isinstance(k, float):
+            state = 4
+            k = int(k)
+        else:
+            state = k
         SCREEN.blit(self.background, (-0.22222 * WIDTH, -0.25 * HEIGHT))
         for player in range(self.num_players):
             x, y = player_pos(self.num_players, player)
@@ -513,6 +523,9 @@ class Control:
         # line
         pygame.draw.rect(SCREEN, BLACK, pygame.Rect(0.85*WIDTH, 0, 0.15*WIDTH, HEIGHT), 0)
         count_rect = self.font.render(f'GAME {count}', True, (255, 0, 0))
+        turn_rect = self.font.render(f'{TURN[state]}', True, (255, 0, 0))
+        
+        SCREEN.blit(turn_rect, (int(0.925 * WIDTH - self.font.size(f'{TURN[state]}')[0] / 2), int(0.1 * HEIGHT)))
         SCREEN.blit(count_rect, (int(0.925 * WIDTH - self.font.size(f'GAME {count}')[0] / 2), int(0.03 * HEIGHT)))
 
         self.draw_comm_info(k, board)
@@ -538,45 +551,7 @@ class Control:
 
 
 
-            
-class Movement:
-    def __init__(self, target_x, target_y):
-        chip = pygame.image.load('res/img/pkchip.png')
-        self.chip = pygame.transform.scale(chip, (CHIP_SIZE[0], CHIP_SIZE[0]))
-        self.target = (target_x, target_y)
-        self.distance = 0
-        self.N = 1000
-        
-    def move(self, chip_x, chip_y):
-        S = math.sqrt((chip_x - self.target[0]) ** 2 + (chip_y - self.target[1]) ** 2)
-        tmp1, tmp2 = chip_x, chip_y
-        a, b = S / self.N, 2 * math.pi / self.N
-        
-    
-        alpha = math.atan((chip_x - self.target[0]) / (chip_y - self.target[1]))
-        
-        
-        running = True 
-        while running:
-            
-            Myclock.tick(self.N)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
 
-            for i in range(1, self.N + 1):
-                if self.distance < S:
-                    self.distance += velocity(i, a, b) 
-                    chip_x = tmp1 + math.sin(alpha) * self.distance
-                    chip_y = tmp2 + math.cos(alpha) * self.distance 
-
-                    SCREEN.fill((0, 0, 0))
-                    SCREEN.blit(self.chip, (chip_x, chip_y))
-                    
-                    pygame.display.flip()
-                    
-                
-        pygame.quit()
 
 def velocity(x, a, b):
     return a * (1 - math.cos(b * x))
@@ -749,8 +724,8 @@ if __name__ == "__main__":
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     
-    Runit = Control(4, 1000)
+    Runit = Control(5, 1000)
     Myclock = pygame.time.Clock()
     while True:
-        Runit.main2(4, 1000)
+        Runit.main2(5, 1000)
         Myclock.tick(FRAMERATE)
