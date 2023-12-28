@@ -8,7 +8,7 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-blockPrint()
+#blockPrint()
 
 
 import pygame
@@ -39,6 +39,54 @@ GREY  = (50, 50, 50)
 RED  = (207, 0, 0)
 ORANGE = (255, 153, 51)
 YELLOW = (255, 255, 0)
+COLOR_INACTIVE = pygame.Color('lightskyblue3')
+COLOR_ACTIVE = pygame.Color('dodgerblue2')
+
+
+
+class InputBox:
+
+    def __init__(self, x, y, width, height, text=''):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = COLOR_INACTIVE
+        self.text = text
+        self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
+        self.txt_surface = self.font.render(text, True, self.color)
+        self.active = False
+        
+        
+    def handle_event(self, event):
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+        
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    print(self.text)
+                    self.text = ''
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                # Re-render the text.
+                self.txt_surface = self.font.render(self.text, True, self.color)
+        
+    def draw_box(self, screen):
+        # Blit the text.
+        pygame.draw.rect(screen, GREY, self.rect)
+        screen.blit(self.txt_surface, (self.rect.x + self.rect.w // 2 - self.font.size(self.text)[0]//2, self.rect.y + self.rect.h // 2 - self.font.size('')[1] // 2))
+        # Blit the rect.
+        pygame.draw.rect(screen, self.color, self.rect, 2)
+
+
 
 
 def player_pos(max_players: int, player: int) -> tuple[int, int]:
@@ -376,8 +424,12 @@ class Control:
                         pos = event.pos
                         for button in button_list:
                             if button.b.colliderect(mouseRect):
-                                return button.on_click()
-
+                                #return button.on_click()
+                                ans = button.on_click()
+                                if ans == 4:
+                                    self.display_box(int(0.925 * WIDTH - SCALE * (WIDTH) / 6), int(0.8 * HEIGHT), int(SCALE * (WIDTH) / 3), int(SCALE * (WIDTH) / 5))
+                                
+                                return ans 
 
 
     def display_board(self, players: 'list[poker_component.Player]', board: poker_component.Player, count: int, k: int) -> None:
@@ -397,6 +449,21 @@ class Control:
         self.draw_comm_info(k, board)
     
         pygame.display.flip()
+    
+    def display_box(self, x = 0, y = 0, width = int(SCALE * (WIDTH) / 3), height = int(SCALE * (WIDTH / 5))):
+        temp = SCREEN.copy()
+        box = InputBox(x, y, width, height)
+        running = True 
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False 
+                
+                box.handle_event(event)
+            SCREEN.blit(temp, (0, 0))
+            box.draw_box(SCREEN)
+            
+            pygame.display.flip()
 
 
 
@@ -461,7 +528,7 @@ class BUTTON:
     def draw_button(self) -> None:
         SCREEN.blit(self.text, (self.x, self.y))
 
-    def on_click(self) -> None:
+    def on_click(self):
         return self.k
         
 
