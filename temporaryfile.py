@@ -406,39 +406,41 @@ class Movement:
                     
                 
         pygame.quit()
-        
-class Button:
+
+def velocity(x, a, b):
+    return a * (1 - math.cos(b * x))
+class BUTTON:
     def __init__(self, x, y, k):    
         self.x = x
         self.y = y 
         self.k = k
+        self.clicked = False 
         self.font = pygame.font.Font('res/font/JQKWild.ttf', int(0.05 * HEIGHT))
-                    
+        
     def implement(self):
         
+        action = False 
         if self.k in ACTIONS_DICT:
             text = self.font.render(ACTIONS_DICT[self.k], True, GREY, WHITE)
             button = text.get_rect()
             button.center = (self.x, self.y)
-            
-        SCREEN.blit(text, button) 
         
-        running = True
-        while running: 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False 
-                    
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if button.collidepoint(event.pos):
-                        print('clicked')
-                
-            pygame.display.flip()
-                
-        pygame.quit()
+        
+        pos = pygame.mouse.get_pos()
+        
+        if button.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True 
+                action = True 
+        
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False 
+            
+        SCREEN.blit(text, button)
 
-def velocity(x, a, b):
-    return a * (1 - math.cos(b * x))
+        if action:
+            print(ACTIONS_DICT[self.k])
+
 
 if __name__ == "__main__":
     # os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
