@@ -46,31 +46,12 @@ MODEL=7
 # 7: mcts ai agent with opponent modeling
 # Note that opponent modeling is implemented with multiprocess, so don't use opponent modeling if you encounter some problems with multiprocessing.
 ```
-<p align="center">
-  <img src="https://github.com/Sylviss/Poker_AI_Capstone_Project/blob/main/doc/play_constant.PNG">
-</p>
-
-## The simple roadmap:
-- [x] Simple warmup and learn to use Github
-- [x] Find some material
-- [x] Implement the basic UI and game structure
-- [ ] Implement the AI:
-    - [x] Implement the evaluate function using simple Monte-Carlo simulations
-    - [x] Implement the Monte-Carlo simulation/rule-based and enumeration/rule-based AI
-    - [X] Implement the Monte-Carlo tree search-based AI
-    - [ ] Implement a supervised learning for opponent modelling for all of the AI:
-      - [ ] For the simulation/rule-based AI:
-        - [ ] Improve the simulations so that it is not just straight all-in simulations.
-        - [ ] Using opponent modelling to implement enumeration weighting, improving the CALL_CONFIDENT and the simulation itself (2.5.2.4, 2.6)
-        - [ ] After enumeration weighting, use selective sampling to only simulate cases that have high weight to be relevant.
-        - [ ] Implement adaptive sampling based on the current game state, opponents' behaviors, or other relevant factors.
-      - [ ] For the enumeration/rule-based AI:
-
-      - [ ] For the MCTS AI:
-        - [ ] Implement the opponent modelling as the main selection policy for the AI.
-- [ ] Implement a performance evaluation
-- [x] Drink some water
-- [x] Touch the grass
-
-Try ur best.
-
+- Running main.py will run the game in terminal with all of the above settings:
+```bash
+python main.py
+```
+- If you want to play the game in a fancy pygame implement, run fancy_rable.py:
+```bash
+python fancy_table.py
+```
+Note that 
