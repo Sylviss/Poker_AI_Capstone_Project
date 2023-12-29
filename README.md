@@ -38,8 +38,6 @@ Used package:
 
       - [ ] For the MCTS AI:
         - [ ] Implement the opponent modelling as the main selection policy for the AI.
-    - [ ] Implement a supervised learning to calculate all constant that is relevant in the two above AI. 99% we will be using linear regression, because the function is a polynomial function.
-    - [ ] Implement a deep reinforcement AI
 - [ ] Implement a performance evaluation
 - [x] Drink some water
 - [x] Touch the grass

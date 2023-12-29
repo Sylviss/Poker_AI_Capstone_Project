@@ -182,7 +182,7 @@ def enumeration_ai_agent(index, players, min_money, num_players, board, actions,
     decide=1-(win*0.85+draw*0.15+random.random()*0.15)
     pot_odd = (cur_call - player.pot) / (cur_call - player.pot + board.money)
     if player.name in BLUFF_INDICATOR:
-        if BLUFF_INDICATOR[player.name]<turn and decide<0.3:
+        if BLUFF_INDICATOR[player.name]<turn:
             randomized_value=random.random()
             if last_raised is None:
                 bluff_range=BLUFF_RANGE[1]*2
@@ -195,7 +195,7 @@ def enumeration_ai_agent(index, players, min_money, num_players, board, actions,
                 BLUFF_INDICATOR.pop(player.name)
         else:   
             BLUFF_INDICATOR.pop(player.name)
-    elif decide >= win_rate:
+    if decide >= win_rate:
         randomized_value=random.random()
         if last_raised is None:
             bluff_range=BLUFF_RANGE[1]
