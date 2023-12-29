@@ -259,6 +259,7 @@ class Control:
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = self.players[big_blind].pot, None, self.players[big_blind].pot
                         self.board.money += self.players[big_blind].pot
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                     else:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].money -= preflop_big_blind_value
@@ -269,6 +270,7 @@ class Control:
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
                         self.board.money += preflop_big_blind_value
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                     if self.players[small_blind].money <= preflop_small_blind_value:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].pot = self.players[small_blind].money
@@ -279,6 +281,7 @@ class Control:
                         self.display_action(small_blind, -1, self.players[small_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += self.players[small_blind].pot
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                     else:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].money -= preflop_small_blind_value
@@ -288,6 +291,7 @@ class Control:
                         self.display_action(small_blind, -1, preflop_small_blind_value, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += preflop_small_blind_value
+                        self.display_blind_board(self.players, self.board, self.count, k, [])
                     if self.players[big_blind].pot < self.players[small_blind].pot:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
                 if k >= 2:
@@ -531,6 +535,8 @@ class Control:
 
         if button_list:
             while True:
+                # SCREEN.blit(self.current_img, (0, 0))
+                pygame.display.flip()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -823,7 +829,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     # Runit = Control(3, 1000)
-    Runit = Control(PLAYER, INIT_MONEY)
+    Runit = Control(5, INIT_MONEY)
     Myclock = pygame.time.Clock()
     while True:
         Runit.main2()
