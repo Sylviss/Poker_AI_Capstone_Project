@@ -204,7 +204,6 @@ class Control:
         self.display_blind_board(1,1,1,1,[])
 
     def main2(self) -> None:
-        print("hehe")
         num_players = self.num_players
         init_money = self.init_money
         for event in pygame.event.get():
@@ -238,10 +237,7 @@ class Control:
                     self.players[x].hand = hands.pop()
                     self.players[x].state = -1
             k = 0
-            # print_blind_board(self.players, self.board)
             self.display_blind_board(self.players, self.board, self.count, k, [])
-
-            turn = ["Preflop", "Flop", "Turn", "River"]
             folded = 0
             for k in range(4):
                 gamelogger.next_turn()
@@ -251,7 +247,6 @@ class Control:
                         if player.state not in [0, 3, 4, 5, 6]:
                             player.state = -1
                 match = 0
-                print(turn[k])
                 if k == 0:
                     if self.players[big_blind].money <= preflop_big_blind_value:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
