@@ -122,7 +122,7 @@ class Player:
         0: All-in
         1: Called/Checked 
         2: Raised
-        3: Broke as fuck
+        3: Broke
         4: Fold
         5: Out of game
         6: Out of table

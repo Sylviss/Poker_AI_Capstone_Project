@@ -735,7 +735,7 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         cur_raise (int): current raise value of the phase.
 
     Returns:
-        tuple: to change some value inside the function and then pass that value outside, because Python don't have a fking pointer!
+        tuple: to change some value inside the function and then pass that value outside, because Python don't have a pointer!
     """
     checkout = [1, 5]
     stack = ["fold", "all in"]
