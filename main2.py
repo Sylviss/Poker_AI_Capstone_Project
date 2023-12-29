@@ -10,10 +10,11 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-# blockPrint()
 
-
+blockPrint()
 import pygame
+enablePrint()
+
 pygame.init()
 import os, sys
 from poker_ai.poker.poker_component import reverse_suit_dicts, Player
@@ -203,6 +204,7 @@ class Control:
         self.display_blind_board(1,1,1,1,[])
 
     def main2(self) -> None:
+        print("hehe")
         num_players = self.num_players
         init_money = self.init_money
         for event in pygame.event.get():
@@ -295,7 +297,6 @@ class Control:
                         cur_call, last_raised, cur_raise = preflop_small_blind_value, None, preflop_small_blind_value
                 if k >= 2:
                     self.board.hand.add_card(a.deal_cards())
-                    # print_blind_board(self.players, self.board)
                     self.display_blind_board(self.players, self.board, self.count, k, [])
                 elif k == 1:
                     self.board.hand.add_card(a.deal_cards())
@@ -757,10 +758,8 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         stack.append("raise max")
         checkout.append(6)
         word.append("6: raise max")
-        
-    _action = control.display_blind_board(control.players, control.board, control.count, turn, checkout)
-        
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
+    _action = control.display_blind_board(control.players, control.board, control.count, turn, checkout)
     # while True:
     #     print("Choose between:")
     #     print(", ".join(word))
