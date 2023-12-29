@@ -472,6 +472,7 @@ class Control:
         return button_list
 
     def anim_chip(self, s_pos: 'tuple[int, int]', e_pos: 'tuple[int, int]') -> None:
+        pygame.display.flip()
         chip_rate = FRAMERATE // 60 * 1000  * 720 // HEIGHT
         s_pos = [s_pos[0] - CHIP_SIZE[0]//2, s_pos[1] - CHIP_SIZE[0]//2]
         e_pos = [e_pos[0] - CHIP_SIZE[0]//2, e_pos[1] - CHIP_SIZE[0]//2]
@@ -531,6 +532,7 @@ class Control:
 
         if button_list:
             while True:
+                pygame.display.flip()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -609,7 +611,6 @@ class Control:
         SCREEN.blit(text_box, (x - text_box.get_size()[0] // 2, y - text_box.get_size()[1] // 2 + CARD_SIZE[1] // 1.3))
         SCREEN.blit(text_surf, (x - text_surf.get_size()[0] // 2, y - text_surf.get_size()[1] // 2 + CARD_SIZE[1] // 1.3))
         pygame.display.flip()
-
         pygame.time.delay(1000)
         pygame.display.flip()
         SCREEN.blit(self.current_img, [0, 0])
