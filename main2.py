@@ -268,7 +268,7 @@ class Control:
                         self.players[big_blind].pot = preflop_big_blind_value
                         # print(
                         #     f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
-                        self.display_action(big_blind, -2, self.players[big_blind].pot, -1)
+                        self.display_action(big_blind, -2, preflop_big_blind_value, -1)
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
                         self.board.money += preflop_big_blind_value
@@ -279,7 +279,7 @@ class Control:
                         self.players[small_blind].state = 0
                         # print(
                         #     f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
-                        self.display_action(small_blind, -1, self.players[big_blind].pot, -1)
+                        self.display_action(small_blind, -1, self.players[small_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += self.players[small_blind].pot
                     else:
@@ -288,7 +288,7 @@ class Control:
                         self.players[small_blind].pot = preflop_small_blind_value
                         # print(
                         #     f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
-                        self.display_action(small_blind, -1, self.players[big_blind].pot, -1)
+                        self.display_action(small_blind, -1, preflop_small_blind_value, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += preflop_small_blind_value
                     if self.players[big_blind].pot < self.players[small_blind].pot:
