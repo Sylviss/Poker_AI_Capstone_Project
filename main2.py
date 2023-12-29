@@ -614,6 +614,7 @@ class Control:
         pygame.display.flip()
 
         sleep(1)
+        pygame.display.flip()
         SCREEN.blit(self.current_img, [0, 0])
         pygame.display.flip()
 
