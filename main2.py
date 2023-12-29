@@ -10,7 +10,7 @@ from poker_ai.poker import poker_component
 # from poker_ai.ai.ml.methods import OM_engine
 
 from poker_ai.tools import *
-blockPrint()
+# blockPrint()
 
 
 import pygame
@@ -27,8 +27,8 @@ TURN = ['PREFLOP', 'FLOP', 'TURN', 'RIVER', 'POST-GAME']
 HEIGHT = 720
 WIDTH = 1280
 
-HEIGHT = 1080
-WIDTH = 1920
+# HEIGHT = 1080
+# WIDTH = 1920
 
 SCALE = 0.35
 CARD_SIZE = (int(WIDTH / 7 * SCALE), int(WIDTH / 5 * SCALE))
@@ -54,7 +54,7 @@ COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
 
 class Player2(Player):
-    def __init__(self, id, hand, name, money, state=-1, model=MODEL):
+    def __init__(self, id, hand, name, money, state=-1, model=2):
         super().__init__(hand, name, money, state, model)
         self.id = id 
     
@@ -249,15 +249,15 @@ class Control:
                         if player.state not in [0, 3, 4, 5, 6]:
                             player.state = -1
                 match = 0
-                # print(turn[k])
+                print(turn[k])
                 if k == 0:
                     if self.players[big_blind].money <= preflop_big_blind_value:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].pot = self.players[big_blind].money
                         self.players[big_blind].money = 0
                         self.players[big_blind].state = 0
-                        # print(
-                        #     f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
+                        print(
+                            f"{self.players[big_blind].name} is big blind and put in {self.players[big_blind].pot}$")
                         self.display_action(big_blind, -2, self.players[big_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = self.players[big_blind].pot, None, self.players[big_blind].pot
@@ -266,8 +266,8 @@ class Control:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[big_blind].money -= preflop_big_blind_value
                         self.players[big_blind].pot = preflop_big_blind_value
-                        # print(
-                        #     f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
+                        print(
+                            f"{self.players[big_blind].name} is big blind and put in {preflop_big_blind_value}$")
                         self.display_action(big_blind, -2, preflop_big_blind_value, -1)
                         self.anim_chip(player_pos(self.num_players, big_blind), CHIP_DEST)
                         cur_call, last_raised, cur_raise = preflop_big_blind_value, None, preflop_big_blind_value
@@ -277,8 +277,8 @@ class Control:
                         self.players[small_blind].pot = self.players[small_blind].money
                         self.players[small_blind].money = 0
                         self.players[small_blind].state = 0
-                        # print(
-                        #     f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
+                        print(
+                            f"{self.players[small_blind].name} is small and put in {self.players[small_blind].pot}$")
                         self.display_action(small_blind, -1, self.players[small_blind].pot, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += self.players[small_blind].pot
@@ -286,8 +286,8 @@ class Control:
                         self.display_blind_board(self.players, self.board, self.count, k, [])
                         self.players[small_blind].money -= preflop_small_blind_value
                         self.players[small_blind].pot = preflop_small_blind_value
-                        # print(
-                        #     f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
+                        print(
+                            f"{self.players[small_blind].name} is small blind and put in {preflop_small_blind_value}$")
                         self.display_action(small_blind, -1, preflop_small_blind_value, -1)
                         self.anim_chip(player_pos(self.num_players, small_blind), CHIP_DEST)
                         self.board.money += preflop_small_blind_value
@@ -822,7 +822,7 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
 
 if __name__ == "__main__":
     os.environ['SDL_VIDEO_CENTERED'] = '1' #center screen
-    #os.environ['SDL_VIDEO_WINDOW_POS'] = '900, 0'
+    # os.environ['SDL_VIDEO_WINDOW_POS'] = '900, 0'
     pygame.display.set_caption("Poker")
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     # Runit = Control(3, 1000)
