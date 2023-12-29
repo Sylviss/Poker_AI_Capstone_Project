@@ -1,32 +1,40 @@
 ###############################################
-# Constant:
+# Constant for playing the game:
 
-DEBUG_MODE=1
-# Turn on for better visibility
-
+PLAYER = 2
+# The number of players
+PREFLOP_BIG_BLIND = 10
+# Value of the big blind pre-bet.
+INIT_MONEY = 50 * PREFLOP_BIG_BLIND
+# The starting money of all players
+STOP = 0
+# 0 for stop after every game, 1 to skip stop
+INDICATOR = 1
+# 0 is for testing against all human-controlled
+# 1 is for human vs bots: Player 1 will be human, all others will be bot
+# 2 is all bots for testing purpose
+MULTIPROCESS = 1
+# 0 is for single-processing, slower. You should use this if you encounter some problems with multiprocessing.
+# 1 is for multi-processing, faster and recommended.
 MODEL=7
 # Choose AI module for all bot in a normal game for main.py:
 # -1: enumeration ai agent
 # 0: first approach mcs ai agent
 # 1: second approach mcs ai agent
 # 2: mcts ai agent
-# 3: all in ai agent 
-# 4: super random ai agent 
+# 3: all in ai agent
+# 4: super random ai agent
 # 5: first approach mcs ai agent with opponent modeling
 # 6: second approach mcs ai agent with opponent modeling
 # 7: mcts ai agent with opponent modeling
+# Note that opponent modeling is implemented with multiprocess, so don't use opponent modeling if you encounter some problems with multiprocessing.
 
-STOP = 0
-# 0 for stop after every game, 1 to skip stop
-PREFLOP_BIG_BLIND = 10
-# Value of the big blind pre-bet.
-INDICATOR = 1
-# 0 is for testing against all human-controlled
-# 1 is for bot: Player 1 will be human, all others will be bot
-# 2 is all bot for testing purpose
-MULTIPROCESS = 1
-# 0 is for single-processing, slower
-# 1 is for multi-processing, faster and recommended
+
+###############################################
+# Constant:
+
+DEBUG_MODE=1
+# Turn on for better visibility
 TURN_TO_RAISE_POT = 5
 # Number of turns to increase the big blind pre-bet
 
@@ -44,9 +52,6 @@ BETTED=0.95
 OPPONENT_CONFIDENT_RANGE={1:(0.05,-0.05),2:(-0.1,-0.1),3:(-0.2,-0.05),4:(-0.1,0.5),5:(-0.15,0.3),6:(-0.2,0.2),8:(-0.3,0.1)}
 UPDATE_WEIGHT=0.5
 UBC1_CONSTANT=1.3
-
-PLAYER = 2
-INIT_MONEY = 50 * PREFLOP_BIG_BLIND
 
 DEEPNESS = 5000
 # The number of iterations of the Monte-Carlo simulation. Higher is better but requires more time and memory
@@ -113,4 +118,3 @@ color = {
 RESCALING_SIZE = 20
 
 ################################################
-

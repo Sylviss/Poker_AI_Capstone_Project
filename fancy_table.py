@@ -3,11 +3,7 @@ from time import sleep
 import math
 from poker_ai.constant import MODEL, PLAYER, INIT_MONEY
 from poker_ai.poker import poker_component
-# from poker_ai.ai.ai_algorithm import action_ai_model
-# from poker_ai.ai.ai_algorithm_om import action_ai_with_om_model
-# from poker_ai.constant import STOP, PREFLOP_BIG_BLIND, INDICATOR, MULTIPROCESS, TURN_TO_RAISE_POT, DEBUG_MODE
-# from poker_ai.ai.ml.opponent_modelling import Data_table, magical_four, preprocess_table, recording, table_counting, table_record, table_rescaling
-# from poker_ai.ai.ml.methods import OM_engine
+
 
 from poker_ai.tools import *
 
@@ -332,12 +328,9 @@ class Control:
                     break
             if folded == playing-1:
                 if DEBUG_MODE==1:
-                    # print("Post-game")
-                    # print_board(self.players, self.board)
                     self.display_board(self.players, self.board, self.count, k + 0.5)
                 for player in self.players:
                     if player.state not in [3, 4, 5, 6]:
-                        # print(f"{player.name} win the game!")
                         self.display_action(player.id, -3, self.board.money, -1)
                         self.anim_chip(CHIP_DEST, player_pos(self.num_players, player.id))
                         player.money += self.board.money
@@ -347,7 +340,6 @@ class Control:
                     if player.money < 0:
                         raise poker_component.UnexpectedError
                     if player.money == 0 and player.state != 6:
-                        # print(f"{player.name} broke!")
                         player.state = 6
                         playing -= 1
                 self.count += 1
@@ -361,13 +353,7 @@ class Control:
                     table_condition = False
                     break
                 temp_board_money = 0
-                # if STOP == 0:
-                #     print("Press any key for the next game")
-                #     input()
-                # bext.clear()
                 continue
-            # print("Post-game")
-            # print_board(self.players, self.board)
             self.display_board(self.players, self.board, self.count, k + 0.5)
             checker = []
             for player in self.players:
@@ -391,7 +377,6 @@ class Control:
                     self.players[x].money += money_win
                     self.display_action(x, -3, money_win, -1)
                     self.anim_chip(CHIP_DEST, player_pos(self.num_players, x))
-            # print(hehe+" win the game!")
             self.tables = table_record(self.tables, gamelogger.history, gamelogger.checkout, self.players, num_players, self.board)
             for player in self.players:
                 self.tables[player.name] = table_rescaling(self.tables[player.name], len(gamelogger.history))
@@ -401,7 +386,6 @@ class Control:
                 if player.money < 0:
                     raise poker_component.UnexpectedError
                 if player.money == 0 and player.state != 6:
-                    # print(f"{player.name} broke!")
                     player.state = 6
                     playing -= 1
             if playing == 1:
@@ -414,14 +398,6 @@ class Control:
             small_blind = (small_blind+1) % num_players
             while self.players[small_blind].state == 6 or big_blind == small_blind:
                 small_blind = (small_blind+1) % num_players
-            # if STOP == 0:
-            #     print("Press any key for the next game")
-            #     input()
-            # bext.clear()
-        # for player in self.players:
-        #     if player.state != 6:
-        #         print(f"{player.name} wins the table!")
-        #         pass
 
 
     def draw_hand(self, p: Player2, x: int, y: int) -> None:
@@ -505,8 +481,6 @@ class Control:
         SCREEN.blit(self.current_img, (0, 0))
         pygame.display.flip()
 
-    # def capture(self) -> pygame.Surface:
-    #     return SCREEN.copy()
 
 
     def display_blind_board(self, players: 'list[Player2]', board: Player2, count: int, k: int, checkout: 'list[int]') -> None:
@@ -621,44 +595,6 @@ class Control:
         pygame.display.flip()
 
 
-        
-        
-        
-        
-
-
-# class Player2(Player):
-#     def __init__(self, control: Control, id, hand, name, money, state=-1, model=...):
-#         super().__init__(hand, name, money, state, model)
-#         self.control = control
-#         self.id = id 
-    
-#     def all_in_1(self, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 0, self.money, cur_raise)
-#         return super().all_in_1(cur_call, last_raised, board_pot, cur_raise)
-    
-#     def all_in_2(self, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 1, self.money, cur_raise)
-#         return super().all_in_2(cur_call, last_raised, board_pot, cur_raise)
-    
-#     def check(self, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 2, self.money, cur_raise)
-#         return super().check(cur_call, last_raised, board_pot, cur_raise)
-    
-#     def call(self, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 3, self.money, cur_raise)
-#         return super().call(cur_call, last_raised, board_pot, cur_raise)
-    
-#     def raise_money(self, money_raised, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 4, self.money, cur_raise)
-#         return super().raise_money(money_raised, cur_call, last_raised, board_pot, cur_raise)
-    
-#     def fold(self, cur_call, last_raised, board_pot, cur_raise):
-#         self.control.display_action(self.id, 5, self.money, cur_raise)
-#         return super().fold(cur_call, last_raised, board_pot, cur_raise)
-        
-
-
 def velocity(x, a, b):
     return a * (1 - math.cos(b * x))
 
@@ -763,19 +699,7 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         word.append("6: raise max")
     print(f"{self.name} need to put in at least {cur_call-self.pot}$")
     _action = control.display_blind_board(control.players, control.board, control.count, turn, checkout)
-    # while True:
-    #     print("Choose between:")
-    #     print(", ".join(word))
-    #     try:
-    #         _action = int(input('>>> '))
-    #     except ValueError:
-    #         continue
-    #     if _action not in checkout:
-    #         continue
-    #     break
-
-
-
+    
     if _action == 1:
         gamelogger.keylogging(self, [1],checkout)
         if self.money <= cur_call-self.pot:
@@ -817,7 +741,6 @@ def action_human2(control: Control, self, players, cur_call, last_raised, board_
         gamelogger.keylogging(self, [6,(min_money+cur_call-self.pot)/self.money,min_money],checkout)
         ans = self.raise_money(
                 min_money, cur_call, last_raised, board_pot, cur_raise)
-    # tables = recording(tables, gamelogger.history, checkout, players[0].hand, board, num_players)
     return ans
 
 
