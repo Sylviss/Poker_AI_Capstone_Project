@@ -334,6 +334,8 @@ class Control:
                 for player in self.players:
                     if player.state not in [3, 4, 5, 6]:
                         # print(f"{player.name} win the game!")
+                        self.display_action(player.id, -3, self.board.money, -1)
+                        self.anim_chip(CHIP_DEST, player_pos(self.num_players, player.id))
                         player.money += self.board.money
                         self.board.money = 0
                         break
