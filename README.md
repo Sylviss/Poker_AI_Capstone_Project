@@ -1,6 +1,9 @@
 # Poker AI for capstone project
 ----------------
-This project contains best effort open source implementation of a poker AI using several methods. The AI models are built by simple rule-based method + simulations, Monte-Carlo tree search and opponent modeling. The game is built mainly on terminal, but we also have a pygame expansion for playing against bots. 
+This project contains best effort open source implementation of a poker AI using several methods. The AI models are built by simple rule-based method + simulations, Monte-Carlo tree search and opponent modeling. The game is built mainly on terminal, but we also have a pygame expansion for playing against bots.
+
+# Note: This project is just for education purpose. We do not encourage gambling, as it is illegal here in Vietnam. We do not hold responsibility for any misuse of this programs. 
+
 # Installation & running guide:
 ## Prerequisites:
 This repository assumes Python 3.11 or newer is used.
@@ -14,8 +17,6 @@ Used package:
 ```bash
 git clone 
 ```
-
-# Note: This project is just for education purpose. We do not encourage gambling, as it is illegal here in Vietnam. We do not hold responsibility for any misuse of this programs.
 
 ## Run the game:
 - Firstly, you should change some constant in poker_ai/constant.py:
@@ -56,7 +57,10 @@ python main.py
 ```bash
 python fancy_table.py
 ```
-Note that the pygame implement only support games of player vs AIs. It currently do not support player vs players and AI vs AIs, since it's impossible for players to play in 1 machine and AI games are faster on terminal.
+Note that:
+  - The pygame implement only support games of player vs AIs. It currently do not support player vs players and AI vs AIs, since it's
+impossible for players to play in 1 machine and AI games are faster on terminal.
+  - The game logs and many useful informations is printed out in the terminal.
 
 ## Training your own opponent modeling model:
 - Firstly, you should make a backup file of poker_ai/ai/ml/default_data.json, as it is our model's default data.
