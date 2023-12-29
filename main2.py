@@ -608,7 +608,7 @@ class Control:
         SCREEN.blit(text_surf, (x - text_surf.get_size()[0] // 2, y - text_surf.get_size()[1] // 2 + CARD_SIZE[1] // 1.3))
         pygame.display.flip()
 
-        sleep(1)
+        pygame.time.delay(1000)
         pygame.display.flip()
         SCREEN.blit(self.current_img, [0, 0])
         pygame.display.flip()
