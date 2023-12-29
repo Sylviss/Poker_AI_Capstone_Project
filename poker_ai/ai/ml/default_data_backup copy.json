@@ -1,0 +1,2828 @@
+{
+  "2": {
+    "1": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 8.000000100000001,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 76.0000001,
+          "call": 1e-7,
+          "raise": 7.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 198.0000001,
+          "call": 1e-7,
+          "raise": 14.000000100000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 38.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 9.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "2": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 241.0000001,
+          "call": 1e-7,
+          "raise": 62.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 250.0000001,
+          "check": 1e-7,
+          "call": 2.0000001000000003,
+          "raise": 14.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 198.0000001,
+          "call": 1e-7,
+          "raise": 19.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 73.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 4.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 147.0000001,
+          "call": 1e-7,
+          "raise": 13.000000100000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 38.0000001,
+          "check": 1e-7,
+          "call": 1.0000001,
+          "raise": 3.0000001000000003,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "3": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 19.0000001,
+          "call": 1e-7,
+          "raise": 22.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 48.0000001,
+          "check": 1e-7,
+          "call": 91.0000001,
+          "raise": 8.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 9.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 429.00000009999997,
+          "call": 1e-7,
+          "raise": 204.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 444.00000009999997,
+          "check": 1e-7,
+          "call": 112.0000001,
+          "raise": 32.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 31.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 311.00000009999997,
+          "call": 1e-7,
+          "raise": 54.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 229.0000001,
+          "check": 1e-7,
+          "call": 24.0000001,
+          "raise": 14.000000100000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 171.0000001,
+          "call": 1e-7,
+          "raise": 17.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 76.0000001,
+          "check": 1e-7,
+          "call": 4.0000001,
+          "raise": 2.0000001000000003,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "4": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 260.00000009999997,
+          "call": 1e-7,
+          "raise": 437.00000009999997,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 450.00000009999997,
+          "check": 1e-7,
+          "call": 1752.0000000999999,
+          "raise": 53.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 96.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 3.0000001000000003
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 296.00000009999997,
+          "call": 1e-7,
+          "raise": 529.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 311.00000009999997,
+          "check": 1e-7,
+          "call": 361.00000009999997,
+          "raise": 22.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 44.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 267.00000009999997,
+          "call": 1e-7,
+          "raise": 192.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 215.0000001,
+          "check": 1e-7,
+          "call": 103.0000001,
+          "raise": 8.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 138.0000001,
+          "call": 1e-7,
+          "raise": 47.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 53.0000001,
+          "check": 1e-7,
+          "call": 23.0000001,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 16.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "5": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 215.0000001,
+          "call": 1e-7,
+          "raise": 811.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 62.0000001,
+          "check": 1e-7,
+          "call": 2510.0000001,
+          "raise": 357.00000009999997,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 171.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 145.0000001,
+          "call": 1e-7,
+          "raise": 594.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 77.0000001,
+          "check": 1e-7,
+          "call": 474.00000009999997,
+          "raise": 21.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 56.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 138.0000001,
+          "call": 1e-7,
+          "raise": 268.00000009999997,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 103.0000001,
+          "check": 1e-7,
+          "call": 179.0000001,
+          "raise": 11.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 31.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 114.0000001,
+          "call": 1e-7,
+          "raise": 90.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 39.0000001,
+          "check": 1e-7,
+          "call": 50.0000001,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 15.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "6": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 203.0000001,
+          "call": 1e-7,
+          "raise": 741.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1097.0000000999999,
+          "raise": 1207.0000000999999,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 207.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 169.0000001,
+          "call": 1e-7,
+          "raise": 504.00000009999997,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 360.00000009999997,
+          "raise": 151.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 62.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 136.0000001,
+          "call": 1e-7,
+          "raise": 279.00000009999997,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 14.000000100000001,
+          "check": 1e-7,
+          "call": 166.0000001,
+          "raise": 46.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 28.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 125.0000001,
+          "call": 1e-7,
+          "raise": 95.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 25.0000001,
+          "check": 1e-7,
+          "call": 46.0000001,
+          "raise": 9.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "7": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 45.0000001,
+          "call": 1e-7,
+          "raise": 243.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 128.0000001,
+          "raise": 578.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 85.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 6.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 124.0000001,
+          "call": 1e-7,
+          "raise": 415.00000009999997,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 107.0000001,
+          "raise": 296.00000009999997,
+          "all in": 5.0000001
+        },
+        "can't check or call": {
+          "fold": 47.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 115.0000001,
+          "call": 1e-7,
+          "raise": 191.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 74.0000001,
+          "raise": 85.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 27.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 105.0000001,
+          "call": 1e-7,
+          "raise": 101.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 35.0000001,
+          "raise": 11.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 22.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "8": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 8.000000100000001,
+          "call": 1e-7,
+          "raise": 52.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 8.000000100000001,
+          "raise": 78.0000001,
+          "all in": 4.0000001
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 7.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 68.0000001,
+          "call": 1e-7,
+          "raise": 300.00000009999997,
+          "all in": 5.0000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 36.0000001,
+          "raise": 300.00000009999997,
+          "all in": 12.000000100000001
+        },
+        "can't check or call": {
+          "fold": 22.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 28.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 111.0000001,
+          "call": 1e-7,
+          "raise": 157.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 34.0000001,
+          "raise": 101.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 11.000000100000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 104.0000001,
+          "call": 1e-7,
+          "raise": 63.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 20.0000001,
+          "raise": 23.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      }
+    },
+    "9": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 11.000000100000001,
+          "call": 1e-7,
+          "raise": 32.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1.0000001,
+          "raise": 94.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 48.0000001,
+          "call": 1e-7,
+          "raise": 216.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 7.0000001,
+          "raise": 198.0000001,
+          "all in": 23.0000001
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 34.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 78.0000001,
+          "call": 1e-7,
+          "raise": 154.0000001,
+          "all in": 8.000000100000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 96.0000001,
+          "all in": 16.0000001
+        },
+        "can't check or call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 21.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 122.0000001,
+          "call": 1e-7,
+          "raise": 78.0000001,
+          "all in": 6.0000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 25.0000001,
+          "all in": 7.0000001
+        },
+        "can't check or call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 11.000000100000001
+        }
+      }
+    },
+    "10": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 16.0000001,
+          "call": 1e-7,
+          "raise": 92.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 5.0000001,
+          "raise": 83.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 11.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 48.0000001,
+          "call": 1e-7,
+          "raise": 77.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 60.0000001,
+          "all in": 17.0000001
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 12.000000100000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 94.0000001,
+          "call": 1e-7,
+          "raise": 68.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 2.0000001000000003,
+          "raise": 22.0000001,
+          "all in": 4.0000001
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 11.000000100000001
+        }
+      }
+    }
+  },
+  "4": {
+    "1": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 2.0000001000000003,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 33.0000001,
+          "call": 1e-7,
+          "raise": 4.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1.0000001,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 311.00000009999997,
+          "call": 1e-7,
+          "raise": 6.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 28.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "2": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 99.0000001,
+          "call": 1e-7,
+          "raise": 26.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 93.0000001,
+          "check": 1e-7,
+          "call": 2.0000001000000003,
+          "raise": 8.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 9.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 143.0000001,
+          "call": 1e-7,
+          "raise": 7.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 45.0000001,
+          "check": 1e-7,
+          "call": 1.0000001,
+          "raise": 1.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 140.0000001,
+          "call": 1e-7,
+          "raise": 8.000000100000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 20.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "3": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 11.000000100000001,
+          "call": 1e-7,
+          "raise": 4.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 47.0000001,
+          "check": 1e-7,
+          "call": 34.0000001,
+          "raise": 5.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 281.00000009999997,
+          "call": 1e-7,
+          "raise": 137.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 319.00000009999997,
+          "check": 1e-7,
+          "call": 63.0000001,
+          "raise": 24.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 27.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 278.00000009999997,
+          "call": 1e-7,
+          "raise": 35.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 126.0000001,
+          "check": 1e-7,
+          "call": 26.0000001,
+          "raise": 11.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 7.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 117.0000001,
+          "call": 1e-7,
+          "raise": 14.000000100000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 24.0000001,
+          "check": 1e-7,
+          "call": 4.0000001,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "4": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 168.0000001,
+          "call": 1e-7,
+          "raise": 136.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 546.0000001,
+          "check": 1e-7,
+          "call": 1235.0000000999999,
+          "raise": 267.00000009999997,
+          "all in": 9.000000100000001
+        },
+        "can't check or call": {
+          "fold": 174.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 7.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 267.00000009999997,
+          "call": 1e-7,
+          "raise": 266.00000009999997,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 234.0000001,
+          "check": 1e-7,
+          "call": 270.00000009999997,
+          "raise": 30.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 45.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 6.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 238.0000001,
+          "call": 1e-7,
+          "raise": 117.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 131.0000001,
+          "check": 1e-7,
+          "call": 55.0000001,
+          "raise": 6.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 14.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 92.0000001,
+          "call": 1e-7,
+          "raise": 29.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 33.0000001,
+          "check": 1e-7,
+          "call": 12.000000100000001,
+          "raise": 3.0000001000000003,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "5": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 179.0000001,
+          "call": 1e-7,
+          "raise": 212.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 256.00000009999997,
+          "check": 1e-7,
+          "call": 1864.0000000999999,
+          "raise": 551.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 266.00000009999997,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 9.000000100000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 177.0000001,
+          "call": 1e-7,
+          "raise": 292.00000009999997,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 76.0000001,
+          "check": 1e-7,
+          "call": 335.00000009999997,
+          "raise": 42.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 52.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 153.0000001,
+          "call": 1e-7,
+          "raise": 125.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 53.0000001,
+          "check": 1e-7,
+          "call": 116.0000001,
+          "raise": 11.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 16.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 93.0000001,
+          "call": 1e-7,
+          "raise": 42.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 17.0000001,
+          "check": 1e-7,
+          "call": 22.0000001,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "6": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 139.0000001,
+          "call": 1e-7,
+          "raise": 190.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 103.0000001,
+          "check": 1e-7,
+          "call": 605.0000001,
+          "raise": 736.0000001,
+          "all in": 8.000000100000001
+        },
+        "can't check or call": {
+          "fold": 166.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 6.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 158.0000001,
+          "call": 1e-7,
+          "raise": 214.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 26.0000001,
+          "check": 1e-7,
+          "call": 219.0000001,
+          "raise": 108.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 37.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 114.0000001,
+          "call": 1e-7,
+          "raise": 115.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 83.0000001,
+          "raise": 27.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 26.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 90.0000001,
+          "call": 1e-7,
+          "raise": 54.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 27.0000001,
+          "raise": 4.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 14.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "7": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 29.0000001,
+          "call": 1e-7,
+          "raise": 52.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 11.000000100000001,
+          "check": 1e-7,
+          "call": 78.0000001,
+          "raise": 183.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 39.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 4.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 81.0000001,
+          "call": 1e-7,
+          "raise": 155.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 16.0000001,
+          "check": 1e-7,
+          "call": 95.0000001,
+          "raise": 130.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 30.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 9.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 89.0000001,
+          "call": 1e-7,
+          "raise": 115.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 65.0000001,
+          "raise": 62.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 16.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 71.0000001,
+          "call": 1e-7,
+          "raise": 51.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 26.0000001,
+          "raise": 11.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 23.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "8": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 6.0000001,
+          "call": 1e-7,
+          "raise": 12.000000100000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 19.0000001,
+          "raise": 67.0000001,
+          "all in": 5.0000001
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 4.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 63.0000001,
+          "call": 1e-7,
+          "raise": 159.0000001,
+          "all in": 6.0000001
+        },
+        "can only call": {
+          "fold": 7.0000001,
+          "check": 1e-7,
+          "call": 42.0000001,
+          "raise": 146.0000001,
+          "all in": 9.000000100000001
+        },
+        "can't check or call": {
+          "fold": 11.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 23.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 83.0000001,
+          "call": 1e-7,
+          "raise": 89.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 24.0000001,
+          "raise": 64.0000001,
+          "all in": 7.0000001
+        },
+        "can't check or call": {
+          "fold": 13.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 6.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 73.0000001,
+          "call": 1e-7,
+          "raise": 45.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 16.0000001,
+          "raise": 15.000000100000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      }
+    },
+    "9": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 4.0000001,
+          "call": 1e-7,
+          "raise": 5.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 20.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 3.0000001000000003
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 39.0000001,
+          "call": 1e-7,
+          "raise": 87.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 13.000000100000001,
+          "raise": 87.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 14.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 72.0000001,
+          "call": 1e-7,
+          "raise": 74.0000001,
+          "all in": 4.0000001
+        },
+        "can only call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 10.000000100000001,
+          "raise": 72.0000001,
+          "all in": 5.0000001
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 14.000000100000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 76.0000001,
+          "call": 1e-7,
+          "raise": 41.0000001,
+          "all in": 4.0000001
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 12.000000100000001,
+          "raise": 16.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 7.0000001
+        }
+      }
+    },
+    "10": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 22.0000001,
+          "call": 1e-7,
+          "raise": 32.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 42.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 10.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 60.0000001,
+          "call": 1e-7,
+          "raise": 45.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 8.000000100000001,
+          "raise": 41.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 3.0000001000000003
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 93.0000001,
+          "call": 1e-7,
+          "raise": 44.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 18.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 6.0000001
+        }
+      }
+    }
+  },
+  "6": {
+    "1": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 3.0000001000000003,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 31.0000001,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 13.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 621.0000001,
+          "call": 1e-7,
+          "raise": 6.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 21.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "2": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 136.0000001,
+          "call": 1e-7,
+          "raise": 19.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 103.0000001,
+          "check": 1e-7,
+          "call": 4.0000001,
+          "raise": 7.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 8.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 225.0000001,
+          "call": 1e-7,
+          "raise": 5.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 40.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 5.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 196.0000001,
+          "call": 1e-7,
+          "raise": 10.000000100000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 22.0000001,
+          "check": 1e-7,
+          "call": 2.0000001000000003,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "3": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 23.0000001,
+          "call": 1e-7,
+          "raise": 3.0000001000000003,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 201.0000001,
+          "check": 1e-7,
+          "call": 175.0000001,
+          "raise": 66.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 51.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 409.00000009999997,
+          "call": 1e-7,
+          "raise": 138.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 382.00000009999997,
+          "check": 1e-7,
+          "call": 90.0000001,
+          "raise": 37.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 36.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 365.00000009999997,
+          "call": 1e-7,
+          "raise": 25.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 101.0000001,
+          "check": 1e-7,
+          "call": 22.0000001,
+          "raise": 6.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 137.0000001,
+          "call": 1e-7,
+          "raise": 5.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 29.0000001,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 1.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      }
+    },
+    "4": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 216.0000001,
+          "call": 1e-7,
+          "raise": 104.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 929.0000001,
+          "check": 1e-7,
+          "call": 1800.0000000999999,
+          "raise": 408.00000009999997,
+          "all in": 9.000000100000001
+        },
+        "can't check or call": {
+          "fold": 366.00000009999997,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 22.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 366.00000009999997,
+          "call": 1e-7,
+          "raise": 247.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 243.0000001,
+          "check": 1e-7,
+          "call": 292.00000009999997,
+          "raise": 48.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 60.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 4.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 351.00000009999997,
+          "call": 1e-7,
+          "raise": 81.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 110.0000001,
+          "check": 1e-7,
+          "call": 72.0000001,
+          "raise": 8.000000100000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 15.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 139.0000001,
+          "call": 1e-7,
+          "raise": 22.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 27.0000001,
+          "check": 1e-7,
+          "call": 15.000000100000001,
+          "raise": 3.0000001000000003,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "5": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 200.0000001,
+          "call": 1e-7,
+          "raise": 162.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 463.00000009999997,
+          "check": 1e-7,
+          "call": 1938.0000000999999,
+          "raise": 601.0000001,
+          "all in": 11.000000100000001
+        },
+        "can't check or call": {
+          "fold": 356.00000009999997,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 19.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 276.00000009999997,
+          "call": 1e-7,
+          "raise": 248.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 82.0000001,
+          "check": 1e-7,
+          "call": 366.00000009999997,
+          "raise": 43.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 59.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 8.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 217.0000001,
+          "call": 1e-7,
+          "raise": 125.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 43.0000001,
+          "check": 1e-7,
+          "call": 118.0000001,
+          "raise": 6.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 17.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 111.0000001,
+          "call": 1e-7,
+          "raise": 40.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 22.0000001,
+          "check": 1e-7,
+          "call": 24.0000001,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 12.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "6": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 130.0000001,
+          "call": 1e-7,
+          "raise": 107.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 151.0000001,
+          "check": 1e-7,
+          "call": 637.0000001,
+          "raise": 614.0000001,
+          "all in": 7.0000001
+        },
+        "can't check or call": {
+          "fold": 201.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 20.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 155.0000001,
+          "call": 1e-7,
+          "raise": 178.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 30.0000001,
+          "check": 1e-7,
+          "call": 190.0000001,
+          "raise": 115.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 42.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 162.0000001,
+          "call": 1e-7,
+          "raise": 114.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 93.0000001,
+          "raise": 36.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 98.0000001,
+          "call": 1e-7,
+          "raise": 43.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 11.000000100000001,
+          "check": 1e-7,
+          "call": 23.0000001,
+          "raise": 3.0000001000000003,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 11.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "7": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 21.0000001,
+          "call": 1e-7,
+          "raise": 27.0000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 19.0000001,
+          "check": 1e-7,
+          "call": 72.0000001,
+          "raise": 138.0000001,
+          "all in": 4.0000001
+        },
+        "can't check or call": {
+          "fold": 31.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 2.0000001000000003
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 113.0000001,
+          "call": 1e-7,
+          "raise": 145.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 18.0000001,
+          "check": 1e-7,
+          "call": 86.0000001,
+          "raise": 151.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 43.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 120.0000001,
+          "call": 1e-7,
+          "raise": 67.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 47.0000001,
+          "raise": 53.0000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 20.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 3.0000001000000003
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 109.0000001,
+          "call": 1e-7,
+          "raise": 45.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 27.0000001,
+          "raise": 13.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 11.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      }
+    },
+    "8": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 6.0000001,
+          "call": 1e-7,
+          "raise": 8.000000100000001,
+          "all in": 1.0000001
+        },
+        "can only call": {
+          "fold": 10.000000100000001,
+          "check": 1e-7,
+          "call": 28.0000001,
+          "raise": 88.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 18.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 88.0000001,
+          "call": 1e-7,
+          "raise": 95.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 50.0000001,
+          "raise": 130.0000001,
+          "all in": 9.000000100000001
+        },
+        "can't check or call": {
+          "fold": 15.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 25.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 118.0000001,
+          "call": 1e-7,
+          "raise": 86.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 4.0000001,
+          "check": 1e-7,
+          "call": 23.0000001,
+          "raise": 55.0000001,
+          "all in": 6.0000001
+        },
+        "can't check or call": {
+          "fold": 21.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 7.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 84.0000001,
+          "call": 1e-7,
+          "raise": 37.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 10.000000100000001,
+          "raise": 15.000000100000001,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 8.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 3.0000001000000003
+        }
+      }
+    },
+    "9": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 2.0000001000000003,
+          "call": 1e-7,
+          "raise": 6.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 4.0000001,
+          "raise": 24.0000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 1.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1.0000001
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 60.0000001,
+          "call": 1e-7,
+          "raise": 82.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 24.0000001,
+          "raise": 95.0000001,
+          "all in": 8.000000100000001
+        },
+        "can't check or call": {
+          "fold": 8.000000100000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 22.0000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 78.0000001,
+          "call": 1e-7,
+          "raise": 64.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 18.0000001,
+          "raise": 50.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 9.000000100000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 71.0000001,
+          "call": 1e-7,
+          "raise": 52.0000001,
+          "all in": 4.0000001
+        },
+        "can only call": {
+          "fold": 5.0000001,
+          "check": 1e-7,
+          "call": 10.000000100000001,
+          "raise": 17.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 3.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 7.0000001
+        }
+      }
+    },
+    "10": {
+      "preflop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        },
+        "can't check or call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 1e-7
+        }
+      },
+      "flop": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 17.0000001,
+          "call": 1e-7,
+          "raise": 30.0000001,
+          "all in": 1e-7
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 4.0000001,
+          "raise": 30.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 6.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 9.000000100000001
+        }
+      },
+      "turn": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 55.0000001,
+          "call": 1e-7,
+          "raise": 49.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can only call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 9.000000100000001,
+          "raise": 34.0000001,
+          "all in": 2.0000001000000003
+        },
+        "can't check or call": {
+          "fold": 7.0000001,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 5.0000001
+        }
+      },
+      "river": {
+        "can only check": {
+          "fold": 1e-7,
+          "check": 94.0000001,
+          "call": 1e-7,
+          "raise": 60.0000001,
+          "all in": 3.0000001000000003
+        },
+        "can only call": {
+          "fold": 1e-7,
+          "check": 1e-7,
+          "call": 6.0000001,
+          "raise": 8.000000100000001,
+          "all in": 1.0000001
+        },
+        "can't check or call": {
+          "fold": 2.0000001000000003,
+          "check": 1e-7,
+          "call": 1e-7,
+          "raise": 1e-7,
+          "all in": 13.000000100000001
+        }
+      }
+    }
+  }
+}
